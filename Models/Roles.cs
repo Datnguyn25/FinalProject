@@ -10,7 +10,7 @@ namespace FinalProject.Models
         [Required] // Required field
         [StringLength(50)]
         public string RoleName { get; set; }
-
+        //khglygglglglglyg
 
 
     }
