@@ -27,7 +27,7 @@ namespace FinalProject.Models
 
         // Navigation
         [ForeignKey("CustomerID")]
-        public Customer Customer { get; set; }
+        public User Customer { get; set; }
 
         public ICollection<OrderDetails> OrderDetails { get; set; }
     }

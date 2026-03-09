@@ -12,7 +12,7 @@ namespace FinalProject.Data
         }
 
         public DbSet<Roles> Roles { get; set; }
-        public DbSet<Customer> tb_customers { get; set; }
+        public DbSet<User> tb_customers { get; set; }
         public DbSet<Shop> tb_Shop { get; set; }
         public DbSet<Product> tb_Product { get; set; }
         public DbSet<ProductCategory> tb_ProductCategory { get; set; }
@@ -20,6 +20,7 @@ namespace FinalProject.Data
         public DbSet<CartItems> tb_CartItems { get; set; }
         public DbSet<Order> tb_Order { get; set; }
         public DbSet<OrderDetails> tb_OrderDetails { get; set; }
+        public DbSet<Brand> tb_Brand { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

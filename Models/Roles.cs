@@ -14,7 +14,7 @@ namespace FinalProject.Models
         public string RoleName { get; set; }
 
         // Quan hệ với Customer, Shop
-        public ICollection<Customer> Customers { get; set; }
+        public ICollection<User> User { get; set; }
         public ICollection<Shop> Shops { get; set; }
     }
 }
