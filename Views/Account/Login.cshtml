@@ -23,6 +23,20 @@
             <h2>Welcome Back</h2>
             <p class="sub">Login to your account</p>
 
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger" style="color: red; margin-bottom: 10px; font-size: 0.9rem;">
+                    ⚠️ @ViewBag.Error
+                </div>
+            }
+
+            @if (TempData["SuccessMsg"] != null)
+            {
+                <div class="alert alert-success" style="color: green; margin-bottom: 10px; font-size: 0.9rem;">
+                    ✅ @TempData["SuccessMsg"]
+                </div>
+            }
+
             <form method="post">
 
                 @Html.AntiForgeryToken()
