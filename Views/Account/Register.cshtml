@@ -1,30 +1,33 @@
-﻿<h2>Register</h2>
+﻿<div class="register-container">
 
-<form method="post">
+    <div class="register-card">
 
-    <input name="Username" placeholder="Username" />
+        <h2>Create Account</h2>
 
-    <input name="Email" placeholder="Email" />
+        <form>
 
-    <input type="password" name="Password" placeholder="Password" />
+            <div class="input-group">
+                <input type="text" placeholder="Full Name" required>
+            </div>
 
-    <input type="password" name="ConfirmPassword" placeholder="Confirm Password" />
+            <div class="input-group">
+                <input type="email" placeholder="Email Address" required>
+            </div>
 
-    <button type="submit">Register</button>
+            <div class="input-group">
+                <input type="password" placeholder="Password" required>
+            </div>
 
-</form>
+            <div class="input-group">
+                <input type="password" placeholder="Confirm Password" required>
+            </div>
 
-<p style="color:red">@ViewBag.Error</p>
+            <button class="register-btn">
+                Create Account
+            </button>
 
-<br>
+        </form>
 
-<a href="/Account/GoogleLogin" style="color:red;">
-    Register with Gmail
-</a>
+    </div>
 
-<br>
-<br>
-
-<a href="/Account/Login">
-    Already have account? Login
-</a>
+</div>

@@ -1,21 +1,95 @@
-﻿<h2>Login</h2>
+﻿@{
+    ViewData["Title"] = "Login";
+}
 
-<form method="post">
-    <input name="username" placeholder="Username" />
-    <input type="password" name="password" placeholder="Password" />
-    <button type="submit">Login</button>
-</form>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<p style="color:red">@ViewBag.Error</p>
+<div class="login-wrapper">
 
-<br>
+    <!-- LEFT IMAGE -->
+    <div class="login-left">
+        <img src="~/assets/arrival-1.jpg">
+        <div class="overlay-text">
+            <h1>FASHION STORE</h1>
+            <p>Streetwear • Minimal • Local Brand</p>
+        </div>
+    </div>
 
-<a href="/Account/GoogleLogin">
-    Login with Gmail
-</a>
+    <!-- RIGHT FORM -->
+    <div class="login-right">
 
-<br>
+        <div class="login-card">
 
-<a href="/Account/Register">
-    Register
-</a>
+            <h2>Welcome Back</h2>
+            <p class="sub">Login to your account</p>
+
+            <form method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div class="input-box">
+                    <span class="icon">📧</span>
+                    <input type="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-box">
+
+                    <span class="icon">🔒</span>
+
+                    <input type="password" id="password" placeholder="Password" oninput="showEye()">
+
+                    <span id="eye" class="toggle" onclick="togglePassword()">👁</span>
+
+                </div>
+
+                <button class="login-btn">Login</button>
+
+            </form>
+
+            <div class="divider">OR</div>
+
+            <button class="google-btn">
+                <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png">
+                Continue with Google
+            </button>
+
+            <p class="register">
+                Don't have an account?
+                <a href="/Account/Register">Register</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function showEye(){
+
+        var password = document.getElementById("password");
+        var eye = document.getElementById("eye");
+
+        if(password.value.length > 0){
+            eye.style.display = "block";
+        }
+        else{
+            eye.style.display = "none";
+        }
+    }
+
+    function togglePassword(){
+
+        var password = document.getElementById("password");
+
+        if(password.type === "password"){
+            password.type = "text";
+        }
+        else{
+            password.type = "password";
+        }
+
+    }
+
+</script>
