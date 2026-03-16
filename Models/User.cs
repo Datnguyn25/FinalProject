@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
 
 namespace FinalProject.Models
 {
-    [Table("tb_User")]
+    [Table("tb_Users")]
     public class User
     {
         [Key]
@@ -12,46 +11,42 @@ namespace FinalProject.Models
 
         [Required]
         [StringLength(50)]
-        public string UserName { get; set; }
-        public string Username { get; internal set; }
+        public string UserName { get; set; } = null!;
+
         [Required]
         [StringLength(100)]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
-        [Required]
         [StringLength(255)]
-        public string PasswordHash { get; set; }
+        public string? PasswordHash { get; set; }
 
         [StringLength(100)]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
         [StringLength(20)]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [StringLength(255)]
-        public string AvatarUrl { get; set; }
+        public string? AvatarUrl { get; set; }
 
         [StringLength(10)]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
 
         [StringLength(255)]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [StringLength(100)]
-        public string City { get; set; }
+        public string? City { get; set; }
 
         [StringLength(100)]
-        public string Country { get; set; }
+        public string? Country { get; set; }
 
         public bool EmailVerified { get; set; } = false;
-
         public bool PhoneVerified { get; set; } = false;
-
         public bool IsActive { get; set; } = true;
-
         public bool IsBanned { get; set; } = false;
 
         public DateTime? LastLogin { get; set; }
@@ -64,7 +59,6 @@ namespace FinalProject.Models
         public int RoleId { get; set; }
 
         [ForeignKey("RoleId")]
-        public virtual Roles Role { get; set; }
-        public string? Name { get; internal set; }
+        public virtual Roles Role { get; set; } = null!;
     }
 }

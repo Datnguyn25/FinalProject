@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinalProject.Models
 {
-    [Table("Roles")]
+    [Table("tb_Roles")]
     public class Roles
     {
         [Key] // Primary Key

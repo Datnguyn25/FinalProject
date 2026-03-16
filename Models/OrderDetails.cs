@@ -9,9 +9,9 @@ namespace FinalProject.Models
         [Key]
         public int OrderDetailId { get; set; }
 
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
-        public int ShopId { get; set; }
+        public int? OrderId { get; set; }
+        public int? ProductId { get; set; }
+        public int? ShopId { get; set; }
 
         public int Quantity { get; set; }
 
@@ -20,12 +20,12 @@ namespace FinalProject.Models
 
         // Navigation
         [ForeignKey("OrderId")]
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
 
         [ForeignKey("ProductId")]
-        public Product Product { get; set; }
+        public Product? Product { get; set; } = null!;
 
         [ForeignKey("ShopId")]
-        public Shop Shop { get; set; }
+        public Shop? Shop { get; set; } = null!;
     }
 }
