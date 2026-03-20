@@ -1,0 +1,11 @@
+﻿@model Product
+
+<h2>@Model.ProductName</h2>
+
+<p>Price: @Model.Price</p>
+<p>Category: @Model.Category?.CateName</p>
+<p>Brand: @Model.Brand?.BrandName</p>
+
+<a href="/Cart/AddToCart?productId=@Model.ProductID">
+    Add to Cart
+</a>

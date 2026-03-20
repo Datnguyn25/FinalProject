@@ -1,5 +1,7 @@
 ﻿using FinalProject.Data;
 using FinalProject.Models;
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -29,14 +31,21 @@ namespace FinalProject.Controllers
         public IActionResult Login(string username, string password)
         {
             var user = _context.tb_Users
-                .FirstOrDefault(u => u.UserName == username && u.PasswordHash == password);
+       .FirstOrDefault(u => u.UserName == username);
 
             if (user != null)
             {
-                return RedirectToAction("Index", "Home");
+                var passwordHasher = new PasswordHasher<User>();
+                var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+
+                if (result == PasswordVerificationResult.Success)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
 
-            ViewBag.Error = "Sai username hoặc password";
+            // If login fails, return the Login view (optionally with an error message)
+            ViewBag.Error = "Invalid username or password";
             return View();
         }
 
@@ -51,13 +60,26 @@ namespace FinalProject.Controllers
         public IActionResult Register(User user)
         {
             var checkUser = _context.tb_Users
-                .FirstOrDefault(u => u.UserName == user.UserName);
+        .FirstOrDefault(u => u.UserName == user.UserName);
 
             if (checkUser != null)
             {
                 ViewBag.Error = "Username đã tồn tại";
                 return View();
             }
+
+            // Kiểm tra mật khẩu mạnh
+            string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$";
+
+            if (!Regex.IsMatch(user.PasswordHash, pattern))
+            {
+                ViewBag.Error = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
+                return View();
+            }
+
+            // Hash password
+            var passwordHasher = new PasswordHasher<User>();
+            user.PasswordHash = passwordHasher.HashPassword(user, user.PasswordHash);
 
             _context.tb_Users.Add(user);
             _context.SaveChanges();
@@ -70,7 +92,7 @@ namespace FinalProject.Controllers
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("GoogleResponse")
+                RedirectUri = Url.Action("GoogleResponse", "Account")
             };
 
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
@@ -79,49 +101,52 @@ namespace FinalProject.Controllers
         // GOOGLE RESPONSE
         public async Task<IActionResult> GoogleResponse()
         {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if(!result.Succeeded)
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            if (!result.Succeeded)
                 return RedirectToAction("Login");
 
             var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
             var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
 
+            if (email == null)
+                return RedirectToAction("Login");
+
             var user = _context.tb_Users
-                .Include(u => u.Role)  // Đảm bảo load luôn Role để lấy RoleId
+                .Include(u => u.Role)
                 .FirstOrDefault(u => u.Email == email);
 
-            // nếu chưa có user thì tạo mới
             if (user == null)
             {
                 user = new User
                 {
                     Email = email,
                     UserName = name,
-                    PasswordHash = null,      // Bạn đã sửa file Migration thành nullable: true rồi nên OK
-                    RoleId = 2,               // <--- QUAN TRỌNG: Gán ID của Role "Customer"
-                    CreatedAt = DateTime.Now,  // Các trường bắt buộc khác (nếu có)
+                    RoleId = 2,
+                    CreatedAt = DateTime.Now,
                     IsActive = true,
                     EmailVerified = true
                 };
 
                 _context.tb_Users.Add(user);
                 await _context.SaveChangesAsync();
+
                 user = _context.tb_Users
                     .Include(u => u.Role)
-                    .FirstOrDefault(u => u.UserID == user.UserID); // Lấy lại user sau khi đã có ID
+                    .FirstOrDefault(u => u.UserID == user.UserID);
             }
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.RoleName ?? "User") // Lấy RoleName từ Role đã load
-            };
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role?.RoleName ?? "User")
+    };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme, 
+                CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity));
 
             return RedirectToAction("Index", "Home");

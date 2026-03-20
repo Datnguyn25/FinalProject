@@ -4,28 +4,55 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <div class="register-wrapper">
-
     <div class="register-card">
 
         <h2>Create Account</h2>
         <p class="subtitle">Join our fashion community</p>
 
-        <form>
+        <form method="post" action="/Account/Register">
 
             <div class="input-group">
-                <input type="text" placeholder="Full Name" required>
+                <input type="text" name="UserName" placeholder="Full Name" required>
             </div>
 
             <div class="input-group">
-                <input type="email" placeholder="Email Address" required>
+                <input type="email" name="Email" placeholder="Email Address" required>
             </div>
 
             <div class="input-group">
-                <input type="password" placeholder="Password" required>
+
+                <input type="password"
+                       id="password"
+                       name="PasswordHash"
+                       placeholder="Password"
+                       onkeyup="checkStrength()"
+                       required
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!%*?&]).{8,}"
+                       onfocus="showRule()">
+
+                <div id="strengthBar" style="height:8px;width:0;background:red;border-radius:5px;margin-top:5px;"></div>
+                <span id="strengthText" style="font-size:13px;"></span>
+
+                <div id="passwordRule" style="display:none; font-size:13px; color:gray; margin-top:5px;">
+                    Password must contain:
+                    <ul style="margin-left:15px">
+                        <li>At least 8 characters</li>
+                        <li>1 uppercase letter</li>
+                        <li>1 number</li>
+                        <li>1 special character</li>
+                    </ul>
+                </div>
+
             </div>
 
             <div class="input-group">
-                <input type="password" placeholder="Confirm Password" required>
+                <input type="password"
+                       id="confirmPassword"
+                       placeholder="Confirm Password"
+                       required
+                       onfocus="hideRule()"
+                       onkeyup="checkConfirm()">
+                <span id="confirmText" style="font-size:13px;"></span>
             </div>
 
             <button class="register-btn">
@@ -52,6 +79,63 @@
             <a href="/Account/Login">Login</a>
         </p>
 
-    </div>
+        <p style="color:red">@ViewBag.Error</p>
 
+    </div>
 </div>
+
+<script>
+    function checkStrength(){
+        var password = document.getElementById("password").value;
+        var strength = 0;
+
+        if(password.length >= 8) strength++;
+        if(password.match(/[A-Z]/)) strength++;
+        if(password.match(/[0-9]/)) strength++;
+        if(password.match(/[!%*?&]/)) strength++;
+
+        var bar = document.getElementById("strengthBar");
+        var text = document.getElementById("strengthText");
+
+        if(strength <= 1){
+            bar.style.width = "25%";
+            bar.style.background = "red";
+            text.innerHTML = "Weak password";
+        }
+        else if(strength <= 3){
+            bar.style.width = "60%";
+            bar.style.background = "orange";
+            text.innerHTML = "Medium password";
+        }
+        else{
+            bar.style.width = "100%";
+            bar.style.background = "green";
+            text.innerHTML = "Strong password";
+        }
+    }
+
+    function showRule(){
+        document.getElementById("passwordRule").style.display = "block";
+    }
+
+    function hideRule(){
+        document.getElementById("passwordRule").style.display = "none";
+    }
+
+    function checkConfirm(){
+        var pass = document.getElementById("password").value;
+        var confirm = document.getElementById("confirmPassword").value;
+        var text = document.getElementById("confirmText");
+
+        if(confirm === ""){
+            text.innerHTML = "";
+        }
+        else if(pass === confirm){
+            text.style.color = "green";
+            text.innerHTML = "Password match";
+        } else {
+            text.style.color = "red";
+            text.innerHTML = "Password not match";
+        }
+    }
+</script>
