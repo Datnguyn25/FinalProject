@@ -1,0 +1,42 @@
+﻿@model List<Product>
+
+<div class="shop-container">
+
+    <h2>SHOP</h2>
+
+    <!-- SEARCH + FILTER -->
+
+    <form method="get" class="shop-filter">
+
+        <input type="text" name="search" placeholder="Search product...">
+
+        <select name="category">
+            <option value="">All</option>
+            <option value="shirt">Shirt</option>
+            <option value="hoodie">Hoodie</option>
+            <option value="jacket">Jacket</option>
+        </select>
+
+        <button type="submit">Search</button>
+
+    </form>
+
+    <!-- PRODUCT GRID -->
+
+    <div class="product-grid">
+
+        @foreach (var p in Model)
+        {
+            <a href="/Product/Detail/@p.ProductID" class="product-card">
+
+                <img src="@p.Image" />
+
+                <h3>@p.ProductName</h3>
+                <p>@p.Price.000đ</p>
+
+            </a>
+        }
+
+    </div>
+
+</div>
