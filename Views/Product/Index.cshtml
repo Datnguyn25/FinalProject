@@ -1,5 +1,4 @@
 ﻿@model List<Product>
-@model List<FinalProject.Models.Product>
 @{
     string selectedCategoryId = Context.Request.Query["categoryId"];
 }
@@ -63,7 +62,7 @@
         @foreach (var p in Model)
     @foreach (var item in Model)
         {
-            <a href="/Product/Detail/@p.ProductID" class="product-card">
+            <a href="/Product/Detail/@p.ProductID" class="product-card"/>
         <div style="border:1px solid #ccc;
                         padding:10px;
                         margin:10px;
@@ -110,3 +109,4 @@
     }
 
 </div>
+}
