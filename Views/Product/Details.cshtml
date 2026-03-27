@@ -1,11 +1,58 @@
-﻿@model Product
+﻿@model FinalProject.Models.Product
 
-<h2>@Model.ProductName</h2>
+<h2>🛍 Product Detail</h2>
 
-<p>Price: @Model.Price</p>
-<p>Category: @Model.Category?.CateName</p>
-<p>Brand: @Model.Brand?.BrandName</p>
+<div style="display:flex;gap:30px;margin-top:20px;">
 
-<a href="/Cart/AddToCart?productId=@Model.ProductID">
-    Add to Cart
-</a>
+    <!-- IMAGE -->
+    <div>
+        <img src="@(Model.Image ?? "/assets/product-1.jpg")"
+             style="width:300px;height:300px;object-fit:cover;border:1px solid #ccc;" />
+    </div>
+
+    <!-- INFO -->
+    <div>
+        <h2>@Model.ProductName</h2>
+
+        <p style="color:red;font-size:20px;font-weight:bold;">
+            @Model.Price VNĐ
+        </p>
+
+        <p>
+            <b>Category:</b> @Model.Category?.CateName
+        </p>
+
+        <p>
+            <b>Brand:</b> @Model.Brand?.BrandName
+        </p>
+
+        <p>
+            <b>Shop:</b> @Model.Shop?.ShopName
+        </p>
+
+        <p>
+            <b>Description:</b>
+            <br />
+            @* Removed @Model.Description because 'Description' does not exist on 'Product'. 
+               Please add a 'Description' property to the Product model if needed. *@
+        </p>
+
+        <br />
+
+        <!-- ACTION -->
+        <a href="/Cart/AddToCart?productId=@Model.ProductID"
+           style="background:green;
+                  color:white;
+                  padding:10px 15px;
+                  border-radius:5px;
+                  text-decoration:none;">
+            🛒 Add to Cart
+            <a href="/Cart/AddToCart?productId=@Model.ProductID">🛒 Add to Cart</a>
+        </a>
+
+        <br /><br />
+
+        <a href="/Product">⬅ Back to List</a>
+    </div>
+
+</div>

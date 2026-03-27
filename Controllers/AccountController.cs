@@ -54,7 +54,46 @@ namespace FinalProject.Controllers
             ViewBag.Error = "Invalid username or password";
             return View();
         }
+        // ===== FORGOT PASSWORD =====
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public IActionResult ForgotPassword(string email)
+        {
+            var user = _context.tb_Users.FirstOrDefault(x => x.Email == email);
+
+            if (user == null)
+            {
+                ViewBag.Error = "Email not found!";
+                return View();
+            }
+
+            TempData["UserEmail"] = user.Email;
+            return RedirectToAction("ResetPassword");
+        }
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(string newPassword)
+        {
+            var email = TempData["UserEmail"]?.ToString();
+
+            var user = _context.tb_Users.FirstOrDefault(x => x.Email == email);
+
+            if (user != null)
+            {
+                user.PasswordHash = newPassword;
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Login");
+        }
         // REGISTER PAGE
         public IActionResult Register()
         {

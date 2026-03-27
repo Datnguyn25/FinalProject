@@ -21,5 +21,10 @@ namespace FinalProject.Models
 
         [ForeignKey("ProductID")]
         public Product Product { get; set; }
+
+        // Product properties
+        public string ProductName { get; set; }
+        public string Image { get; set; }
+        public decimal Price { get; set; } // Add this property to fix CS1061
     }
 }

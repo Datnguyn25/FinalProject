@@ -1,111 +1,156 @@
+<<<<<<< HEAD
+﻿<style>
+    h2, h3, h4, p, b, span, label {
+        color: white !important;
+    }
+
+    a {
+        color: white !important;
+    }
+
+    select, input {
+        color: black;
+    }
+</style> 
+@model List<FinalProject.Models.Product>
+
+=======
 ﻿@model List<Product>
+>>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
 @{
-    string selectedCategoryId = Context.Request.Query["categoryId"];
+    var selectedCategory = ViewBag.SelectedCategory as int?;
+    var searchType = ViewBag.SearchType as string;
 }
 
-<div class="shop-container">
 <h2>🛍 Product List</h2>
+<a asp-action="Create"
+   style="background:#007bff;
+          color:white;
+          padding:8px 15px;
+          border-radius:5px;
+          text-decoration:none;
+          display:inline-block;
+          margin-bottom:10px;">
+    ➕ Add Product
+</a>
 
-    <h2>SHOP</h2>
+
 <p>Total: <b>@Model.Count</b> products</p>
 
-    <!-- SEARCH + FILTER -->
-<!-- SEARCH -->
-<form method="get" action="/Product/Search" style="margin-bottom:15px;">
-    <input type="text" name="keyword" placeholder="Search product..."
-           style="padding:5px;width:200px;">
+<!-- SEARCH (CÓ DROPDOWN) -->
+<form method="get" asp-action="Index" style="margin-bottom:20px;">
+
+    <!-- DROPDOWN -->
+    <select name="searchType" style="padding:5px;">
+        <option value="name" selected="@(searchType == "name")">
+            🔍 Product Name
+        </option>
+
+        <option value="seo" selected="@(searchType == "seo")">
+            📌 SEO Title
+        </option>
+
+        <option value="keyword" selected="@(searchType == "keyword")">
+            🏷 Meta Keywords
+        </option>
+
+        <option value="desc" selected="@(searchType == "desc")">
+            📝 Description
+        </option>
+
+    </select>
+
+    <!-- INPUT -->
+    <input type="text" name="keyword"
+           value="@ViewBag.Keyword"
+           placeholder="Search product..."
+           style="padding:5px;width:200px;" />
+
     <button type="submit">Search</button>
+
 </form>
 
-    <form method="get" class="shop-filter">
 <hr />
 
-        <input type="text" name="search" placeholder="Search product...">
 <!-- CATEGORY -->
 <h3>📂 Category</h3>
 
-        <select name="category">
-            <option value="">All</option>
-            <option value="shirt">Shirt</option>
-            <option value="hoodie">Hoodie</option>
-            <option value="jacket">Jacket</option>
-        </select>
 <a href="/Product"
    style="margin-right:10px;
-          @(string.IsNullOrEmpty(selectedCategoryId) ? "color:red;font-weight:bold" : "")">
+   @(selectedCategory == null ? "color:red;font-weight:bold" : "")">
     All
 </a>
 
-        <button type="submit">Search</button>
 @foreach (var c in ViewBag.Categories)
 {
     <a href="/Product?categoryId=@c.CategoryId"
        style="margin-right:10px;
-                  @(selectedCategoryId == c.CategoryId.ToString() ? "color:red;font-weight:bold" : "")">
-        @c.Name <!-- Changed from @c.CategoryName to @c.Name -->
+       @(selectedCategory == c.CategoryId ? "color:red;font-weight:bold" : "")">
+        @c.CategoryName
     </a>
 }
 
-    </form>
 <hr />
 
-    <!-- PRODUCT GRID -->
 <!-- PRODUCT LIST -->
 <div style="display:flex;flex-wrap:wrap;">
 
-    <div class="product-grid">
     @if (Model.Count == 0)
     {
-        <p>❌ No products found</p>
+        <p style="color:red;font-weight:bold;">
+            ❌ No products found!
+        </p>
     }
-
-        @foreach (var p in Model)
-    @foreach (var item in Model)
+    else
+    {
+        @foreach (var item in Model)
         {
+<<<<<<< HEAD
+            <div style="border:1px solid #ccc;
+=======
             <a href="/Product/Detail/@p.ProductID" class="product-card"/>
         <div style="border:1px solid #ccc;
+>>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
                         padding:10px;
                         margin:10px;
                         width:220px;
                         border-radius:10px;
-                        text-align:center;
-                        box-shadow:0 0 5px #ccc;">
+                        text-align:center;">
 
-            <!-- IMAGE -->
-            <img src="@(item.Image ?? "https://via.placeholder.com/150")"
+                <!-- CLICK CARD -->
+                <a href="/Product/Details/@item.ProductID"
+                   style="text-decoration:none;color:black;">
+
+                    <img src="@(string.IsNullOrEmpty(item.Image)
+                                     ? Url.Content("~/assets/product-1.jpg")
+                                     : Url.Content("~/assets/" + item.Image))"
                  style="width:100%;height:150px;object-fit:cover;" />
 
-            <!-- NAME -->
-            <h4>@item.ProductName</h4>
+                    <h4>@item.ProductName</h4>
 
-            <!-- PRICE -->
-            <p style="color:red;font-weight:bold;">
-                @item.Price VNĐ
-            </p>
+                    <p style="color:red;font-weight:bold;">
+                        @item.Price VNĐ
+                    </p>
 
-                <img src="@p.Image" />
-            <!-- CATEGORY -->
-            <p style="font-size:13px;color:gray;">
-                @item.Category?.CateName
-            </p>
+                </a>
 
-                <h3>@p.ProductName</h3>
-                <p>@p.Price.000đ</p>
-            <!-- ACTION -->
-            <a href="/Product/Details/@item.ProductID">👁 View</a>
-            <br /><br />
+                <!-- CATEGORY -->
+                <p style="color:gray;">
+                    @item.Category?.CateName
+                </p>
 
-            <a href="/Cart/AddToCart?productId=@item.ProductID"
-               style="background:green;
+                <!-- ADD TO CART -->
+                <a href="/Cart/AddToCart?productId=@item.ProductID"
+                   style="background:green;
                           color:white;
                           padding:5px 10px;
                           border-radius:5px;
                           text-decoration:none;">
-                🛒 Add to Cart
-            </a>
+                    🛒 Add to Cart
+                </a>
+             
+            </div>
         }
-
-    </div>
     }
 
 </div>

@@ -1,0 +1,40 @@
+﻿@model List<FinalProject.Models.ProductCategory>
+
+<h2>📂 Category List</h2>
+
+<a asp-action="Create"
+   style="background:green;
+   color:white;
+   padding:8px 15px;
+   border-radius:5px;
+   text-decoration:none;">
+    ➕ Add Category
+</a>
+
+<table class="table">
+
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.CateID</td>
+            <td>@item.CateName</td>
+
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CateID">Edit</a> |
+                <a asp-action="Delete"
+                   asp-route-id="@item.CateID"
+                   onclick="return confirm('Delete?')">
+                    Delete
+                </a>
+            </td>
+
+        </tr>
+    }
+
+</table>

@@ -1,7 +1,6 @@
 ﻿using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 public class ProductController : Controller
@@ -13,8 +12,8 @@ public class ProductController : Controller
         _context = context;
     }
 
-    // ===== DANH SÁCH + FILTER =====
-    public IActionResult Index(int? categoryId, int? brandId)
+    // ===== LIST + FILTER + SEARCH =====
+    public IActionResult Index(int? categoryId, string keyword, string searchType)
     {
         var products = _context.tb_Product
             .Include(p => p.Category)
@@ -22,19 +21,55 @@ public class ProductController : Controller
             .Include(p => p.Shop)
             .AsQueryable();
 
+        // ===== FILTER CATEGORY =====
         if (categoryId.HasValue)
+        {
             products = products.Where(p => p.CateID == categoryId);
+        }
 
-        if (brandId.HasValue)
-            products = products.Where(p => p.BrandID == brandId);
+        // ===== SEARCH (DROPDOWN) =====
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            keyword = keyword.ToLower();
 
+            switch (searchType)
+            {
+                case "seo":
+                    products = products.Where(p =>
+                        p.SeoTitle != null &&
+                        p.SeoTitle.ToLower().Contains(keyword));
+                    break;
+
+                case "keyword":
+                    products = products.Where(p =>
+                        p.MetaKeywords != null &&
+                        p.MetaKeywords.ToLower().Contains(keyword));
+                    break;
+
+                case "desc":
+                    products = products.Where(p =>
+                        p.MetaDescription != null &&
+                        p.MetaDescription.ToLower().Contains(keyword));
+                    break;
+
+                default: // name
+                    products = products.Where(p =>
+                        p.ProductName != null &&
+                        p.ProductName.ToLower().Contains(keyword));
+                    break;
+            }
+        }
+
+        // ===== VIEWBAG =====
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
-        ViewBag.Brands = _context.tb_Brand.ToList();
+        ViewBag.Keyword = keyword;
+        ViewBag.SelectedCategory = categoryId;
+        ViewBag.SearchType = searchType;
 
         return View(products.ToList());
     }
 
-    // ===== CHI TIẾT =====
+    // ===== DETAIL =====
     public IActionResult Details(int id)
     {
         var product = _context.tb_Product
@@ -44,17 +79,18 @@ public class ProductController : Controller
             .FirstOrDefault(p => p.ProductID == id);
 
         if (product == null)
+        {
             return NotFound();
+        }
 
         return View(product);
     }
-
-    // ===== TẠO =====
+    // ===== CREATE =====
     public IActionResult Create()
     {
-        ViewBag.Categories = new SelectList(_context.tb_ProductCategory, "CategoryId", "CategoryName");
-        ViewBag.Brands = new SelectList(_context.tb_Brand, "BrandID", "Name");
-        ViewBag.Shops = new SelectList(_context.tb_Shop, "ShopID", "ShopName");
+        ViewBag.Categories = _context.tb_ProductCategory.ToList();
+        ViewBag.Brands = _context.tb_Brand.ToList();
+        ViewBag.Shops = _context.tb_Shop.ToList();
 
         return View();
     }
@@ -69,23 +105,25 @@ public class ProductController : Controller
             return RedirectToAction("Index");
         }
 
-        // reload dropdown nếu lỗi
-        ViewBag.Categories = new SelectList(_context.tb_ProductCategory, "CategoryId", "CategoryName", model.CateID);
-        ViewBag.Brands = new SelectList(_context.tb_Brand, "BrandID", "Name", model.BrandID);
-        ViewBag.Shops = new SelectList(_context.tb_Shop, "ShopID", "ShopName", model.ShopID);
+        ViewBag.Categories = _context.tb_ProductCategory.ToList();
+        ViewBag.Brands = _context.tb_Brand.ToList();
+        ViewBag.Shops = _context.tb_Shop.ToList();
 
         return View(model);
     }
+
 
     // ===== EDIT =====
     public IActionResult Edit(int id)
     {
         var product = _context.tb_Product.Find(id);
-        if (product == null) return NotFound();
 
-        ViewBag.Categories = new SelectList(_context.tb_ProductCategory, "CategoryId", "CategoryName", product.CateID);
-        ViewBag.Brands = new SelectList(_context.tb_Brand, "BrandID", "Name", product.BrandID);
-        ViewBag.Shops = new SelectList(_context.tb_Shop, "ShopID", "ShopName", product.ShopID);
+        if (product == null)
+            return NotFound();
+
+        ViewBag.Categories = _context.tb_ProductCategory.ToList();
+        ViewBag.Brands = _context.tb_Brand.ToList();
+        ViewBag.Shops = _context.tb_Shop.ToList();
 
         return View(product);
     }
@@ -100,24 +138,16 @@ public class ProductController : Controller
             return RedirectToAction("Index");
         }
 
-        ViewBag.Categories = new SelectList(_context.tb_ProductCategory, "CategoryId", "CategoryName", model.CateID);
-        ViewBag.Brands = new SelectList(_context.tb_Brand, "BrandID", "Name", model.BrandID);
-        ViewBag.Shops = new SelectList(_context.tb_Shop, "ShopID", "ShopName", model.ShopID);
+        ViewBag.Categories = _context.tb_ProductCategory.ToList();
+        ViewBag.Brands = _context.tb_Brand.ToList();
+        ViewBag.Shops = _context.tb_Shop.ToList();
 
         return View(model);
     }
 
+
     // ===== DELETE =====
     public IActionResult Delete(int id)
-    {
-        var product = _context.tb_Product.Find(id);
-        if (product == null) return NotFound();
-
-        return View(product);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    public IActionResult DeleteConfirm(int id)
     {
         var product = _context.tb_Product.Find(id);
 
@@ -128,21 +158,5 @@ public class ProductController : Controller
         }
 
         return RedirectToAction("Index");
-    }
-
-    // ===== SEARCH =====
-    public IActionResult Search(string keyword)
-    {
-        var products = _context.tb_Product
-            .Include(p => p.Category)
-            .Include(p => p.Brand)
-            .Include(p => p.Shop)
-            .Where(p => string.IsNullOrEmpty(keyword) || p.ProductName.Contains(keyword))
-            .ToList();
-
-        ViewBag.Categories = _context.tb_ProductCategory.ToList();
-        ViewBag.Brands = _context.tb_Brand.ToList();
-
-        return View("Index", products);
-    }
+    }   
 }

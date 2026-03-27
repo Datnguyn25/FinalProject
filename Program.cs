@@ -15,8 +15,7 @@ namespace FinalProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var connectionString = builder.Configuration.GetConnectionString("FinalProject");
-
+            // 1. Database Configuration
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<WebDbContext>(options =>
@@ -33,30 +32,28 @@ namespace FinalProject
                 )
             );
 
-            // Add Identity
+            // 2. Add Identity (using int for User ID)
             builder.Services.AddDefaultIdentity<User>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
             })
-                .AddRoles<IdentityRole<int>>()
-                .AddEntityFrameworkStores<WebDbContext>();
-                
+            .AddRoles<IdentityRole<int>>()
+            .AddEntityFrameworkStores<WebDbContext>();
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                // Default Lockout settings.
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
             });
 
-            // Google Authentication
+            // 3. Authentication & Google Login
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                // Note: Identity usually handles its own cookie scheme, 
+                // but this setup is used for external Google login challenge.
                 options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             })
-            .AddCookie()
             .AddGoogle(options =>
             {
                 options.ClientId = "391898321966-7es0tec74nvjfm60aoev79o780epfqev.apps.googleusercontent.com";
@@ -68,25 +65,30 @@ namespace FinalProject
                     return Task.CompletedTask;
                 };
             });
+
+            // 4. Session & Cache
             builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddSession();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             builder.Services.AddHttpClient();
 
-            //Connect MomoAPI
-            builder.Services.Configure<MomoOptionModel> (builder.Configuration.GetSection("MomoAPI"));
+            // 5. Connect MomoAPI
+            builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
             builder.Services.AddScoped<IMomoService, MomoService>();
 
             var app = builder.Build();
 
+            // 6. HTTP Request Pipeline
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-           
-
-          
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -95,7 +97,6 @@ namespace FinalProject
             app.UseSession();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.MapControllerRoute(

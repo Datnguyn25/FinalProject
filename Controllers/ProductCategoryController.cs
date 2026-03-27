@@ -1,7 +1,8 @@
-﻿using FinalProject.Data;
+using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace FinalProject.Controllers
 {
@@ -14,32 +15,63 @@ namespace FinalProject.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+
+        // LIST
+        public IActionResult Index()
         {
-            // Load danh mục kèm theo thông tin danh mục cha của nó
-            var categories = await _context.tb_ProductCategory
-                                           .Include(c => c.ParentCategory)
-                                           .ToListAsync();
-            return View(categories);
+            var data = _context.tb_ProductCategory.ToList();
+            return View(data);
         }
 
+        // CREATE
         public IActionResult Create()
         {
             // Lấy danh sách danh mục để chọn ParentID
             ViewBag.ParentList = _context.tb_ProductCategory.ToList();
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProductCategory category)
+        public IActionResult Create(ProductCategory model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.tb_ProductCategory.Add(model);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
             }
-            return View(category);
+            return View(model);
+        }
+
+        // EDIT
+        public IActionResult Edit(int id)
+        {
+            var data = _context.tb_ProductCategory.Find(id);
+            return View(data);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(ProductCategory model)
+        {
+            _context.tb_ProductCategory.Update(model);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        // DELETE
+        public IActionResult Delete(int id)
+        {
+            var data = _context.tb_ProductCategory.Find(id);
+
+            if (data != null)
+            {
+                _context.tb_ProductCategory.Remove(data);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
