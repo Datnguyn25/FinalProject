@@ -1,4 +1,4 @@
-﻿using FinalProject.Data;
+using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +16,7 @@ namespace FinalProject.Controllers
         }
 
 
+        // LIST
         public IActionResult Index()
         {
             var data = _context.tb_ProductCategory.ToList();
@@ -25,26 +26,13 @@ namespace FinalProject.Controllers
         // CREATE
         public IActionResult Create()
         {
-
-        public async Task<IActionResult> Index()
-        {
-            // Load danh mục kèm theo thông tin danh mục cha của nó
-            var categories = await _context.tb_ProductCategory
-                                           .Include(c => c.ParentCategory)
-                                           .ToListAsync();
-            return View(categories);
-        }
-
-        public IActionResult Create()
-        {
             // Lấy danh sách danh mục để chọn ParentID
             ViewBag.ParentList = _context.tb_ProductCategory.ToList();
->>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
+
             return View();
         }
 
         [HttpPost]
-<<<<<<< HEAD
         public IActionResult Create(ProductCategory model)
         {
             if (ModelState.IsValid)
@@ -84,17 +72,6 @@ namespace FinalProject.Controllers
             }
 
             return RedirectToAction("Index");
-=======
-        public async Task<IActionResult> Create(ProductCategory category)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
->>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
         }
     }
 }
