@@ -1,10 +1,8 @@
 ﻿using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
-=======
 using Microsoft.EntityFrameworkCore;
->>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
+
 
 namespace FinalProject.Controllers
 {
@@ -17,8 +15,7 @@ namespace FinalProject.Controllers
             _context = context;
         }
 
-<<<<<<< HEAD
-        // LIST
+
         public IActionResult Index()
         {
             var data = _context.tb_ProductCategory.ToList();
@@ -28,7 +25,7 @@ namespace FinalProject.Controllers
         // CREATE
         public IActionResult Create()
         {
-=======
+
         public async Task<IActionResult> Index()
         {
             // Load danh mục kèm theo thông tin danh mục cha của nó
