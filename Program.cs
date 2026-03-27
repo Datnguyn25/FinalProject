@@ -1,8 +1,10 @@
 using FinalProject.Data;
+using FinalProject.Models;
 using FinalProject.Models.Momo;
 using FinalProject.Services.Momo;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinalProject
@@ -13,13 +15,46 @@ namespace FinalProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var connectionString = builder.Configuration.GetConnectionString("FinalProject");
+
             builder.Services.AddControllersWithViews();
 
-            // DbContext
             builder.Services.AddDbContext<WebDbContext>(options =>
+<<<<<<< HEAD
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FinalProject")));
+=======
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("FinalProject"),
+                    sqlServerOptionsAction: sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null
+                        );
+                    }
+                )
+            );
+>>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
 
-            // Authentication
+            // Add Identity
+            builder.Services.AddDefaultIdentity<User>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+                .AddRoles<IdentityRole<int>>()
+                .AddEntityFrameworkStores<WebDbContext>();
+                
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                // Default Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
+            // Google Authentication
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;

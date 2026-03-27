@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿<style>
     h2, h3, h4, p, b, span, label {
         color: white !important;
@@ -13,6 +14,9 @@
 </style> 
 @model List<FinalProject.Models.Product>
 
+=======
+﻿@model List<Product>
+>>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
 @{
     var selectedCategory = ViewBag.SelectedCategory as int?;
     var searchType = ViewBag.SearchType as string;
@@ -101,7 +105,12 @@
     {
         @foreach (var item in Model)
         {
+<<<<<<< HEAD
             <div style="border:1px solid #ccc;
+=======
+            <a href="/Product/Detail/@p.ProductID" class="product-card"/>
+        <div style="border:1px solid #ccc;
+>>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
                         padding:10px;
                         margin:10px;
                         width:220px;
@@ -145,3 +154,4 @@
     }
 
 </div>
+}

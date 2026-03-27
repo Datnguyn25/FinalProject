@@ -13,10 +13,17 @@ namespace FinalProject.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly WebDbContext _context;
 
-        public AccountController(WebDbContext context)
+        public AccountController(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            WebDbContext context)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _context = context;
         }
 
@@ -30,8 +37,7 @@ namespace FinalProject.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            var user = _context.tb_Users
-       .FirstOrDefault(u => u.UserName == username);
+            var user = _context.tb_Users.FirstOrDefault(u => u.UserName == username);
 
             if (user != null)
             {
@@ -172,15 +178,15 @@ namespace FinalProject.Controllers
 
                 user = _context.tb_Users
                     .Include(u => u.Role)
-                    .FirstOrDefault(u => u.UserID == user.UserID);
+                    .FirstOrDefault(u => u.Id == user.Id);
             }
 
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Email, user.Email),
-        new Claim(ClaimTypes.Role, user.Role?.RoleName ?? "User")
-    };
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role?.RoleName ?? "User")
+            };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -194,7 +200,9 @@ namespace FinalProject.Controllers
         // LOGOUT
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync();
+            await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
     }

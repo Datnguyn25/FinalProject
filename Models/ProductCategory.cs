@@ -44,4 +44,6 @@ namespace FinalProject.Models
         // Relationship with Product
         public ICollection<Product> Products { get; set; }
     }
+
+
 }

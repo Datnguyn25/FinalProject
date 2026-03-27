@@ -1,31 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinalProject.Models
 {
     [Table("tb_Users")]
-    public class User
+    public class User : IdentityUser<int>
     {
-        [Key]
-        public int UserID { get; set; }
+        //[Key]
+        //public int UserID { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        public string UserName { get; set; } = null!;
+        //[Required]
+        //[StringLength(50)]
+        //public string UserName { get; set; } = null!;
 
-        [Required]
-        [StringLength(100)]
-        [EmailAddress]
-        public string Email { get; set; } = null!;
+        //[Required]
+        //[StringLength(100)]
+        //[EmailAddress]
+        //public string Email { get; set; } = null!;
 
-        [StringLength(255)]
-        public string? PasswordHash { get; set; }
+        //[StringLength(255)]
+        //public string? PasswordHash { get; set; }
 
         [StringLength(100)]
         public string? FullName { get; set; }
 
-        [StringLength(20)]
-        public string? PhoneNumber { get; set; }
+        //[StringLength(20)]
+        //public string? PhoneNumber { get; set; }
 
         [StringLength(255)]
         public string? AvatarUrl { get; set; }
