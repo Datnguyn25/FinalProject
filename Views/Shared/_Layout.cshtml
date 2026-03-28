@@ -36,30 +36,7 @@
                             <a class="nav-link" asp-controller="Product" asp-action="Index">Shop</a>
                         </li>
 
-                        @using System.Security.Claims
-
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-primary">
-                                    Xin chào <b>@User.Identity.Name</b>
-                                </span>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-danger" asp-controller="Account" asp-action="Logout">Logout</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
-                        }
+                        <partial name="_LoginPartial" />
                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Product</a>
@@ -78,7 +55,7 @@
     <div class="container">
         @RenderBody()
     </div>
-    <script src="~/css/sie.css"></script>
+    <script src="~/css/site.css"></script>
     </header>
 </body>
 </html>

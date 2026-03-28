@@ -12,7 +12,7 @@
         <form method="post" action="/Account/Register">
 
             <div class="input-group">
-                <input type="text" name="UserName" placeholder="Full Name" required>
+                <input type="text" name="FullName" placeholder="Full Name" required>
             </div>
 
             <div class="input-group">
@@ -23,11 +23,10 @@
 
                 <input type="password"
                        id="password"
-                       name="PasswordHash"
+                       name="password"
                        placeholder="Password"
                        onkeyup="checkStrength()"
                        required
-                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!%*?&]).{8,}"
                        onfocus="showRule()">
 
                 <div id="strengthBar" style="height:8px;width:0;background:red;border-radius:5px;margin-top:5px;"></div>

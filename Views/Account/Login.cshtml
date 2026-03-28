@@ -20,7 +20,7 @@
 
         <div class="login-card">
 
-            <h2>Welcome Back</h2>
+            <h2>Welcome</h2>
             <p class="sub">Login to your account</p>
 
             @if (ViewBag.Error != null)
@@ -37,26 +37,26 @@
                 </div>
             }
 
-            <form method="post">
+            <form method="post" asp-action="Login" asp-controller="Account">
 
                 @Html.AntiForgeryToken()
 
                 <div class="input-box">
                     <span class="icon">📧</span>
-                    <input type="email" placeholder="Email" required>
+                    <input type="email" name="username" placeholder="Email" required>
                 </div>
 
                 <div class="input-box">
 
                     <span class="icon">🔒</span>
 
-                    <input type="password" id="password" placeholder="Password" oninput="showEye()">
+                    <input type="password" name="password" id="password" placeholder="Password" oninput="showEye()" required>
 
                     <span id="eye" class="toggle" onclick="togglePassword()">👁</span>
 
                 </div>
 
-                <button class="login-btn">Login</button>
+                <button type="submit" class="login-btn">Login</button>
 
             </form>
 

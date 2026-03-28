@@ -13,7 +13,6 @@ namespace FinalProject.Data
         {
         }
         public DbSet<User> tb_Users { get; set; }
-        public DbSet<Roles> tb_Roles { get; set; }
         public DbSet<Shop> tb_Shop { get; set; }
         public DbSet<Product> tb_Product { get; set; }
         public DbSet<ProductCategory> tb_ProductCategory { get; set; }
@@ -27,10 +26,28 @@ namespace FinalProject.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Roles>().HasData(
-                new Roles { RoleId = 1, RoleName = "Admin" },
-                new Roles { RoleId = 2, RoleName = "User" },
-                new Roles { RoleId = 3, RoleName = "Shop" }
+            modelBuilder.Entity<IdentityRole<int>>().HasData(
+                new IdentityRole<int>
+                {
+                    Id = 1,
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                },
+                new IdentityRole<int>
+                {
+                    Id = 2,
+                    Name = "User",
+                    NormalizedName = "USER",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                },
+                new IdentityRole<int>
+                {
+                    Id = 3,
+                    Name = "Shop",
+                    NormalizedName = "SHOP",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                }
             );
 
             modelBuilder.Entity<ProductCategory>().HasData(
@@ -54,6 +71,14 @@ namespace FinalProject.Data
                     MetaDescription = "Latest fashion trends for women",
                     CreatedDate = new DateTime(2026, 3, 23)
                 }
+            );
+
+            modelBuilder.Entity<Brand>().HasData(
+                new Brand { BrandID = 1, BrandName = "Nike" },
+                new Brand { BrandID = 2, BrandName = "Adidas" },
+                new Brand { BrandID = 3, BrandName = "Uniqlo" },
+                new Brand { BrandID = 4, BrandName = "Zara" },
+                new Brand { BrandID = 5, BrandName = "H&M" }
             );
 
             // 2. Seed Products
@@ -105,6 +130,80 @@ namespace FinalProject.Data
                     CreatedDate = new DateTime(2026, 3, 23)
                 }
             );
+
+            modelBuilder.Entity<CartItems>()
+                .Property(c => c.Price)
+                .HasPrecision(18, 2);
+
+            // 1. Đổi tên các bảng Identity sang tên bạn muốn
+            modelBuilder.Entity<User>(entity => {
+                    entity.ToTable("tb_Users");
+            });
+
+            modelBuilder.Entity<IdentityRole<int>>(entity => {
+                entity.ToTable("tb_Roles"); // Đây là nơi bạn đặt tên bảng Role của mình
+            });
+
+            // 2. Sửa lỗi Multiple Cascade Paths (Lỗi bạn vừa gặp)
+            modelBuilder.Entity<IdentityUserRole<int>>(entity =>
+            {
+                entity.ToTable("tb_UserRoles");
+
+                // Tắt Cascade Delete để tránh vòng lặp xóa trong SQL Server
+                entity.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(ur => ur.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne<IdentityRole<int>>()
+                    .WithMany()
+                    .HasForeignKey(ur => ur.RoleId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            });
+
+            modelBuilder.Entity<Shop>(entity =>
+            {
+                entity.ToTable("tb_Shop"); // Đảm bảo map đúng tên bảng của bạn
+
+                entity.HasOne(s => s.Role)
+                      .WithMany()
+                      .HasForeignKey(s => s.RoleId)
+                      .OnDelete(DeleteBehavior.NoAction); // Tắt Cascade để tránh lỗi Multiple Cascade Paths
+            });
+
+            modelBuilder.Entity<Shop>().HasData(
+                new Shop
+                {
+                    ShopID = 1,
+                    ShopName = "Urban Chic Fashion",
+                    LogoUrl = "logo-urban.png",
+                    CoverImageUrl = "cover-urban.jpg",
+                    ShopDescription = "Premium streetwear and modern fashion trends for the young generation.",
+                    ContactEmail = "support@urbanchic.com",
+                    ContactPhone = "+84987654321",
+                    ShopAddress = "123 ABC Street, District 1",
+                    City = "Ho Chi Minh City",
+                    Country = "Vietnam",
+                    TotalProducts = 50,
+                    TotalFollowers = 1200,
+                    RatingAverage = 4.80m,
+                    TotalReviews = 450,
+                    TotalSold = 2500,
+                    IsVerified = true,
+                    IsActive = true,
+                    IsBanned = false,
+                    CreatedAt = new DateTime(2026, 3, 27),
+                    RoleId = 2
+                }
+            );
+
+            modelBuilder.Entity<User>(entity => entity.ToTable("tb_Users"));
+            modelBuilder.Entity<IdentityRole<int>>(entity => entity.ToTable("tb_Roles"));
+            modelBuilder.Entity<IdentityUserClaim<int>>(entity => entity.ToTable("tb_UserClaims"));
+            modelBuilder.Entity<IdentityUserLogin<int>>(entity => entity.ToTable("tb_UserLogins"));
+            modelBuilder.Entity<IdentityRoleClaim<int>>(entity => entity.ToTable("tb_RoleClaims"));
+            modelBuilder.Entity<IdentityUserToken<int>>(entity => entity.ToTable("tb_UserTokens"));
         }
     }
 

@@ -17,7 +17,7 @@ namespace FinalProject.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.24")
+                .HasAnnotation("ProductVersion", "8.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -38,6 +38,33 @@ namespace FinalProject.Migrations
                     b.HasKey("BrandID");
 
                     b.ToTable("tb_Brand");
+
+                    b.HasData(
+                        new
+                        {
+                            BrandID = 1,
+                            BrandName = "Nike"
+                        },
+                        new
+                        {
+                            BrandID = 2,
+                            BrandName = "Adidas"
+                        },
+                        new
+                        {
+                            BrandID = 3,
+                            BrandName = "Uniqlo"
+                        },
+                        new
+                        {
+                            BrandID = 4,
+                            BrandName = "Zara"
+                        },
+                        new
+                        {
+                            BrandID = 5,
+                            BrandName = "H&M"
+                        });
                 });
 
             modelBuilder.Entity("FinalProject.Models.CartItems", b =>
@@ -51,8 +78,20 @@ namespace FinalProject.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -258,6 +297,54 @@ namespace FinalProject.Migrations
                     b.HasIndex("ShopID");
 
                     b.ToTable("tb_Product");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductID = 1,
+                            BrandID = 1,
+                            CateID = 1,
+                            CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "<p>Breathable fabric, perfect for office and formal events.</p>",
+                            Hot = true,
+                            Image = "white-shirt.jpg",
+                            ListImages = "img1.jpg,img2.jpg",
+                            MetaDescription = "Buy premium white oxford shirt at the best price.",
+                            MetaKeywords = "white shirt, oxford shirt, formal",
+                            Price = 45.00m,
+                            ProductDescription = "Classic fit white oxford shirt made from 100% cotton.",
+                            ProductName = "Premium White Oxford Shirt",
+                            PromotionPrice = 39.99m,
+                            Quantity = 100,
+                            SeoTitle = "premium-white-oxford-shirt",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 2,
+                            BrandID = 1,
+                            CateID = 2,
+                            CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "<p>Soft chiffon material with adjustable waist strap.</p>",
+                            Hot = false,
+                            Image = "floral-dress.jpg",
+                            ListImages = "img3.jpg,img4.jpg",
+                            MetaDescription = "Beautiful floral dress for your summer vacation.",
+                            MetaKeywords = "summer dress, floral dress, maxi dress",
+                            Price = 55.00m,
+                            ProductDescription = "Elegant floral print dress for summer outings.",
+                            ProductName = "Floral Summer Maxi Dress",
+                            PromotionPrice = 49.00m,
+                            Quantity = 50,
+                            SeoTitle = "floral-summer-maxi-dress",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        });
                 });
 
             modelBuilder.Entity("FinalProject.Models.ProductCategory", b =>
@@ -314,40 +401,27 @@ namespace FinalProject.Migrations
                     b.HasIndex("ParentID");
 
                     b.ToTable("tb_ProductCategory");
-                });
-
-            modelBuilder.Entity("FinalProject.Models.Roles", b =>
-                {
-                    b.Property<int>("RoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
-
-                    b.Property<string>("RoleName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("RoleId");
-
-                    b.ToTable("tb_Roles");
 
                     b.HasData(
                         new
                         {
-                            RoleId = 1,
-                            RoleName = "Admin"
+                            CateID = 1,
+                            CateName = "Men's Fashion",
+                            CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            MetaDescription = "High quality clothing for men",
+                            MetaKeywords = "men clothing, fashion, shirts",
+                            SeoTitle = "mens-fashion",
+                            Statuss = true
                         },
                         new
                         {
-                            RoleId = 2,
-                            RoleName = "User"
-                        },
-                        new
-                        {
-                            RoleId = 3,
-                            RoleName = "Shop"
+                            CateID = 2,
+                            CateName = "Women's Fashion",
+                            CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            MetaDescription = "Latest fashion trends for women",
+                            MetaKeywords = "dresses, women clothing, skirts",
+                            SeoTitle = "womens-fashion",
+                            Statuss = true
                         });
                 });
 
@@ -439,16 +513,44 @@ namespace FinalProject.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("tb_Shop");
+                    b.ToTable("tb_Shop", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ShopID = 1,
+                            City = "Ho Chi Minh City",
+                            ContactEmail = "support@urbanchic.com",
+                            ContactPhone = "+84987654321",
+                            Country = "Vietnam",
+                            CoverImageUrl = "cover-urban.jpg",
+                            CreatedAt = new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            IsBanned = false,
+                            IsVerified = true,
+                            LogoUrl = "logo-urban.png",
+                            RatingAverage = 4.80m,
+                            RoleId = 2,
+                            ShopAddress = "123 ABC Street, District 1",
+                            ShopDescription = "Premium streetwear and modern fashion trends for the young generation.",
+                            ShopName = "Urban Chic Fashion",
+                            TotalFollowers = 1200,
+                            TotalProducts = 50,
+                            TotalReviews = 450,
+                            TotalSold = 2500
+                        });
                 });
 
             modelBuilder.Entity("FinalProject.Models.User", b =>
                 {
-                    b.Property<int>("UserID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Address")
                         .HasMaxLength(255)
@@ -462,6 +564,10 @@ namespace FinalProject.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Country")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -473,9 +579,11 @@ namespace FinalProject.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("EmailVerified")
                         .HasColumnType("bit");
@@ -497,33 +605,216 @@ namespace FinalProject.Migrations
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
                     b.Property<string>("PasswordHash")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("PhoneVerified")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("UserID");
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("tb_Users", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("tb_Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "d1a03974-40f4-495b-bba3-a51ebdb9f4ee",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "c01818c1-9bfd-47d6-a455-f62f6bea0f52",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "90ac935b-87cc-4ac4-9ab5-d6c64801b199",
+                            Name = "Shop",
+                            NormalizedName = "SHOP"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("tb_Users");
+                    b.ToTable("tb_RoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("tb_UserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("tb_UserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("tb_UserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("tb_UserTokens", (string)null);
                 });
 
             modelBuilder.Entity("FinalProject.Models.CartItems", b =>
@@ -622,22 +913,63 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.Shop", b =>
                 {
-                    b.HasOne("FinalProject.Models.Roles", "Role")
-                        .WithMany("Shops")
-                        .HasForeignKey("RoleId");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("FinalProject.Models.User", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("FinalProject.Models.Roles", "Role")
-                        .WithMany("User")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Role");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.HasOne("FinalProject.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("FinalProject.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("FinalProject.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("FinalProject.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FinalProject.Models.Brand", b =>
@@ -660,13 +992,6 @@ namespace FinalProject.Migrations
                     b.Navigation("ChildCategories");
 
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("FinalProject.Models.Roles", b =>
-                {
-                    b.Navigation("Shops");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
