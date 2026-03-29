@@ -2,10 +2,12 @@ using FinalProject.Data;
 using FinalProject.Models;
 using FinalProject.Models.Momo;
 using FinalProject.Services.Momo;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace FinalProject
 {
@@ -13,15 +15,18 @@ namespace FinalProject
     {
         public static void Main(string[] args)
         {
+            System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             var builder = WebApplication.CreateBuilder(args);
 
-            // 1. Database Configuration
+            // Add services to the container
             builder.Services.AddControllersWithViews();
 
+            // Database
             builder.Services.AddDbContext<WebDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("FinalProject"),
-                    sqlServerOptionsAction: sqlOptions =>
+                    sqlOptions =>
                     {
                         sqlOptions.EnableRetryOnFailure(
                             maxRetryCount: 5,
@@ -32,33 +37,30 @@ namespace FinalProject
                 )
             );
 
-            // 2. Add Identity (using int for User ID)
+            // Identity
             builder.Services.AddDefaultIdentity<User>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
+
+                options.Password.RequireDigit = true;              // B?t bu?c có s?
+                options.Password.RequiredLength = 8;               // Ít nh?t 8 ký t?
+                options.Password.RequireNonAlphanumeric = true;    // B?t bu?c ký t? ??c bi?t
+                options.Password.RequireUppercase = true;          // B?t bu?c ch? hoa
+                options.Password.RequireLowercase = true;          // B?t bu?c ch? th??ng
+                options.Password.RequiredUniqueChars = 1;           // s? ký t? khác nhau t?i thi?u
             })
             .AddRoles<IdentityRole<int>>()
             .AddEntityFrameworkStores<WebDbContext>();
 
-            builder.Services.Configure<IdentityOptions>(options =>
+            builder.Services.AddAuthentication().AddGoogle(options =>
             {
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
-            });
+                options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 
-            // 3. Authentication & Google Login
-            builder.Services.AddAuthentication(options =>
-            {
-                // Note: Identity usually handles its own cookie scheme, 
-                // but this setup is used for external Google login challenge.
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            })
-            .AddGoogle(options =>
-            {
-                options.ClientId = "391898321966-7es0tec74nvjfm60aoev79o780epfqev.apps.googleusercontent.com";
-                options.ClientSecret = "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";
+                //always displays name claim from google, not email
+                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
 
+                //chon tai khoan khi dang nhap bang google
                 options.Events.OnRedirectToAuthorizationEndpoint = context =>
                 {
                     context.Response.Redirect(context.RedirectUri + "&prompt=select_account");
@@ -66,7 +68,17 @@ namespace FinalProject
                 };
             });
 
-            // 4. Session & Cache
+            // Authentication (Google)
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.Cookie.Name = "FinalProjectAuthCookie";
+
+            });
+
+            // Session
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {
@@ -75,15 +87,17 @@ namespace FinalProject
                 options.Cookie.IsEssential = true;
             });
 
+            // HttpClient
             builder.Services.AddHttpClient();
 
-            // 5. Connect MomoAPI
-            builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+            // MoMo
+            builder.Services.Configure<MomoOptionModel>(
+            builder.Configuration.GetSection("MomoAPI"));
             builder.Services.AddScoped<IMomoService, MomoService>();
 
             var app = builder.Build();
 
-            // 6. HTTP Request Pipeline
+            // Configure middleware
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -94,6 +108,7 @@ namespace FinalProject
             app.UseStaticFiles();
 
             app.UseRouting();
+
             app.UseSession();
 
             app.UseAuthentication();

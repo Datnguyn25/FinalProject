@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinalProject.Models
@@ -57,6 +58,6 @@ namespace FinalProject.Models
         public int? RoleId { get; set; }
 
         [ForeignKey("RoleId")]
-        public virtual Roles Role { get; set; }
+        public virtual IdentityRole<int> Role { get; set; }
     }
 }

@@ -1,28 +1,12 @@
-<<<<<<< HEAD
-﻿<style>
-    h2, h3, h4, p, b, span, label {
-        color: white !important;
-    }
+@model List<Product>
 
-    a {
-        color: white !important;
-    }
-
-    select, input {
-        color: black;
-    }
-</style> 
-@model List<FinalProject.Models.Product>
-
-=======
-﻿@model List<Product>
->>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
 @{
     var selectedCategory = ViewBag.SelectedCategory as int?;
     var searchType = ViewBag.SearchType as string;
 }
 
 <h2>🛍 Product List</h2>
+
 <a asp-action="Create"
    style="background:#007bff;
           color:white;
@@ -34,33 +18,18 @@
     ➕ Add Product
 </a>
 
-
 <p>Total: <b>@Model.Count</b> products</p>
 
-<!-- SEARCH (CÓ DROPDOWN) -->
+<!-- SEARCH -->
 <form method="get" asp-action="Index" style="margin-bottom:20px;">
 
-    <!-- DROPDOWN -->
     <select name="searchType" style="padding:5px;">
-        <option value="name" selected="@(searchType == "name")">
-            🔍 Product Name
-        </option>
-
-        <option value="seo" selected="@(searchType == "seo")">
-            📌 SEO Title
-        </option>
-
-        <option value="keyword" selected="@(searchType == "keyword")">
-            🏷 Meta Keywords
-        </option>
-
-        <option value="desc" selected="@(searchType == "desc")">
-            📝 Description
-        </option>
-
+        <option value="name" selected="@(searchType == "name")">🔍 Product Name</option>
+        <option value="seo" selected="@(searchType == "seo")">📌 SEO Title</option>
+        <option value="keyword" selected="@(searchType == "keyword")">🏷 Meta Keywords</option>
+        <option value="desc" selected="@(searchType == "desc")">📝 Description</option>
     </select>
 
-    <!-- INPUT -->
     <input type="text" name="keyword"
            value="@ViewBag.Keyword"
            placeholder="Search product..."
@@ -83,10 +52,10 @@
 
 @foreach (var c in ViewBag.Categories)
 {
-    <a href="/Product?categoryId=@c.CategoryId"
+    <a href="/Product?cateID=@c.CateID"
        style="margin-right:10px;
-       @(selectedCategory == c.CategoryId ? "color:red;font-weight:bold" : "")">
-        @c.CategoryName
+       @(selectedCategory == c.CateID ? "color:red;font-weight:bold" : "")">
+        @c.CateName
     </a>
 }
 
@@ -105,12 +74,7 @@
     {
         @foreach (var item in Model)
         {
-<<<<<<< HEAD
             <div style="border:1px solid #ccc;
-=======
-            <a href="/Product/Detail/@p.ProductID" class="product-card"/>
-        <div style="border:1px solid #ccc;
->>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
                         padding:10px;
                         margin:10px;
                         width:220px;
@@ -124,7 +88,7 @@
                     <img src="@(string.IsNullOrEmpty(item.Image)
                                      ? Url.Content("~/assets/product-1.jpg")
                                      : Url.Content("~/assets/" + item.Image))"
-                 style="width:100%;height:150px;object-fit:cover;" />
+                         style="width:100%;height:150px;object-fit:cover;" />
 
                     <h4>@item.ProductName</h4>
 
@@ -148,10 +112,9 @@
                           text-decoration:none;">
                     🛒 Add to Cart
                 </a>
-             
+
             </div>
         }
     }
 
 </div>
-}

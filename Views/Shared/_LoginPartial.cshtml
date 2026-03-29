@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using FinalProject.Models
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var display = user?.FullName ?? User.Identity?.Name;
+
+        <li class="nav-item">
+            <span class="nav-link text-primary">
+                Greetings, <b>@display</b>
+            </span>
+        </li>
+
+        <li class="nav-item">
+            <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
+                <button type="submit" class="nav-link text-danger" style="background:none; border:none;">
+                    Logout
+                </button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+        </li>
+    }
+</ul>
