@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProject.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20260328053656_initial migration")]
-    partial class initialmigration
+    [Migration("20260330032033_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -428,6 +428,36 @@ namespace FinalProject.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FinalProject.Models.Promotion", b =>
+                {
+                    b.Property<int>("PromotionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PromotionID"));
+
+                    b.Property<int>("DiscountPercent")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("PromotionID");
+
+                    b.ToTable("tb_Promotion");
+                });
+
             modelBuilder.Entity("FinalProject.Models.Shop", b =>
                 {
                     b.Property<int>("ShopID")
@@ -542,6 +572,33 @@ namespace FinalProject.Migrations
                             TotalReviews = 450,
                             TotalSold = 2500
                         });
+                });
+
+            modelBuilder.Entity("FinalProject.Models.SystemSetting", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("MaintenanceMode")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("ShippingFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SiteName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("tb_SystemSetting");
                 });
 
             modelBuilder.Entity("FinalProject.Models.User", b =>
@@ -693,21 +750,21 @@ namespace FinalProject.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "d1a03974-40f4-495b-bba3-a51ebdb9f4ee",
+                            ConcurrencyStamp = "f3802689-6509-4d4f-b401-c7c9db8e26de",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "c01818c1-9bfd-47d6-a455-f62f6bea0f52",
+                            ConcurrencyStamp = "05e5ec90-5fdc-4d0c-80f7-d93ad543f389",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "90ac935b-87cc-4ac4-9ab5-d6c64801b199",
+                            ConcurrencyStamp = "538431f5-2ce3-4e65-a4b6-792f23cf2954",
                             Name = "Shop",
                             NormalizedName = "SHOP"
                         });

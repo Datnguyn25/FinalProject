@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using FinalProject.Services.Email;
 
 namespace FinalProject
 {
@@ -94,8 +95,10 @@ namespace FinalProject
             builder.Services.Configure<MomoOptionModel>(
             builder.Configuration.GetSection("MomoAPI"));
             builder.Services.AddScoped<IMomoService, MomoService>();
+            builder.Services.AddTransient<IEmailService, EmailService>();
 
             var app = builder.Build();
+
 
             // Configure middleware
             if (!app.Environment.IsDevelopment())

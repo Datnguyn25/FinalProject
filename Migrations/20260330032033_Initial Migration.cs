@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinalProject.Migrations
 {
     /// <inheritdoc />
-    public partial class initialmigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,6 +55,23 @@ namespace FinalProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tb_Promotion",
+                columns: table => new
+                {
+                    PromotionID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DiscountPercent = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_Promotion", x => x.PromotionID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tb_Roles",
                 columns: table => new
                 {
@@ -67,6 +84,22 @@ namespace FinalProject.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tb_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_SystemSetting",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SiteName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingFee = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MaintenanceMode = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_SystemSetting", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -433,9 +466,9 @@ namespace FinalProject.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "d1a03974-40f4-495b-bba3-a51ebdb9f4ee", "Admin", "ADMIN" },
-                    { 2, "c01818c1-9bfd-47d6-a455-f62f6bea0f52", "User", "USER" },
-                    { 3, "90ac935b-87cc-4ac4-9ab5-d6c64801b199", "Shop", "SHOP" }
+                    { 1, "f3802689-6509-4d4f-b401-c7c9db8e26de", "Admin", "ADMIN" },
+                    { 2, "05e5ec90-5fdc-4d0c-80f7-d93ad543f389", "User", "USER" },
+                    { 3, "538431f5-2ce3-4e65-a4b6-792f23cf2954", "Shop", "SHOP" }
                 });
 
             migrationBuilder.InsertData(
@@ -562,7 +595,13 @@ namespace FinalProject.Migrations
                 name: "tb_OrderDetails");
 
             migrationBuilder.DropTable(
+                name: "tb_Promotion");
+
+            migrationBuilder.DropTable(
                 name: "tb_RoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "tb_SystemSetting");
 
             migrationBuilder.DropTable(
                 name: "tb_UserClaims");
