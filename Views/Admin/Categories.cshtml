@@ -1,0 +1,21 @@
+﻿@model List<FinalProject.Models.ProductCategory>
+
+<h2>Categories</h2>
+
+<form asp-action="CreateCategory" method="post">
+    <input name="Name" placeholder="Category name" />
+    <button>Add</button>
+</form>
+
+@foreach (var item in Model)
+{
+    <div>
+        @item.CateName
+
+        <a asp-action="DeleteCategory"
+           asp-route-id="@item.CateID">
+            Delete
+        </a>
+
+    </div>
+}

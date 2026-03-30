@@ -73,7 +73,7 @@ namespace FinalProject.Controllers
             user.CreatedAt = DateTime.Now;
             user.IsActive = true;
 
-            user.SecurityStamp = Guid.NewGuid().ToString();
+            user.PhoneNumber = Guid.NewGuid().ToString();
             user.CreatedAt = DateTime.Now;
             user.IsActive = true;
 
@@ -125,7 +125,7 @@ namespace FinalProject.Controllers
                 {
                     UserName = email,
                     Email = email,
-                    EmailConfirmed = true,
+                    EmailVerified = true,
                     FullName = googleName,
                     CreatedAt = DateTime.Now,
                     IsActive = true

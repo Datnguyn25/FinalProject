@@ -1,0 +1,23 @@
+﻿@model List<FinalProject.Models.Order>
+
+<h2>Orders</h2>
+
+<table class="table">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.OrderID</td>
+            <td>@item.Customer.UserName</td>
+            <td>@item.OrderStatus</td>
+
+            <td>
+                <a asp-action="UpdateOrder"
+                   asp-route-id="@item.OrderID"
+                   asp-route-status="Completed">
+                    Complete
+                </a>
+            </td>
+
+        </tr>
+    }
+</table>

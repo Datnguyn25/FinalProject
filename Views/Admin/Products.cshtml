@@ -1,0 +1,22 @@
+﻿@model List<FinalProject.Models.Product>
+
+<h2>Products</h2>
+
+<table class="table">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.ProductName</td>
+            <td>@item.Price</td>
+            <td>@item.Quantity</td>
+
+            <td>
+                <a asp-action="DeleteProduct"
+                   asp-route-id="@item.ProductID">
+                    Delete
+                </a>
+            </td>
+
+        </tr>
+    }
+</table>
