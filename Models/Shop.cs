@@ -59,5 +59,11 @@ namespace FinalProject.Models
 
         [ForeignKey("RoleId")]
         public virtual IdentityRole<int> Role { get; set; }
+
+        // NEW: link shop to the owning User (seller)
+        public int? OwnerId { get; set; }
+
+        [ForeignKey("OwnerId")]
+        public virtual User Owner { get; set; }
     }
 }

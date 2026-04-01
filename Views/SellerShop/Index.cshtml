@@ -1,0 +1,44 @@
+@model FinalProject.Models.Shop
+
+@{
+    ViewData["Title"] = "My Shop";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model == null)
+{
+    <div class="alert alert-warning">No shop found for your account. Contact admin to assign a shop.</div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            @if (!string.IsNullOrEmpty(Model.LogoUrl))
+            {
+                <img src="~/@Model.LogoUrl" class="img-fluid img-thumbnail" alt="@Model.ShopName" />
+            }
+            <p class="mt-2"><strong>@Model.ShopName</strong></p>
+            <p>@Model.ShopAddress<br />@Model.City, @Model.Country</p>
+            <p><strong>Contact:</strong> @Model.ContactEmail / @Model.ContactPhone</p>
+            <p>
+                <a class="btn btn-primary" asp-action="Edit">Edit Shop Info</a>
+                <a class="btn btn-secondary" asp-action="Reviews">View Reviews (@Model.TotalReviews)</a>
+            </p>
+        </div>
+        <div class="col-md-8">
+            <h4>Description</h4>
+            <p>@Model.ShopDescription</p>
+            <dl class="row">
+                <dt class="col-sm-4">Products</dt>
+                <dd class="col-sm-8">@Model.TotalProducts</dd>
+
+                <dt class="col-sm-4">Rating</dt>
+                <dd class="col-sm-8">@Model.RatingAverage.ToString("0.00")</dd>
+
+                <dt class="col-sm-4">Followers</dt>
+                <dd class="col-sm-8">@Model.TotalFollowers</dd>
+            </dl>
+        </div>
+    </div>
+}

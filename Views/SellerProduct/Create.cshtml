@@ -1,0 +1,107 @@
+@model FinalProject.Models.Product
+
+@{
+    ViewData["Title"] = "Create Product";
+    var categories = ViewBag.Categories as IEnumerable<dynamic>;
+    var brands = ViewBag.Brands as IEnumerable<dynamic>;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-3">
+                <label asp-for="ProductName" class="form-label"></label>
+                <input asp-for="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SeoTitle" class="form-label"></label>
+                <input asp-for="SeoTitle" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ProductDescription" class="form-label"></label>
+                <textarea asp-for="ProductDescription" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Detail" class="form-label"></label>
+                <textarea asp-for="Detail" class="form-control" rows="6"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MetaKeywords" class="form-label"></label>
+                <input asp-for="MetaKeywords" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MetaDescription" class="form-label"></label>
+                <input asp-for="MetaDescription" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ListImages" class="form-label">List images (comma separated)</label>
+                <input asp-for="ListImages" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label asp-for="CateID" class="form-label">Category</label>
+                <select asp-for="CateID" asp-items="@(new SelectList(ViewBag.Categories, "CateID", "CateName"))" class="form-select">
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="BrandID" class="form-label">Brand</label>
+                <select asp-for="BrandID" asp-items="@(new SelectList(ViewBag.Brands, "BrandID", "BrandName"))" class="form-select">
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label"></label>
+                <input asp-for="Price" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PromotionPrice" class="form-label"></label>
+                <input asp-for="PromotionPrice" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Quantity" class="form-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="VAT" class="form-check-input" />
+                <label asp-for="VAT" class="form-check-label">VAT</label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Hot" class="form-check-input" />
+                <label asp-for="Hot" class="form-check-label">Hot</label>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Main image</label>
+                <input type="file" name="imageFile" class="form-control" />
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
