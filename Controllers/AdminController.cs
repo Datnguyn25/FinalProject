@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FinalProject.Data;
 using FinalProject.Models;
@@ -89,6 +89,7 @@ namespace FinalProject.Controllers
         }
 
         // ================= PRODUCTS =================
+        // ================= PRODUCTS =================
         public IActionResult Products()
         {
             var products = _context.tb_Product
@@ -99,6 +100,42 @@ namespace FinalProject.Controllers
             return View(products);
         }
 
+        // ================= CREATE PRODUCT =================
+        public IActionResult CreateProduct()
+        {
+            ViewBag.Categories = _context.tb_ProductCategory.ToList();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateProduct(Product model)
+        {
+            _context.tb_Product.Add(model);
+            _context.SaveChanges();
+
+            return RedirectToAction("Products");
+        }
+
+        // ================= EDIT PRODUCT =================
+        public IActionResult EditProduct(int id)
+        {
+            var product = _context.tb_Product.Find(id);
+
+            ViewBag.Categories = _context.tb_ProductCategory.ToList();
+
+            return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult EditProduct(Product model)
+        {
+            _context.tb_Product.Update(model);
+            _context.SaveChanges();
+
+            return RedirectToAction("Products");
+        }
+
+        // ================= DELETE PRODUCT =================
         public IActionResult DeleteProduct(int id)
         {
             var product = _context.tb_Product.Find(id);
