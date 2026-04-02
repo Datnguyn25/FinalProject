@@ -5,51 +5,47 @@
     var searchType = ViewBag.SearchType as string;
 }
 
-<h2>🛍 Product List</h2>
+<div class="shop-container">
 
-<a asp-action="Create"
-   style="background:#007bff;
-          color:white;
-          padding:8px 15px;
-          border-radius:5px;
-          text-decoration:none;
-          display:inline-block;
-          margin-bottom:10px;">
-    ➕ Add Product
-</a>
+   
 
-<p>Total: <b>@Model.Count</b> products</p>
+  
 
-<!-- SEARCH -->
-<form method="get" asp-action="Index" style="margin-bottom:20px;">
+    <!-- SEARCH -->
+    <form method="get" asp-action="Index" class="shop-search">
 
-    <select name="searchType" style="padding:5px;">
-        <option value="name" selected="@(searchType == "name")">🔍 Product Name</option>
-        <option value="seo" selected="@(searchType == "seo")">📌 SEO Title</option>
-        <option value="keyword" selected="@(searchType == "keyword")">🏷 Meta Keywords</option>
-        <option value="desc" selected="@(searchType == "desc")">📝 Description</option>
-    </select>
+        <select name="searchType" class="shop-input">
+            <option value="name" selected="@(searchType == "name")">🔍 Product Name</option>
+            <option value="seo" selected="@(searchType == "seo")">📌 SEO Title</option>
+            <option value="keyword" selected="@(searchType == "keyword")">🏷 Meta Keywords</option>
+            <option value="desc" selected="@(searchType == "desc")">📝 Description</option>
+        </select>
 
-    <input type="text" name="keyword"
-           value="@ViewBag.Keyword"
-           placeholder="Search product..."
-           style="padding:5px;width:200px;" />
+        <input type="text" name="keyword"
+               value="@ViewBag.Keyword"
+               placeholder="Search product..."
+               class="shop-input" />
 
-    <button type="submit">Search</button>
+        <button type="submit" class="shop-btn">
+            Search
+        </button>
 
-</form>
+    </form>
 
-<hr />
+    <hr />
 
-<!-- CATEGORY -->
-<h3>📂 Category</h3>
+    <!-- CATEGORY -->
+   
+    <div class="shop-category">
 
-<a href="/Product"
-   style="margin-right:10px;
-   @(selectedCategory == null ? "color:red;font-weight:bold" : "")">
-    All
-</a>
+        <a href="/Product"
+           class="@(selectedCategory == null ? "shop-cate active" : "shop-cate")">
+            All
+        </a>
 
+<<<<<<< HEAD
+        @foreach (var c in ViewBag.Categories)
+=======
 @foreach (var c in ViewBag.Categories)
 {
     <a asp-controller="Product"
@@ -74,48 +70,65 @@
     else
     {
         @foreach (var item in Model)
+>>>>>>> f6287ff2eb574498d4c2a59309053831bd5a81be
         {
-            <div style="border:1px solid #ccc;
-                        padding:10px;
-                        margin:10px;
-                        width:220px;
-                        border-radius:10px;
-                        text-align:center;">
-
-                <!-- CLICK CARD -->
-                <a href="/Product/Details/@item.ProductID"
-                   style="text-decoration:none;color:black;">
-
-                    <img src="@(string.IsNullOrEmpty(item.Image)
-                                     ? Url.Content("~/assets/product-1.jpg")
-                                     : Url.Content("~/assets/" + item.Image))"
-                         style="width:100%;height:150px;object-fit:cover;" />
-
-                    <h4>@item.ProductName</h4>
-
-                    <p style="color:red;font-weight:bold;">
-                        @item.Price VNĐ
-                    </p>
-
-                </a>
-
-                <!-- CATEGORY -->
-                <p style="color:gray;">
-                    @item.Category?.CateName
-                </p>
-
-                <!-- ADD TO CART -->
-                <a href="/Cart/AddToCart?productId=@item.ProductID"
-                   style="background:green;
-                          color:white;
-                          padding:5px 10px;
-                          border-radius:5px;
-                          text-decoration:none;">
-                    🛒 Add to Cart
-                </a>
-
-            </div>
+            <a href="/Product?cateID=@c.CateID"
+               class="@(selectedCategory == c.CateID ? "shop-cate active" : "shop-cate")">
+                @c.CateName
+            </a>
         }
-    }
+
+    </div>
+
+    <hr />
+
+    <!-- PRODUCT LIST -->
+    <div class="shop-grid">
+
+        @if (Model.Count == 0)
+        {
+            <p class="shop-empty">
+                ❌ No products found!
+            </p>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="shop-card">
+
+                    <a href="/Product/Details/@item.ProductID"
+                       class="shop-link">
+
+                        <img src="@(string.IsNullOrEmpty(item.Image)
+                                                                                                               ? Url.Content("~/assets/product-1.jpg")
+                                                                                                               : Url.Content("~/assets/" + item.Image))" />
+
+                <div class="shop-body">
+
+                            <h4>@item.ProductName</h4>
+
+                            <p class="shop-price">
+                                @item.Price VNĐ
+                            </p>
+
+                            <p class="shop-cate-name">
+                                @item.Category?.CateName
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                    <a href="/Cart/AddToCart?productId=@item.ProductID"
+                       class="shop-cart-btn">
+                        🛒 Add to Cart
+                    </a>
+
+                </div>
+                }
+        }
+
+    </div>
 
 </div>

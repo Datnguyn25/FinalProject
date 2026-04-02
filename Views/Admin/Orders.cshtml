@@ -1,23 +1,46 @@
 ﻿@model List<FinalProject.Models.Order>
 
-<h2>Orders</h2>
+<h2 class="admin-title">Orders</h2>
 
-<table class="table">
-    @foreach (var item in Model)
+<table class="admin-table">
+
+    <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var o in Model)
     {
         <tr>
-            <td>@item.OrderID</td>
-            <td>@item.Customer.UserName</td>
-            <td>@item.OrderStatus</td>
+
+            <td>@o.OrderID</td>
+
+            <td>@o.Customer?.FullName</td>
+
+            <td>@o.OrderStatus</td>
 
             <td>
-                <a asp-action="UpdateOrder"
-                   asp-route-id="@item.OrderID"
-                   asp-route-status="Completed">
-                    Complete
+
+                <a href="/Admin/UpdateOrder/@o.OrderID?status=Processing"
+                   class="admin-btn">
+                    Processing
                 </a>
+
+                <a href="/Admin/UpdateOrder/@o.OrderID?status=Shipping"
+                   class="admin-btn">
+                    Shipping
+                </a>
+
+                <a href="/Admin/UpdateOrder/@o.OrderID?status=Completed"
+                   class="admin-btn">
+                    Done
+                </a>
+
             </td>
 
         </tr>
     }
+
 </table>

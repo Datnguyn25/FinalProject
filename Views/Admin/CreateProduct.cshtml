@@ -1,0 +1,40 @@
+﻿@model FinalProject.Models.Product
+
+<h2>Add Product</h2>
+
+<form asp-action="CreateProduct" method="post">
+
+    <div>
+        <label>Name</label>
+        <input asp-for="ProductName" />
+    </div>
+
+    <div>
+        <label>Price</label>
+        <input asp-for="Price" />
+    </div>
+
+    <div>
+        <label>Image</label>
+        <input asp-for="Image" />
+    </div>
+
+    <div>
+        <label>Category</label>
+        <select asp-for="CateID">
+
+            @foreach (var c in ViewBag.Categories)
+            {
+                <option value="@c.CateID">
+                    @c.CateName
+                </option>
+            }
+
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit">Save</button>
+
+</form>

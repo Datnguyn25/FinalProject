@@ -1,29 +1,45 @@
 ﻿@model List<FinalProject.Models.User>
 
-    <h2>Users</h2>
+<h2 class="admin-title">Users</h2>
 
-    <table class="table">
+<table class="admin-table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var u in Model)
+    {
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Action</th>
+            <td>@u.Id</td>
+            <td>@u.FullName</td>
+            <td>@u.Email</td>
+
+            <td>
+                @if (u.IsBanned)
+                {
+                    <span class="admin-bad">Banned</span>
+                }
+                else
+                {
+                    <span class="admin-good">Active</span>
+                }
+            </td>
+
+            <td>
+                @if (!u.IsBanned)
+                {
+                    <a href="/Admin/LockUser/@u.Id" class="admin-btn">Lock</a>
+                }
+                else
+                {
+                    <a href="/Admin/UnlockUser/@u.Id" class="admin-btn">Unlock</a>
+                }
+            </td>
+
         </tr>
-
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.UserName</td>
-                <td>@item.Email</td>
-                <td>@item.IsActive</td>
-
-                <td>
-                    <a asp-action="LockUser" asp-route-id="@item.Id">Lock</a>
-                    <a asp-action="UnlockUser" asp-route-id="@item.Id">Unlock</a>
-                </td>
-
-            </tr>
-        }
-    </table>
+    }
+</table>

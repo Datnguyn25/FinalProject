@@ -4,64 +4,39 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FinalProject</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FinalProject.styles.css" asp-append-version="true" />
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
+
     <header>
-        <nav class="navbar navbar-expand-sm custom-navbar">
-            <div class="nav-container">
+        <nav class="navbar custom-navbar">
 
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    Fashion Web
-                </a>
+            <!-- LOGO LEFT -->
+            <a class="navbar-brand"
+               asp-controller="Home"
+               asp-action="Index">
+                Fashion Web
+            </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#mainNavbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="mainNavbar">
-
-                    <ul class="navbar-nav ms-auto">
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Product" asp-action="Index">Shop</a>
-                        </li>
-
-                        <partial name="_LoginPartial" />
-                       
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Product</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Admin" asp-action="Index">
-                                Admin
-                            </a>
-                        </li>
-
-
-                    </ul>
-
-                </div>
-
+            <!-- LOGIN RIGHT -->
+            <div class="login-right">
+                <ul class="navbar-nav">
+                    <partial name="_LoginPartial" />
+                </ul>
             </div>
+
         </nav>
+    </header>
 
     <div class="container">
         @RenderBody()
     </div>
-    <script src="~/css/site.css"></script>
-    </header>
+
 </body>
 </html>

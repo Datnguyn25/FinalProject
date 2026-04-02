@@ -1,24 +1,32 @@
 ﻿@model List<FinalProject.Models.User>
 
-<h2>Sellers</h2>
+<h2 class="admin-title">Sellers</h2>
 
-<table class="table">
-    @foreach (var item in Model)
+<table class="admin-table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var s in Model)
     {
         <tr>
-            <td>@item.UserName</td>
-            <td>@item.Email</td>
-            <td>@item.IsActive</td>
+            <td>@s.Id</td>
+            <td>@s.FullName</td>
+            <td>@s.Email</td>
 
             <td>
-                <a asp-action="ApproveSeller" asp-route-id="@item.Id">
+                <a href="/Admin/ApproveSeller/@s.Id" class="admin-btn">
                     Approve
                 </a>
 
-                <a asp-action="BanSeller" asp-route-id="@item.Id">
+                <a href="/Admin/BanSeller/@s.Id" class="admin-btn">
                     Ban
                 </a>
             </td>
+
         </tr>
     }
 </table>

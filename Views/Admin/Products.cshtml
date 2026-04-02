@@ -1,22 +1,70 @@
 ﻿@model List<FinalProject.Models.Product>
 
-<h2>Products</h2>
+<div class="shop-container">
 
-<table class="table">
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.ProductName</td>
-            <td>@item.Price</td>
-            <td>@item.Quantity</td>
+    <h2 class="shop-title-page">⚙️ Product Management</h2>
 
-            <td>
-                <a asp-action="DeleteProduct"
-                   asp-route-id="@item.ProductID">
-                    Delete
-                </a>
-            </td>
+    <a asp-action="CreateProduct" class="shop-add-btn">
+        ➕ Add Product
+    </a>
 
-        </tr>
-    }
-</table>
+    <p class="shop-total">
+        Total: <b>@Model.Count</b> products
+    </p>
+
+    <hr />
+
+    <div class="shop-grid">
+
+        @if (Model.Count == 0)
+        {
+            <p class="shop-empty">
+                No products
+            </p>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="shop-card">
+
+                    <img src="@(string.IsNullOrEmpty(item.Image)
+                                                 ? Url.Content("~/assets/product-1.jpg")
+                                                 : Url.Content("~/assets/" + item.Image))" />
+
+            <div class="shop-body">
+
+                        <h4>@item.ProductName</h4>
+
+                        <p class="shop-price">
+                            @item.Price VNĐ
+                        </p>
+
+                        <p class="shop-cate-name">
+                            @item.Category?.CateName
+                        </p>
+
+                        <div style="margin-top:10px">
+
+                            <a href="/Admin/EditProduct/@item.ProductID"
+                               class="shop-btn">
+                                ✏️ Edit
+                            </a>
+
+                            <a href="/Admin/DeleteProduct/@item.ProductID"
+                               class="shop-btn"
+                               onclick="return confirm('Delete this product?')">
+                                ❌ Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                }
+        }
+
+    </div>
+
+</div>
