@@ -1,4 +1,4 @@
-﻿using FinalProject.Data;
+using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +21,11 @@ public class ProductController : Controller
             .Include(p => p.Shop)
             .AsQueryable();
 
-        // ===== FILTER CATEGORY =====
         if (categoryId.HasValue)
         {
             products = products.Where(p => p.CateID == categoryId);
         }
 
-        // ===== SEARCH (DROPDOWN) =====
         if (!string.IsNullOrEmpty(keyword))
         {
             keyword = keyword.ToLower();
@@ -52,7 +50,7 @@ public class ProductController : Controller
                         p.MetaDescription.ToLower().Contains(keyword));
                     break;
 
-                default: // name
+                default:
                     products = products.Where(p =>
                         p.ProductName != null &&
                         p.ProductName.ToLower().Contains(keyword));
@@ -60,7 +58,6 @@ public class ProductController : Controller
             }
         }
 
-        // ===== VIEWBAG =====
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Keyword = keyword;
         ViewBag.SelectedCategory = categoryId;
@@ -69,7 +66,7 @@ public class ProductController : Controller
         return View(products.ToList());
     }
 
-    // ===== DETAIL =====
+    // ===== DETAILS =====
     public IActionResult Details(int id)
     {
         var product = _context.tb_Product
@@ -79,19 +76,17 @@ public class ProductController : Controller
             .FirstOrDefault(p => p.ProductID == id);
 
         if (product == null)
-        {
             return NotFound();
-        }
 
         return View(product);
     }
+
     // ===== CREATE =====
     public IActionResult Create()
     {
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Brands = _context.tb_Brand.ToList();
         ViewBag.Shops = _context.tb_Shop.ToList();
-
         return View();
     }
 
@@ -112,11 +107,10 @@ public class ProductController : Controller
         return View(model);
     }
 
-
     // ===== EDIT =====
     public IActionResult Edit(int id)
     {
-        var product = _context.tb_Product.Find(id);
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == id);
 
         if (product == null)
             return NotFound();
@@ -131,25 +125,33 @@ public class ProductController : Controller
     [HttpPost]
     public IActionResult Edit(Product model)
     {
-        if (ModelState.IsValid)
-        {
-            _context.tb_Product.Update(model);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == model.ProductID);
 
-        ViewBag.Categories = _context.tb_ProductCategory.ToList();
-        ViewBag.Brands = _context.tb_Brand.ToList();
-        ViewBag.Shops = _context.tb_Shop.ToList();
+        if (product == null)
+            return NotFound();
 
-        return View(model);
+        // ===== UPDATE FIELD (KHÔNG UPDATE NGUYÊN OBJECT) =====
+        product.ProductName = model.ProductName;
+        product.Price = model.Price;
+        product.Quantity = model.Quantity;
+        product.CateID = model.CateID;
+        product.BrandID = model.BrandID;
+        product.ShopID = model.ShopID;
+        product.ProductDescription = model.ProductDescription;
+        product.Image = model.Image;
+        product.SeoTitle = model.SeoTitle;
+        product.MetaKeywords = model.MetaKeywords;
+        product.MetaDescription = model.MetaDescription;
+
+        _context.SaveChanges();
+
+        return RedirectToAction("Index");
     }
-
 
     // ===== DELETE =====
     public IActionResult Delete(int id)
     {
-        var product = _context.tb_Product.Find(id);
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == id);
 
         if (product != null)
         {
@@ -158,5 +160,5 @@ public class ProductController : Controller
         }
 
         return RedirectToAction("Index");
-    }   
+    }
 }
