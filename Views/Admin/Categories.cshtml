@@ -1,19 +1,29 @@
-﻿@model List<FinalProject.Models.ProductCategory>
+@model List<FinalProject.Models.ProductCategory>
 
-<h2>Categories</h2>
+<h2 class="admin-title">Categories</h2>
 
-<form asp-action="CreateCategory" method="post">
-    <input name="Name" placeholder="Category name" />
-    <button>Add</button>
+<form method="post" action="/Admin/CreateCategory">
+
+    <input name="CateName"
+           class="admin-input"
+           placeholder="Category name" />
+
+    <button class="admin-btn">
+        Add
+    </button>
+
 </form>
 
-@foreach (var item in Model)
-{
-    <div>
-        @item.CateName
+<hr>
 
-        <a asp-action="DeleteCategory"
-           asp-route-id="@item.CateID">
+@foreach (var c in Model)
+{
+    <div class="admin-row">
+
+        @c.CateName
+
+        <a href="/Admin/DeleteCategory/@c.CateID"
+           class="admin-delete">
             Delete
         </a>
 
