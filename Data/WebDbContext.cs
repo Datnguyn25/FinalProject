@@ -23,6 +23,7 @@ namespace FinalProject.Data
         public DbSet<Brand> tb_Brand { get; set; }
         public DbSet<Promotion> tb_Promotion { get; set; }
         public DbSet<SystemSetting> tb_SystemSetting { get; set; }
+        public DbSet<ShopReview> tb_ShopReview { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

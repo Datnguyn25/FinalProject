@@ -1,0 +1,58 @@
+@model IEnumerable<FinalProject.Models.Product>
+
+@{
+    ViewData["Title"] = "My Products";
+    var shop = ViewBag.Shop as FinalProject.Models.Shop;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New Product</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Promo</th>
+            <th>Qty</th>
+            <th>Status</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="width:120px">
+                @if (!string.IsNullOrEmpty(item.Image))
+                {
+                    <img src="~/@item.Image" alt="@item.ProductName" class="img-thumbnail" style="max-width:100px" />
+                }
+            </td>
+            <td>@item.ProductName</td>
+            <td>@item.Price.ToString("C")</td>
+            <td>@item.PromotionPrice.ToString("C")</td>
+            <td>@item.Quantity</td>
+            <td>@(item.Status ? "Active" : "Inactive")</td>
+            <td>@item.Category?.CateName</td>
+            <td>@item.Brand?.BrandName</td>
+            <td>
+                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.ProductID">Details</a>
+                <a class="btn btn-sm btn-secondary" asp-action="Edit" asp-route-id="@item.ProductID">Edit</a>
+
+                <form asp-action="Delete" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@item.ProductID" />
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this product?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,49 @@
+@model IEnumerable<FinalProject.Models.Order>
+
+@{
+    ViewData["Title"] = "Orders for My Shop";
+    var shop = ViewBag.Shop as FinalProject.Models.Shop;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (shop != null)
+{
+    <p><strong>Shop:</strong> @shop.ShopName</p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Items (yours)</th>
+            <th>Subtotal (yours)</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var order in Model)
+    {
+        var shopItems = order.OrderDetails.Where(od => od.ShopId == (ViewBag.Shop as FinalProject.Models.Shop)?.ShopID);
+        <tr>
+            <td>@order.OrderID</td>
+            <td>@order.OrderDate.ToString("g")</td>
+            <td>@order.Customer?.FullName ?? "Customer #" + order.CustomerID</td>
+            <td>@shopItems.Sum(i => i.Quantity)</td>
+            <td>@shopItems.Sum(i => i.Price * i.Quantity).ToString("C")</td>
+            <td>@order.OrderStatus</td>
+            <td>
+                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@order.OrderID">Details</a>
+                <form asp-action="ConfirmOrder" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@order.OrderID" />
+                    <button type="submit" class="btn btn-sm btn-success">Confirm</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
