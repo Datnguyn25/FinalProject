@@ -1,4 +1,4 @@
-﻿@model List<FinalProject.Models.Promotion>
+@model List<FinalProject.Models.Promotion>
 
 <h2>Promotions</h2>
 
@@ -19,4 +19,38 @@
         </a>
 
     </div>
+}
+
+<h2 class="admin-title">Promotions</h2>
+
+<form method="post" action="/Admin/CreatePromotion">
+
+<input name="Name"
+placeholder="Name"
+class="admin-input"/>
+
+<input name="DiscountPercent"
+placeholder="%"
+class="admin-input"/>
+
+<button class="admin-btn">
+Add
+</button>
+
+</form>
+
+<hr>
+
+@foreach (var p in Model)
+{
+<div class="admin-row">
+
+@p.Name - @p.DiscountPercent %
+
+<a href="/Admin/DeletePromotion/@p.PromotionID"
+class="admin-delete">
+Delete
+</a>
+
+</div>
 }
