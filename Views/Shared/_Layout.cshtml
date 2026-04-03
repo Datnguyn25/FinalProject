@@ -27,7 +27,13 @@
             <!-- LOGIN RIGHT -->
             <div class="login-right">
                 <ul class="navbar-nav">
-                    <partial name="_LoginPartial" />
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="#"
+                           onclick="openLoginPopup()">
+                            Login
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -37,6 +43,45 @@
     <div class="container">
         @RenderBody()
     </div>
+
+
+    <!-- LOGIN POPUP -->
+    <div id="loginPopup" class="login-popup">
+        <div class="login-popup-box">
+
+            <h4>Do you already have an account?</h4>
+
+            <div class="login-popup-btns">
+
+                <a href="/Account/Login"
+                   class="btn btn-dark">
+                    Have ? Log in
+                </a>
+
+                <a href="/Account/Register"
+                   class="btn btn-outline-dark">
+                    Not yet ? Register
+                </a>
+
+            </div>
+
+            <span onclick="closeLoginPopup()" class="close-popup">
+                ?
+            </span>
+
+        </div>
+    </div>
+
+
+    <script>
+        function openLoginPopup() {
+            document.getElementById("loginPopup").style.display = "flex";
+        }
+
+        function closeLoginPopup() {
+            document.getElementById("loginPopup").style.display = "none";
+        }
+    </script>
 
 </body>
 </html>
