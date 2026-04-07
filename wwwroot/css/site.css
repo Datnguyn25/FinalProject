@@ -1158,3 +1158,125 @@ textarea {
 body {
     background: #ffffff !important;
 }
+/* ===============================
+   MODERN SHOP COLOR (BEIGE STYLE)
+================================*/
+
+body {
+    background: #fdfaf6 !important;
+    color: #2c2c2c !important;
+}
+
+/* NAVBAR */
+.custom-navbar,
+.navbar {
+    background: #fffaf3 !important;
+    border-bottom: 1px solid #f1e6d8 !important;
+}
+
+/* CARD */
+.product-card,
+.shop-card,
+.admin-card,
+.cart-box,
+.details-container,
+.login-card,
+.register-card {
+    background: #ffffff !important;
+    border: 1px solid #f3e8da !important;
+    box-shadow: 0 8px 25px rgba(180,150,120,0.08);
+}
+
+    /* HOVER */
+    .product-card:hover,
+    .shop-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 35px rgba(180,150,120,0.15);
+    }
+
+/* BUTTON */
+.btn,
+.shop-cart-btn,
+.details-cart-btn,
+.admin-btn,
+.login-btn,
+.register-btn {
+    background: #c8a27a !important;
+    color: white !important;
+    border: none !important;
+}
+
+    .btn:hover,
+    .shop-cart-btn:hover {
+        background: #b89168 !important;
+    }
+
+/* INPUT */
+input,
+select,
+textarea {
+    background: #fff !important;
+    border: 1px solid #eadfce !important;
+}
+
+    input:focus {
+        border-color: #c8a27a !important;
+        box-shadow: 0 0 0 3px rgba(200,162,122,0.15) !important;
+    }
+
+/* TITLE */
+h1, h2, h3 {
+    color: #3a2f25;
+}
+
+/* PRICE */
+.shop-price,
+.details-price {
+    color: #b07d4f;
+    font-weight: 600;
+}
+
+/* TABLE */
+.admin-table th,
+.cart-table th {
+    background: #c8a27a !important;
+    color: white !important;
+}
+
+/* ADMIN MENU */
+.admin-menu a {
+    background: #fff !important;
+    border: 1px solid #f0e4d4 !important;
+}
+
+    .admin-menu a:hover {
+        background: #fdf5ea !important;
+    }
+
+/* POPUP */
+.login-popup-box {
+    background: white;
+    box-shadow: 0 20px 50px rgba(180,150,120,0.2);
+}
+.custom-navbar {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.login-right {
+    margin-left: auto;
+    position: absolute;
+    right: 20px;
+}
+
+.auth-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 0;
+}
+
+.navbar {
+    padding-right: 10px !important;
+}

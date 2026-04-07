@@ -43,12 +43,12 @@ namespace FinalProject
             {
                 options.SignIn.RequireConfirmedAccount = false;
 
-                options.Password.RequireDigit = true;              // B?t bu?c cÛ s?
-                options.Password.RequiredLength = 8;               // Õt nh?t 8 k˝ t?
-                options.Password.RequireNonAlphanumeric = true;    // B?t bu?c k˝ t? ??c bi?t
+                options.Password.RequireDigit = true;              // B?t bu?c c√≥ s?
+                options.Password.RequiredLength = 8;               // √çt nh?t 8 k√Ω t?
+                options.Password.RequireNonAlphanumeric = true;    // B?t bu?c k√Ω t? ??c bi?t
                 options.Password.RequireUppercase = true;          // B?t bu?c ch? hoa
                 options.Password.RequireLowercase = true;          // B?t bu?c ch? th??ng
-                options.Password.RequiredUniqueChars = 1;           // s? k˝ t? kh·c nhau t?i thi?u
+                options.Password.RequiredUniqueChars = 1;           // s? k√Ω t? kh√°c nhau t?i thi?u
             })
             .AddRoles<IdentityRole<int>>()
             .AddEntityFrameworkStores<WebDbContext>();
@@ -59,7 +59,13 @@ namespace FinalProject
                 options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 
                 //always displays name claim from google, not email
-                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
+
+                options.ClaimActions.MapJsonKey("name", "name");
+                options.ClaimActions.MapJsonKey("given_name", "given_name");
+
+                options.SaveTokens = true;
 
                 //chon tai khoan khi dang nhap bang google
                 options.Events.OnRedirectToAuthorizationEndpoint = context =>
