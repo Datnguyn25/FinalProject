@@ -1434,3 +1434,360 @@ h1, h2, h3 {
         background-color: #e84118;
         color: white;
     }
+/* =========================
+        NAVBAR GIỮA
+=========================*/
+
+.custom-navbar .container-fluid {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.login-right {
+    position: absolute;
+    right: 20px;
+}
+
+
+
+
+
+/* =========================
+        GRID 4 CỘT SHOP
+=========================*/
+
+.shop-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4,1fr) !important;
+    gap: 30px;
+}
+
+
+
+/* =========================
+        CARD KIỂU ZARA
+=========================*/
+
+.shop-card {
+    border: none !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    transition: 0.3s ease;
+    background: white;
+}
+
+.shop-body {
+    padding: 12px 5px !important;
+}
+
+    .shop-body h4 {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+.shop-price {
+    font-weight: 600;
+    margin-top: 3px;
+}
+
+
+
+/* =========================
+        HOVER ZOOM ẢNH
+=========================*/
+
+.shop-card img {
+    height: 380px !important;
+    object-fit: cover;
+    transition: 0.5s ease;
+}
+
+.shop-card:hover img {
+    transform: scale(1.08);
+}
+
+.shop-card:hover {
+    transform: translateY(-6px);
+}
+
+
+
+/* =========================
+        BUTTON ZARA
+=========================*/
+
+.shop-actions-group {
+    display: flex;
+    gap: 8px;
+    padding: 0 5px 10px 5px;
+}
+
+.shop-cart-btn {
+    background: white !important;
+    border: 1px solid black !important;
+    color: black !important;
+}
+
+.shop-buy-btn {
+    background: black !important;
+    color: white !important;
+}
+
+
+
+/* =========================
+        RESPONSIVE
+=========================*/
+
+@media(max-width:1200px) {
+    .shop-grid {
+        grid-template-columns: repeat(3,1fr) !important;
+    }
+}
+
+@media(max-width:768px) {
+    .shop-grid {
+        grid-template-columns: repeat(2,1fr) !important;
+    }
+}
+/* =========================
+        HERO THU NHỎ
+   (Override kích thước cũ)
+=========================*/
+
+.hero {
+    height: 320px !important; /* Giảm từ 90vh xuống kích thước cố định */
+    padding: 40px 20px !important;
+}
+
+.hero-content h1 {
+    font-size: 32px !important; /* Giảm từ 60px */
+    letter-spacing: 2px;
+}
+
+.hero-content p {
+    font-size: 14px !important; /* Giảm kích thước mô tả */
+    margin-bottom: 15px;
+}
+
+.hero-btn {
+    padding: 8px 22px !important; /* Thu nhỏ nút */
+    font-size: 13px !important;
+    letter-spacing: 1px;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 768px) {
+    .hero {
+        height: 260px !important;
+    }
+
+    .hero-content h1 {
+        font-size: 24px !important;
+    }
+
+    .hero-content p {
+        font-size: 13px !important;
+    }
+}
+/* ===== PRICE SLIDER LIKE LAYOUTT ===== */
+.price-filter-layoutt {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #f0e4d4;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+    .price-filter-layoutt h5 {
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+.price-values {
+    font-size: 14px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    color: #3a2f25;
+}
+
+.range-slider {
+    position: relative;
+    height: 40px;
+}
+
+    .range-slider input[type="range"] {
+        position: absolute;
+        width: 100%;
+        top: 10px;
+        pointer-events: none;
+        -webkit-appearance: none;
+        background: none;
+    }
+
+        .range-slider input[type="range"]::-webkit-slider-thumb {
+            pointer-events: all;
+            width: 16px;
+            height: 16px;
+            background: #c8a27a;
+            border-radius: 50%;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        .range-slider input[type="range"]::-moz-range-thumb {
+            pointer-events: all;
+            width: 16px;
+            height: 16px;
+            background: #c8a27a;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+.slider-track {
+    position: absolute;
+    height: 4px;
+    width: 100%;
+    background: #e5e5e5;
+    top: 18px;
+    border-radius: 2px;
+}
+
+    .slider-track::before {
+        content: "";
+        position: absolute;
+        height: 100%;
+        background: #c8a27a;
+        left: 0%;
+        right: 0%;
+        border-radius: 2px;
+    }
+
+/* =========================
+   LAYOUT FILTER BÊN TRÁI
+=========================*/
+/* ===== LAYOUT FILTER + PRODUCT ===== */
+.shop-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+/* Thanh lọc giá bên trái */
+.price-filter {
+    width: 220px;
+    background: #ffffff;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    position: sticky;
+    top: 100px;
+    margin-left: -10px; /* Giúp nằm sát mép trái */
+}
+
+/* Nội dung sản phẩm */
+.shop-content {
+    flex: 1;
+}
+
+/* Slider */
+.price-slider {
+    width: 100%;
+}
+
+/* Label */
+.price-label {
+    font-weight: 500;
+    margin-top: 10px;
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .shop-layout {
+        flex-direction: column;
+    }
+
+    .price-filter {
+        width: 100%;
+        margin-left: 0;
+        position: relative;
+        top: 0;
+    }
+}
+/* =========================
+   PRODUCT ACTION BUTTONS - UPDATED
+=========================*/
+
+/* Bố cục dọc */
+.shop-actions-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 10px 5px 15px 5px;
+}
+
+    /* Style chung cho form */
+    .shop-actions-group form {
+        width: 100%;
+        margin: 0;
+    }
+
+/* Nút BUY NOW - lớn và nổi bật */
+.shop-buy-btn {
+    width: 100% !important;
+    padding: 14px 0 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 2px solid #000 !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    /* Hiệu ứng hover cho BUY NOW */
+    .shop-buy-btn:hover {
+        background-color: #fff !important;
+        color: #000 !important;
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+    }
+
+/* Nút ADD TO CART - nhỏ hơn */
+.shop-cart-btn {
+    display: block; /* Cho phép căn giữa bằng margin */
+    width: 70% !important; /* Thu nhỏ chiều rộng của nút */
+    padding: 8px 0 !important; /* Giảm chiều cao của nút */
+    font-size: 12px !important; /* Chữ nhỏ hơn */
+    font-weight: 600 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background-color: #fff !important;
+    color: #000 !important;
+    border: 1.5px solid #000 !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 auto !important; /* Căn giữa nút */
+    text-align: center;
+}
+
+    /* Hiệu ứng hover cho ADD TO CART */
+    .shop-cart-btn:hover {
+        background-color: #000 !important;
+        color: #fff !important;
+    }
+
+    /* Hiệu ứng khi nhấn */
+    .shop-buy-btn:active,
+    .shop-cart-btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }

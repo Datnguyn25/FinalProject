@@ -1,6 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Home";
-}
+﻿@model FinalProject.ViewModels.HomeViewModel
 
 <!-- HERO -->
 
@@ -48,16 +46,87 @@
 
 </section>
 
-<!-- BANNER -->
 
-<section class="banner">
+<section class="my-5">
+    <h2 class="text-center mb-4">🔥 Sale </h2>
 
-    <div class="banner-content">
-        <img src="/assets/banner-1.png" />
-        <h2>SUMMER SALE</h2>
-        <p>Up to 40% off</p>
-        <a href="/Product" class="hero-btn">Explore</a>
-       
-    </div>
+    <!-- Tabs -->
+    <ul class="nav nav-tabs justify-content-center" id="saleTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#mens">
+                Men's Fashion
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#womens">
+                Women's Fashion
+            </button>
+        </li>
+        
+    </ul>
 
-</section>
+    <div class="tab-content mt-4">
+        <!-- TAB MEN -->
+        <div class="tab-pane fade show active" id="mens">
+            <div class="row">
+                @foreach (var product in Model.MensProducts)
+                {
+                    var discountPercent = (int)Math.Round(
+                        (product.Price - product.PromotionPrice) / product.Price * 100);
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 text-center shadow-sm">
+                            <img src="~/assets/white-shirt.jpg"
+                                 class="card-img-top"
+                                 alt="@product.ProductName">
+                                <div class="card-body">
+                                    <h5 class="card-title">@product.ProductName</h5>
+                                    <p class="text-muted text-decoration-line-through">
+                                        @product.Price.ToString("N0") đ
+                                    </p>
+                                    <h6 class="text-danger fw-bold">
+                                        @product.PromotionPrice.ToString("N0") đ (-@discountPercent%)
+                                    </h6>
+                                    <a asp-controller="Product"
+                                           asp-action="Details"
+                                           asp-route-id="@product.ProductID"
+                                           class="btn btn-outline-dark btn-sm">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- TAB WOMEN -->
+            <div class="tab-pane fade" id="womens">
+                <div class="row">
+                    @foreach (var product in Model.WomensProducts)
+                    {
+                        var discountPercent = (int)Math.Round(
+                            (product.Price - product.PromotionPrice) / product.Price * 100);
+
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 text-center shadow-sm">
+                                <img src="~/assets/header.png"
+                                     class="card-img-top"
+                                     alt="@product.ProductName">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@product.ProductName</h5>
+                                        <p class="text-muted text-decoration-line-through">
+                                            @product.Price.ToString("N0") đ
+                                        </p>
+                                        <h6 class="text-danger fw-bold">
+                                            @product.PromotionPrice.ToString("N0") đ (-@discountPercent%)
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+               
+            </section>

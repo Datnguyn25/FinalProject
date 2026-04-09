@@ -12,8 +12,9 @@ public class ProductController : Controller
         _context = context;
     }
 
-    // ===== LIST + FILTER + SEARCH =====
-    public IActionResult Index(int? categoryId, string keyword, string searchType)
+    // ===== LIST + FILTER + SEARCH + PRICE FILTER =====
+    public IActionResult Index(int? categoryId, string keyword, string searchType,
+                               decimal? minPrice, decimal? maxPrice)
     {
         var products = _context.tb_Product
             .Include(p => p.Category)
@@ -21,11 +22,13 @@ public class ProductController : Controller
             .Include(p => p.Shop)
             .AsQueryable();
 
+        // ===== FILTER BY CATEGORY =====
         if (categoryId.HasValue)
         {
             products = products.Where(p => p.CateID == categoryId);
         }
 
+        // ===== SEARCH =====
         if (!string.IsNullOrEmpty(keyword))
         {
             keyword = keyword.ToLower();
@@ -58,10 +61,25 @@ public class ProductController : Controller
             }
         }
 
+        // ===== PRICE FILTER =====
+      
+        if (minPrice.HasValue)
+        {
+            products = products.Where(p => p.Price >= minPrice.Value);
+        }
+
+        if (maxPrice.HasValue)
+        {
+            products = products.Where(p => p.Price <= maxPrice.Value);
+        }
+
+        // ===== VIEWBAG FOR UI =====
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Keyword = keyword;
         ViewBag.SelectedCategory = categoryId;
         ViewBag.SearchType = searchType;
+        ViewBag.MinPrice = minPrice ?? 0;
+        ViewBag.MaxPrice = maxPrice ?? 10000;
 
         return View(products.ToList());
     }
@@ -103,7 +121,6 @@ public class ProductController : Controller
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Brands = _context.tb_Brand.ToList();
         ViewBag.Shops = _context.tb_Shop.ToList();
-
         return View(model);
     }
 
@@ -118,7 +135,6 @@ public class ProductController : Controller
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Brands = _context.tb_Brand.ToList();
         ViewBag.Shops = _context.tb_Shop.ToList();
-
         return View(product);
     }
 
@@ -130,9 +146,9 @@ public class ProductController : Controller
         if (product == null)
             return NotFound();
 
-        // ===== UPDATE FIELD (KHÔNG UPDATE NGUYÊN OBJECT) =====
         product.ProductName = model.ProductName;
         product.Price = model.Price;
+        product.PromotionPrice = model.PromotionPrice;
         product.Quantity = model.Quantity;
         product.CateID = model.CateID;
         product.BrandID = model.BrandID;
@@ -142,6 +158,7 @@ public class ProductController : Controller
         product.SeoTitle = model.SeoTitle;
         product.MetaKeywords = model.MetaKeywords;
         product.MetaDescription = model.MetaDescription;
+        product.UpdatedDate = DateTime.Now;
 
         _context.SaveChanges();
 

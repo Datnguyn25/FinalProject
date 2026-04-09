@@ -3,119 +3,182 @@
 @{
     var selectedCategory = ViewBag.SelectedCategory as int?;
     var searchType = ViewBag.SearchType as string;
+    var minPrice = ViewBag.MinPrice ?? 0;
+    var maxPrice = ViewBag.MaxPrice ?? 100000000;
 }
 
 <div class="shop-container">
 
- 
+    <!-- ===== LAYOUT CHÍNH: SIDEBAR + CONTENT ===== -->
+    <div class="shop-layout">
 
-    <!-- SEARCH -->
-    <form method="get" asp-action="Index" class="shop-search">
+        <!-- ===== SIDEBAR LỌC GIÁ (NẰM SÁT BÊN TRÁI) ===== -->
+        <div class="shop-sidebar">
+            <h5 class="filter-title">Filter by price</h5>
 
-        <select name="searchType" class="shop-input">
-            <option value="name" selected="@(searchType == "name")">🔍 Product Name</option>
-            <option value="seo" selected="@(searchType == "seo")">📌 SEO Title</option>
-            <option value="keyword" selected="@(searchType == "keyword")">🏷 Meta Keywords</option>
-            <option value="desc" selected="@(searchType == "desc")">📝 Description</option>
-        </select>
+            <form method="get" asp-action="Index">
+                <!-- Giữ lại các tham số khác -->
+                <input type="hidden" name="categoryId" value="@selectedCategory" />
+                <input type="hidden" name="keyword" value="@ViewBag.Keyword" />
+                <input type="hidden" name="searchType" value="@searchType" />
 
-        <input type="text" name="keyword"
-               value="@ViewBag.Keyword"
-               placeholder="Search product..."
-               class="shop-input" />
+                <div class="price-filter">
+                    <label>Price from: <b id="minPriceValue">@minPrice</b> VNĐ</label>
+                    <input type="range"
+                           name="minPrice"
+                           min="0"
+                           max="1000000"
+                           step="0"
+                           value="@minPrice"
+                           oninput="updatePriceValues()" />
 
-        <button type="submit" class="shop-btn">
-            Search
-        </button>
+                    <label>To: <b id="maxPriceValue">@maxPrice</b> VNĐ</label>
+                    <input type="range"
+                           name="maxPrice"
+                           min="0"
+                           max="1000000"
+                           step="0"
+                           value="@maxPrice"
+                           oninput="updatePriceValues()" />
+                </div>
 
-    </form>
+                <button type="submit" class="shop-filter-btn">
+                    Search
+                </button>
+            </form>
+        </div>
 
-    <hr />
+        <!-- ===== NỘI DUNG CHÍNH (GIỮ NGUYÊN CODE CỦA BẠN) ===== -->
+        <div class="shop-main">
 
-    <!-- CATEGORY -->
-    
+            <!-- SEARCH -->
+            <form method="get" asp-action="Index" class="shop-search">
 
-    <div class="shop-category">
+                <select name="searchType" class="shop-input">
+                    <option value="name" selected="@(searchType == "name")">🔍 Product Name</option>
+                    <option value="seo" selected="@(searchType == "seo")">📌 SEO Title</option>
+                    <option value="keyword" selected="@(searchType == "keyword")">🏷 Meta Keywords</option>
+                    <option value="desc" selected="@(searchType == "desc")">📝 Description</option>
+                </select>
 
-        <a href="/Product"
-           class="@(selectedCategory == null ? "shop-cate active" : "shop-cate")">
-            All
-        </a>
+                <input type="text" name="keyword"
+                       value="@ViewBag.Keyword"
+                       placeholder="Search product..."
+                       class="shop-input" />
 
-        @foreach (var c in ViewBag.Categories)
-        {
-            <a href="/Product?cateID=@c.CateID"
-               class="@(selectedCategory == c.CateID ? "shop-cate active" : "shop-cate")">
-                @c.CateName
-            </a>
-        }
+                <button type="submit" class="shop-btn">
+                    Search
+                </button>
 
-    </div>
+            </form>
 
-    <hr />
+            <hr />
 
-    <!-- PRODUCT LIST -->
-    <div class="shop-grid">
+            <!-- CATEGORY -->
+            <div class="shop-category">
 
-        @if (Model.Count == 0)
-        {
-            <p class="shop-empty">
-                ❌ No products found!
-            </p>
-        }
-        else
-        {
-            @foreach (var item in Model)
-            {
-                <div class="shop-card">
+                <a href="/Product"
+                       class="@(selectedCategory == null ? "shop-cate active" : "shop-cate")">
+                    All
+                </a>
 
-                    <a href="/Product/Details/@item.ProductID"
-                       class="shop-link">
+                @foreach (var c in ViewBag.Categories)
+                {
+                    <a href="/Product?categoryId=@c.CateID"
+                           class="@(selectedCategory == c.CateID ? "shop-cate active" : "shop-cate")">
+                        @c.CateName
+                    </a>
+                }
 
-                        <img src="@(string.IsNullOrEmpty(item.Image)
-                                                                                  ? Url.Content("~/assets/product-1.jpg")
-                                                                                  : Url.Content("~/assets/" + item.Image))" />
+            </div>
 
-                <div class="shop-body">
+            <hr />
 
-                            <h4>@item.ProductName</h4>
+            <!-- PRODUCT LIST -->
+            <div class="shop-grid">
 
-                            <p class="shop-price">
-                                @item.Price VNĐ
-                            </p>
+                @if (Model.Count == 0)
+                {
+                    <p class="shop-empty">
+                        ❌ No products found!
+                    </p>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <div class="shop-card">
 
-                            <p class="shop-cate-name">
-                                @item.Category?.CateName
-                            </p>
+                            <a href="/Product/Details/@item.ProductID"
+                                   class="shop-link">
+
+                                <img src="@(string.IsNullOrEmpty(item.Image)
+                                                                                                                                                                              ? Url.Content("~/assets/product-1.jpg")
+                                                                                                                                                                              : Url.Content("~/assets/" + item.Image))" />
+
+                                <div class="shop-body">
+
+                                    <h4>@item.ProductName</h4>
+
+                                    <p class="shop-price">
+                                        @item.Price.ToString("0.000") VNĐ
+                                    </p>
+
+                                    <p class="shop-cate-name">
+                                        @item.Category?.CateName
+                                    </p>
+
+                                </div>
+
+                            </a>
+
+                            <div class="shop-actions-group">
+                                <!-- BUY NOW - NÚT CHÍNH -->
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@item.ProductID" />
+                                    <input type="hidden" name="actionType" value="buyNow" />
+                                    <button type="submit" class="shop-buy-btn">
+                                        ⚡ Buy Now
+                                    </button>
+                                </form>
+
+                                <!-- ADD TO CART - NÚT PHỤ -->
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@item.ProductID" />
+                                    <input type="hidden" name="actionType" value="add" />
+                                    <button type="submit" class="shop-cart-btn">
+                                        🛒 Add to Cart
+                                    </button>
+                                </form>
+                            </div>
 
                         </div>
-
-                    </a>
-
-                    <div class="shop-actions-group">
-                        <form asp-controller="Cart" asp-action="AddToCart" method="post" style="flex: 1;">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="productId" value="@item.ProductID" />
-                            <input type="hidden" name="actionType" value="add" />
-                            <button type="submit" class="shop-cart-btn">
-                                🛒 Add to Cart
-                            </button>
-                        </form>
-
-                        <form asp-controller="Cart" asp-action="AddToCart" method="post" style="flex: 1;">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="productId" value="@item.ProductID" />
-                            <input type="hidden" name="actionType" value="buyNow" />
-                            <button type="submit" class="shop-buy-btn">
-                                ⚡ Buy Now
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
+                    }
                 }
-        }
 
+            </div>
+
+        </div>
     </div>
-
 </div>
+
+<!-- ===== SCRIPT CẬP NHẬT GIÁ ===== -->
+<script>
+    function formatCurrency(value) {
+        return Number(value).toLocaleString('vi-VN') + " VNĐ";
+    }
+
+    function updatePriceValues() {
+        var minPrice = document.querySelector("input[name='minPrice']").value;
+        var maxPrice = document.querySelector("input[name='maxPrice']").value;
+
+        document.getElementById("minPriceValue").innerText = formatCurrency(minPrice);
+        document.getElementById("maxPriceValue").innerText = formatCurrency(maxPrice);
+    }
+
+    // Cập nhật giá khi tải trang
+    window.onload = updatePriceValues;
+</script>
+
