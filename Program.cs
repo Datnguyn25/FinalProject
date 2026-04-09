@@ -25,7 +25,8 @@ namespace FinalProject
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@"./keys/"));
+                .PersistKeysToFileSystem(new DirectoryInfo(@"./keys/"))
+                .SetApplicationName("FinalProject_Unique_Name");
 
             // Add services to the container
             builder.Services.AddControllersWithViews();
@@ -95,6 +96,8 @@ namespace FinalProject
                 options.SlidingExpiration = true;              // Reset thời gian 30 ngày mỗi khi bạn có hoạt động
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
+
+                options.Cookie.MaxAge = options.ExpireTimeSpan;
             });
 
             // Session

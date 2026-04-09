@@ -1,4 +1,6 @@
-﻿namespace FinalProject.ViewModels
+﻿using Microsoft.AspNetCore.Http;
+
+namespace FinalProject.ViewModels
 {
     public class ProductVM
     {
@@ -12,3 +14,4 @@
         public int CategoryID { get; set; }
     }
 }
+

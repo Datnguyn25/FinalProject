@@ -13,7 +13,7 @@ public class ProductController : Controller
     }
 
     // ===== LIST + FILTER + SEARCH + PRICE FILTER =====
-    public IActionResult Index(int? categoryId, string keyword, string searchType,
+    public IActionResult Index(int? cateId, string keyword, string searchType,
                                decimal? minPrice, decimal? maxPrice)
     {
         var products = _context.tb_Product
@@ -23,7 +23,7 @@ public class ProductController : Controller
             .AsQueryable();
 
         // ===== FILTER BY CATEGORY =====
-        if (categoryId.HasValue)
+        if (cateId.HasValue)
         {
             products = products.Where(p => p.CateID == cateId);
         }

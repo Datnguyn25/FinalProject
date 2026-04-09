@@ -8,7 +8,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
+<form asp-action="Create" asp-controller="SellerProduct" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
     <div class="row">
         <div class="col-md-8">
@@ -44,8 +44,9 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="ListImages" class="form-label">List images (comma separated)</label>
-                <input asp-for="ListImages" class="form-control" />
+                <label class="form-label">Product Gallery (Sub images)</label>
+                <input type="file" name="subImages" class="form-control" multiple accept="image/*" />
+                <small class="text-muted">You can select multiple files at once.</small>
             </div>
         </div>
 
@@ -85,13 +86,13 @@
             </div>
 
             <div class="form-check mb-3">
-                <input asp-for="Hot" class="form-check-input" />
-                <label asp-for="Hot" class="form-check-label">Hot</label>
+                <input asp-for="Hot" class="form-check-input" disabled />
+                <label asp-for="Hot" class="form-check-label text-muted">Hot (Admin Only)</label>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Main image</label>
-                <input type="file" name="imageFile" class="form-control" />
+                <label class="form-label">Main Image (Thumbnail)</label>
+                <input type="file" name="imageFile" class="form-control" accept="image/*" required />
             </div>
 
             <div class="d-grid gap-2">

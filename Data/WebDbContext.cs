@@ -73,7 +73,146 @@ namespace FinalProject.Data
                     MetaKeywords = "dresses, women clothing, skirts",
                     MetaDescription = "Latest fashion trends for women",
                     CreatedDate = new DateTime(2026, 3, 23)
-                }
+                },
+
+                new ProductCategory
+                {
+                    CateID = 1,
+                    CateName = "Men's Fashion",
+                    SeoTitle = "mens-fashion",
+                    Statuss = true,
+                    Sort = 1,
+                    ParentID = null,
+                    MetaKeywords = "men clothing, fashion, shirts",
+                    MetaDescription = "High quality clothing for men",
+                    CreatedDate = new DateTime(2026, 3, 23)
+                },
+                new ProductCategory
+    {
+        CateID = 2,
+        CateName = "Women's Fashion",
+        SeoTitle = "womens-fashion",
+        Statuss = true,
+        Sort = 2,
+        ParentID = null,
+        MetaKeywords = "dresses, women clothing, fashion",
+        MetaDescription = "Latest fashion trends for women",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+    new ProductCategory
+    {
+        CateID = 3,
+        CateName = "Accessories",
+        SeoTitle = "accessories",
+        Statuss = true,
+        Sort = 3,
+        ParentID = null,
+        MetaKeywords = "bags, belts, watches",
+        MetaDescription = "Fashion accessories for everyone",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+
+    // --- CẤP 2: CON CỦA MEN'S FASHION (ParentID = 1) ---
+    new ProductCategory
+    {
+        CateID = 4,
+        CateName = "Men's Shirts",
+        SeoTitle = "mens-shirts",
+        Statuss = true,
+        Sort = 1,
+        ParentID = 1,
+        MetaKeywords = "t-shirts, polo, oxford",
+        MetaDescription = "Stylish shirts for men",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+    new ProductCategory
+    {
+        CateID = 5,
+        CateName = "Men's Pants",
+        SeoTitle = "mens-pants",
+        Statuss = true,
+        Sort = 2,
+        ParentID = 1,
+        MetaKeywords = "jeans, trousers, shorts",
+        MetaDescription = "Comfortable pants for men",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+    new ProductCategory
+    {
+        CateID = 6,
+        CateName = "Men's Jackets",
+        SeoTitle = "mens-jackets",
+        Statuss = true,
+        Sort = 3,
+        ParentID = 1,
+        MetaKeywords = "outerwear, coats, hoodies",
+        MetaDescription = "Winter and autumn jackets for men",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+
+    // --- CẤP 2: CON CỦA WOMEN'S FASHION (ParentID = 2) ---
+    new ProductCategory
+    {
+        CateID = 7,
+        CateName = "Dresses & Skirts",
+        SeoTitle = "dresses-skirts",
+        Statuss = true,
+        Sort = 1,
+        ParentID = 2,
+        MetaKeywords = "maxi dress, mini skirt",
+        MetaDescription = "Beautiful dresses for ladies",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+    new ProductCategory
+    {
+        CateID = 8,
+        CateName = "Women's Tops",
+        SeoTitle = "womens-tops",
+        Statuss = true,
+        Sort = 2,
+        ParentID = 2,
+        MetaKeywords = "blouses, tank tops, t-shirts",
+        MetaDescription = "Trendy tops for women",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+    new ProductCategory
+    {
+        CateID = 9,
+        CateName = "Women's Handbags",
+        SeoTitle = "womens-handbags",
+        Statuss = true,
+        Sort = 3,
+        ParentID = 2,
+        MetaKeywords = "purses, clutches, totes",
+        MetaDescription = "Luxury handbags for women",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+
+    // --- CẤP 2: CON CỦA ACCESSORIES (ParentID = 3) ---
+    new ProductCategory
+    {
+        CateID = 10,
+        CateName = "Footwear",
+        SeoTitle = "footwear",
+        Statuss = true,
+        Sort = 1,
+        ParentID = 3,
+        MetaKeywords = "shoes, sneakers, boots",
+        MetaDescription = "Quality footwear for all ages",
+        CreatedDate = new DateTime(2026, 3, 23)
+    },
+    new ProductCategory
+    {
+        CateID = 11,
+        CateName = "Watches & Jewelry",
+        SeoTitle = "watches-jewelry",
+        Statuss = true,
+        Sort = 2,
+        ParentID = 3,
+        MetaKeywords = "gold, silver, luxury watches",
+        MetaDescription = "Premium timepieces and jewelry",
+        CreatedDate = new DateTime(2026, 3, 23)
+    }
             );
 
             modelBuilder.Entity<Brand>().HasData(
