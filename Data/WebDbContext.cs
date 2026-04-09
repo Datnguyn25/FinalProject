@@ -55,25 +55,20 @@ namespace FinalProject.Data
 
             modelBuilder.Entity<ProductCategory>().HasData(
                 // Cấp 1
-                new ProductCategory { CateID = 1, CateName = "Men's Fashion", SeoTitle = "mens-fashion", Statuss = true, CreatedDate = new DateTime(2026, 3, 23) },
-                new ProductCategory { CateID = 2, CateName = "Women's Fashion", SeoTitle = "womens-fashion", Statuss = true, CreatedDate = new DateTime(2026, 3, 23) },
-
-                // ĐỔI TỪ 4 THÀNH 3 ĐỂ PHÙ HỢP VỚI PARENTID CỦA CON NÓ
-                new ProductCategory { CateID = 3, CateName = "Accessories", SeoTitle = "accessories", Statuss = true, Sort = 3, CreatedDate = new DateTime(2026, 3, 23) },
-
-                // Cấp 2 - Con của Men's Fashion (ParentID = 1)
-                new ProductCategory { CateID = 4, CateName = "Men's Shirts", ParentID = 1, Statuss = true, CreatedDate = new DateTime(2026, 3, 23) },
-                new ProductCategory { CateID = 5, CateName = "Men's Pants", ParentID = 1, Statuss = true, CreatedDate = new DateTime(2026, 3, 23) },
-                new ProductCategory { CateID = 6, CateName = "Men's Jackets", ParentID = 1, Statuss = true, CreatedDate = new DateTime(2026, 3, 23) },
-
-                // Cấp 2 - Con của Women's Fashion (ParentID = 2)
-                new ProductCategory { CateID = 7, CateName = "Dresses & Skirts", ParentID = 2, Statuss = true, CreatedDate = new DateTime(2026, 3, 23) },
-                new ProductCategory { CateID = 8, CateName = "Women's Tops", ParentID = 2, Statuss = true, CreatedDate = new DateTime(2026, 3, 23) },
-                new ProductCategory { CateID = 9, CateName = "Women's Handbags", ParentID = 2, Statuss = true, CreatedDate = new DateTime(2026, 3, 23) },
-
-                // Cấp 2 - Con của Accessories (ParentID = 3)
-                new ProductCategory { CateID = 10, CateName = "Footwear", ParentID = 3, Statuss = true, Sort = 1, CreatedDate = new DateTime(2026, 3, 23) },
-                new ProductCategory { CateID = 11, CateName = "Watches & Jewelry", ParentID = 3, Statuss = true, Sort = 2, CreatedDate = new DateTime(2026, 3, 23) }
+                new ProductCategory { CateID = 1, CateName = "Men's Fashion", SeoTitle = "mens-fashion", Statuss = true, Sort = 1, ParentID = null, MetaKeywords = "men clothing, fashion", MetaDescription = "High quality clothing for men", CreatedDate = new DateTime(2026, 3, 23) },
+                new ProductCategory { CateID = 2, CateName = "Women's Fashion", SeoTitle = "womens-fashion", Statuss = true, Sort = 2, ParentID = null, MetaKeywords = "dresses, women fashion", MetaDescription = "Latest fashion trends for women", CreatedDate = new DateTime(2026, 3, 23) },
+                
+                new ProductCategory { CateID = 3, CateName = "Accessories", SeoTitle = "accessories", Statuss = true, Sort = 3, ParentID = null, MetaKeywords = "bags, watches, jewelry", MetaDescription = "Fashion accessories for everyone", CreatedDate = new DateTime(2026, 3, 23) },
+                
+                new ProductCategory { CateID = 4, CateName = "Men's Torso", SeoTitle = "mens-torso", ParentID = 1, Statuss = true, Sort = 1, MetaKeywords = "t-shirts, polo", MetaDescription = "Stylish shirts for men", CreatedDate = new DateTime(2026, 3, 23) },
+                new ProductCategory { CateID = 5, CateName = "Men's Leggings", SeoTitle = "mens-leggings", ParentID = 1, Statuss = true, Sort = 2, MetaKeywords = "jeans, trousers", MetaDescription = "Comfortable pants for men", CreatedDate = new DateTime(2026, 3, 23) },
+                
+                new ProductCategory { CateID = 6, CateName = "Dresses & Skirts", SeoTitle = "dresses-skirts", ParentID = 2, Statuss = true, Sort = 1, MetaKeywords = "maxi dress, skirts", MetaDescription = "Beautiful dresses for ladies", CreatedDate = new DateTime(2026, 3, 23) },
+                new ProductCategory { CateID = 7, CateName = "Women's Handbags", SeoTitle = "womens-handbags", ParentID = 2, Statuss = true, Sort = 2, MetaKeywords = "purses, totes", MetaDescription = "Luxury handbags for women", CreatedDate = new DateTime(2026, 3, 23) },
+                
+                new ProductCategory { CateID = 8, CateName = "Footwear", SeoTitle = "footwear", ParentID = 3, Statuss = true, Sort = 1, MetaKeywords = "shoes, sneakers", MetaDescription = "Quality footwear for all ages", CreatedDate = new DateTime(2026, 3, 23) },
+                
+                new ProductCategory { CateID = 9, CateName = "Watches & Jewelry", SeoTitle = "watches-jewelry", ParentID = 3, Statuss = true, Sort = 2, MetaKeywords = "gold, luxury watches", MetaDescription = "Premium timepieces and jewelry", CreatedDate = new DateTime(2026, 3, 23) }
             );
 
             modelBuilder.Entity<Brand>().HasData(
