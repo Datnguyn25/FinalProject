@@ -59,7 +59,13 @@ namespace FinalProject
                 options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 
                 //always displays name claim from google, not email
-                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
+
+                options.ClaimActions.MapJsonKey("name", "name");
+                options.ClaimActions.MapJsonKey("given_name", "given_name");
+
+                options.SaveTokens = true;
 
                 //chon tai khoan khi dang nhap bang google
                 options.Events.OnRedirectToAuthorizationEndpoint = context =>

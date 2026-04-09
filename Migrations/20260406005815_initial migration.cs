@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinalProject.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -164,43 +164,6 @@ namespace FinalProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tb_Shop",
-                columns: table => new
-                {
-                    ShopID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ShopName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LogoUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    CoverImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShopDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ContactEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ContactPhone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    ShopAddress = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    TotalProducts = table.Column<int>(type: "int", nullable: false),
-                    TotalFollowers = table.Column<int>(type: "int", nullable: false),
-                    RatingAverage = table.Column<decimal>(type: "decimal(3,2)", nullable: false),
-                    TotalReviews = table.Column<int>(type: "int", nullable: false),
-                    TotalSold = table.Column<int>(type: "int", nullable: false),
-                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsBanned = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RoleId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tb_Shop", x => x.ShopID);
-                    table.ForeignKey(
-                        name: "FK_tb_Shop_tb_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "tb_Roles",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "tb_Carts",
                 columns: table => new
                 {
@@ -243,6 +206,49 @@ namespace FinalProject.Migrations
                         principalTable: "tb_Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_Shop",
+                columns: table => new
+                {
+                    ShopID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ShopName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LogoUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    CoverImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShopDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContactEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ContactPhone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ShopAddress = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TotalProducts = table.Column<int>(type: "int", nullable: false),
+                    TotalFollowers = table.Column<int>(type: "int", nullable: false),
+                    RatingAverage = table.Column<decimal>(type: "decimal(3,2)", nullable: false),
+                    TotalReviews = table.Column<int>(type: "int", nullable: false),
+                    TotalSold = table.Column<int>(type: "int", nullable: false),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsBanned = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RoleId = table.Column<int>(type: "int", nullable: true),
+                    OwnerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_Shop", x => x.ShopID);
+                    table.ForeignKey(
+                        name: "FK_tb_Shop_tb_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "tb_Roles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_tb_Shop_tb_Users_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "tb_Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -379,6 +385,30 @@ namespace FinalProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tb_ShopReview",
+                columns: table => new
+                {
+                    ReviewId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ShopId = table.Column<int>(type: "int", nullable: false),
+                    ReviewerName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_ShopReview", x => x.ReviewId);
+                    table.ForeignKey(
+                        name: "FK_tb_ShopReview_tb_Shop_ShopId",
+                        column: x => x.ShopId,
+                        principalTable: "tb_Shop",
+                        principalColumn: "ShopID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tb_CartItems",
                 columns: table => new
                 {
@@ -466,23 +496,23 @@ namespace FinalProject.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "f3802689-6509-4d4f-b401-c7c9db8e26de", "Admin", "ADMIN" },
-                    { 2, "05e5ec90-5fdc-4d0c-80f7-d93ad543f389", "User", "USER" },
-                    { 3, "538431f5-2ce3-4e65-a4b6-792f23cf2954", "Shop", "SHOP" }
+                    { 1, "0b816685-1577-47d4-b246-ae5ba9dd744d", "Admin", "ADMIN" },
+                    { 2, "e1147005-12e3-4ce3-abda-ee7f9e70a778", "User", "USER" },
+                    { 3, "3e985b37-337a-4084-8d74-32f8a2179e4c", "Shop", "SHOP" }
                 });
 
             migrationBuilder.InsertData(
                 table: "tb_Shop",
-                columns: new[] { "ShopID", "City", "ContactEmail", "ContactPhone", "Country", "CoverImageUrl", "CreatedAt", "IsActive", "IsBanned", "IsVerified", "LogoUrl", "RatingAverage", "RoleId", "ShopAddress", "ShopDescription", "ShopName", "TotalFollowers", "TotalProducts", "TotalReviews", "TotalSold", "UpdatedAt" },
-                values: new object[] { 1, "Ho Chi Minh City", "support@urbanchic.com", "+84987654321", "Vietnam", "cover-urban.jpg", new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), true, false, true, "logo-urban.png", 4.80m, 2, "123 ABC Street, District 1", "Premium streetwear and modern fashion trends for the young generation.", "Urban Chic Fashion", 1200, 50, 450, 2500, null });
+                columns: new[] { "ShopID", "City", "ContactEmail", "ContactPhone", "Country", "CoverImageUrl", "CreatedAt", "IsActive", "IsBanned", "IsVerified", "LogoUrl", "OwnerId", "RatingAverage", "RoleId", "ShopAddress", "ShopDescription", "ShopName", "TotalFollowers", "TotalProducts", "TotalReviews", "TotalSold", "UpdatedAt" },
+                values: new object[] { 1, "Ho Chi Minh City", "support@urbanchic.com", "+84987654321", "Vietnam", "cover-urban.jpg", new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), true, false, true, "logo-urban.png", null, 4.80m, 2, "123 ABC Street, District 1", "Premium streetwear and modern fashion trends for the young generation.", "Urban Chic Fashion", 1200, 50, 450, 2500, null });
 
             migrationBuilder.InsertData(
                 table: "tb_Product",
                 columns: new[] { "ProductID", "BrandID", "CateID", "CreatedBy", "CreatedDate", "Detail", "Hot", "Image", "ListImages", "MetaDescription", "MetaKeywords", "Price", "ProductDescription", "ProductName", "PromotionPrice", "Quantity", "SeoTitle", "ShopID", "Status", "UpdatedBy", "UpdatedDate", "VAT", "ViewCount" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "<p>Breathable fabric, perfect for office and formal events.</p>", true, "white-shirt.jpg", "img1.jpg,img2.jpg", "Buy premium white oxford shirt at the best price.", "white shirt, oxford shirt, formal", 45.00m, "Classic fit white oxford shirt made from 100% cotton.", "Premium White Oxford Shirt", 39.99m, 100, "premium-white-oxford-shirt", 1, true, null, null, true, 0 },
-                    { 2, 1, 2, null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "<p>Soft chiffon material with adjustable waist strap.</p>", false, "floral-dress.jpg", "img3.jpg,img4.jpg", "Beautiful floral dress for your summer vacation.", "summer dress, floral dress, maxi dress", 55.00m, "Elegant floral print dress for summer outings.", "Floral Summer Maxi Dress", 49.00m, 50, "floral-summer-maxi-dress", 1, true, null, null, true, 0 }
+                    { 1, 1, 1, null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "<p>Breathable fabric, perfect for office and formal events.</p>", true, "white-shirt.jpg", "img1.jpg,img2.jpg", "Buy premium white oxford shirt at the best price.", "white shirt, oxford shirt, formal", 45.000m, "Classic fit white oxford shirt made from 100% cotton.", "Premium White Oxford Shirt", 39.99m, 100, "premium-white-oxford-shirt", 1, true, null, null, true, 0 },
+                    { 2, 1, 2, null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "<p>Soft chiffon material with adjustable waist strap.</p>", false, "floral-dress.jpg", "img3.jpg,img4.jpg", "Beautiful floral dress for your summer vacation.", "summer dress, floral dress, maxi dress", 55.000m, "Elegant floral print dress for summer outings.", "Floral Summer Maxi Dress", 49.00m, 50, "floral-summer-maxi-dress", 1, true, null, null, true, 0 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -553,9 +583,19 @@ namespace FinalProject.Migrations
                 filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tb_Shop_OwnerId",
+                table: "tb_Shop",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tb_Shop_RoleId",
                 table: "tb_Shop",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tb_ShopReview_ShopId",
+                table: "tb_ShopReview",
+                column: "ShopId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_UserClaims_UserId",
@@ -601,6 +641,9 @@ namespace FinalProject.Migrations
                 name: "tb_RoleClaims");
 
             migrationBuilder.DropTable(
+                name: "tb_ShopReview");
+
+            migrationBuilder.DropTable(
                 name: "tb_SystemSetting");
 
             migrationBuilder.DropTable(
@@ -625,9 +668,6 @@ namespace FinalProject.Migrations
                 name: "tb_Product");
 
             migrationBuilder.DropTable(
-                name: "tb_Users");
-
-            migrationBuilder.DropTable(
                 name: "tb_Brand");
 
             migrationBuilder.DropTable(
@@ -638,6 +678,9 @@ namespace FinalProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "tb_Roles");
+
+            migrationBuilder.DropTable(
+                name: "tb_Users");
         }
     }
 }

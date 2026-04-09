@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProject.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20260330032033_Initial Migration")]
-    partial class InitialMigration
+    [Migration("20260406005815_initial migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -314,7 +314,7 @@ namespace FinalProject.Migrations
                             ListImages = "img1.jpg,img2.jpg",
                             MetaDescription = "Buy premium white oxford shirt at the best price.",
                             MetaKeywords = "white shirt, oxford shirt, formal",
-                            Price = 45.00m,
+                            Price = 45.000m,
                             ProductDescription = "Classic fit white oxford shirt made from 100% cotton.",
                             ProductName = "Premium White Oxford Shirt",
                             PromotionPrice = 39.99m,
@@ -337,7 +337,7 @@ namespace FinalProject.Migrations
                             ListImages = "img3.jpg,img4.jpg",
                             MetaDescription = "Beautiful floral dress for your summer vacation.",
                             MetaKeywords = "summer dress, floral dress, maxi dress",
-                            Price = 55.00m,
+                            Price = 55.000m,
                             ProductDescription = "Elegant floral print dress for summer outings.",
                             ProductName = "Floral Summer Maxi Dress",
                             PromotionPrice = 49.00m,
@@ -507,6 +507,9 @@ namespace FinalProject.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("RatingAverage")
                         .HasColumnType("decimal(3,2)");
 
@@ -544,6 +547,8 @@ namespace FinalProject.Migrations
 
                     b.HasKey("ShopID");
 
+                    b.HasIndex("OwnerId");
+
                     b.HasIndex("RoleId");
 
                     b.ToTable("tb_Shop", (string)null);
@@ -572,6 +577,43 @@ namespace FinalProject.Migrations
                             TotalReviews = 450,
                             TotalSold = 2500
                         });
+                });
+
+            modelBuilder.Entity("FinalProject.Models.ShopReview", b =>
+                {
+                    b.Property<int>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewId"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReviewerName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ShopId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("ShopId");
+
+                    b.ToTable("tb_ShopReview");
                 });
 
             modelBuilder.Entity("FinalProject.Models.SystemSetting", b =>
@@ -750,21 +792,21 @@ namespace FinalProject.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "f3802689-6509-4d4f-b401-c7c9db8e26de",
+                            ConcurrencyStamp = "0b816685-1577-47d4-b246-ae5ba9dd744d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "05e5ec90-5fdc-4d0c-80f7-d93ad543f389",
+                            ConcurrencyStamp = "e1147005-12e3-4ce3-abda-ee7f9e70a778",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "538431f5-2ce3-4e65-a4b6-792f23cf2954",
+                            ConcurrencyStamp = "3e985b37-337a-4084-8d74-32f8a2179e4c",
                             Name = "Shop",
                             NormalizedName = "SHOP"
                         });
@@ -973,12 +1015,29 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.Shop", b =>
                 {
+                    b.HasOne("FinalProject.Models.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.Navigation("Owner");
+
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("FinalProject.Models.ShopReview", b =>
+                {
+                    b.HasOne("FinalProject.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
