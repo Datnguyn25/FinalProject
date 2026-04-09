@@ -25,7 +25,23 @@ public class ProductController : Controller
         // ===== FILTER BY CATEGORY =====
         if (cateId.HasValue)
         {
-            products = products.Where(p => p.CateID == cateId);
+            // L?y category con
+            var childIds = _context.tb_ProductCategory
+                .Where(c => c.ParentID == cateId)
+                .Select(c => c.CateID)
+                .ToList();
+
+            // N?u là category cha ? l?y luôn con
+            if (childIds.Any())
+            {
+                products = products.Where(p =>
+                   p.CateID == cateId || (p.CateID.HasValue && childIds.Contains(p.CateID.Value)));
+            }
+            else
+            {
+                // N?u là category con ? l?c bình th??ng
+                products = products.Where(p => p.CateID == cateId);
+            }
         }
 
         // ===== SEARCH =====
