@@ -12,11 +12,12 @@ namespace FinalProject.Controllers
 {
     public partial class AccountController
     {
-        public IActionResult GoogleLogin()
+        public IActionResult GoogleLogin(bool rememberMe = false)
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("GoogleResponse", "Account")
+                RedirectUri = Url.Action("GoogleResponse", "Account"),
+                IsPersistent = rememberMe
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
@@ -26,6 +27,7 @@ namespace FinalProject.Controllers
             var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
             if (!result.Succeeded) return RedirectToAction("Login");
 
+            bool isPersistent = result.Properties?.IsPersistent ?? false;
             var email = result.Principal.FindFirstValue(ClaimTypes.Email);
             var googleName = result.Principal.FindFirstValue(ClaimTypes.Name) ?? result.Principal.FindFirstValue("name");
 
@@ -61,7 +63,7 @@ namespace FinalProject.Controllers
                 new Claim(ClaimTypes.Name, user.FullName ?? googleName ?? user.UserName)
             };
 
-            await _signInManager.SignInWithClaimsAsync(user, isPersistent: false, claims);
+            await _signInManager.SignInWithClaimsAsync(user, isPersistent: isPersistent, claims);
             return RedirectToAction("Index", "Home");
         }
     }

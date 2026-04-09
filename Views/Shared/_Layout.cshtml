@@ -83,7 +83,22 @@
             function closeLoginPopup() {
                 document.getElementById("loginPopup").style.display = "none";
             }
+                function updateCartCount() {
+                    fetch('/Cart/GetCartCount')
+                        .then(res => res.json())
+                        .then(data => {
+                            document.querySelector('.cart-badge').innerText = data.count;
+                        });
+                }
+
+        // Chạy khi vừa load trang
+        document.addEventListener("DOMContentLoaded", updateCartCount);
     </script>
+
+    <a href="/Cart" class="floating-cart">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-badge">0</span>
+    </a>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

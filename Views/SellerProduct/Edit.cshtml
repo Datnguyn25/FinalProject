@@ -1,117 +1,98 @@
-@model FinalProject.Models.Product
+﻿@model FinalProject.Models.Product
 
 @{
     ViewData["Title"] = "Edit Product";
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="ProductID" />
+<div class="container-fluid">
+    <h1>@ViewData["Title"]</h1>
 
     <div class="row">
         <div class="col-md-8">
-            <div class="mb-3">
-                <label asp-for="ProductName" class="form-label"></label>
-                <input asp-for="ProductName" class="form-control" />
-            </div>
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ProductID" />
 
-            <div class="mb-3">
-                <label asp-for="SeoTitle" class="form-label"></label>
-                <input asp-for="SeoTitle" class="form-control" />
-            </div>
+                <div class="card p-3 mb-3">
+                    <div class="mb-3">
+                        <label asp-for="ProductName" class="form-label">Tên sản phẩm</label>
+                        <input asp-for="ProductName" class="form-control" />
+                    </div>
 
-            <div class="mb-3">
-                <label asp-for="ProductDescription" class="form-label"></label>
-                <textarea asp-for="ProductDescription" class="form-control" rows="3"></textarea>
-            </div>
+                    <div class="mb-3">
+                        <label asp-for="ProductDescription" class="form-label">Mô tả ngắn</label>
+                        <textarea asp-for="ProductDescription" class="form-control" rows="3"></textarea>
+                    </div>
 
-            <div class="mb-3">
-                <label asp-for="Detail" class="form-label"></label>
-                <textarea asp-for="Detail" class="form-control" rows="6"></textarea>
-            </div>
+                    <div class="mb-3">
+                        <label asp-for="Detail" class="form-label">Chi tiết (HTML)</label>
+                        <textarea asp-for="Detail" class="form-control" rows="6"></textarea>
+                    </div>
+                </div>
 
-            <div class="mb-3">
-                <label asp-for="MetaKeywords" class="form-label"></label>
-                <input asp-for="MetaKeywords" class="form-control" />
-            </div>
+                <div class="card p-3 mb-3">
+                    <h5>SEO Settings</h5>
+                    <div class="mb-3">
+                        <label asp-for="SeoTitle" class="form-label">Seo Title</label>
+                        <input asp-for="SeoTitle" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="MetaKeywords" class="form-label">Keywords</label>
+                        <input asp-for="MetaKeywords" class="form-control" />
+                    </div>
+                </div>
 
-            <div class="mb-3">
-                <label asp-for="MetaDescription" class="form-label"></label>
-                <input asp-for="MetaDescription" class="form-control" />
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="ListImages" class="form-label">List images (comma separated)</label>
-                <input asp-for="ListImages" class="form-control" />
-            </div>
+                <div class="d-grid gap-2 mb-5">
+                    <button type="submit" class="btn btn-success btn-lg">Save All Changes</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
 
         <div class="col-md-4">
-            <div class="mb-3">
-                <label asp-for="CateID" class="form-label">Category</label>
-                <select asp-for="CateID" asp-items="@(new SelectList(ViewBag.Categories, "CateID", "CateName", Model.CateID))" class="form-select">
-                    <option value="">-- Select --</option>
-                </select>
+            <div class="card p-3 mb-3">
+                <h5>Price Management</h5>
+                <form asp-action="UpdatePrice" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.ProductID" />
+                    <div class="mb-2">
+                        <label class="small">Price</label>
+                        <input type="number" step="0.01" name="price" value="@Model.Price" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="small">Promotion Price</label>
+                        <input type="number" step="0.01" name="promotionPrice" value="@Model.PromotionPrice" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-outline-primary w-100">Update Price Only</button>
+                </form>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="BrandID" class="form-label">Brand</label>
-                <select asp-for="BrandID" asp-items="@(new SelectList(ViewBag.Brands, "BrandID", "BrandName", Model.BrandID))" class="form-select">
-                    <option value="">-- Select --</option>
-                </select>
+            <div class="card p-3 mb-3">
+                <h5>Inventory</h5>
+                <form asp-action="UpdateInventory" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.ProductID" />
+                    <div class="input-group">
+                        <input type="number" name="quantity" value="@Model.Quantity" class="form-control" />
+                        <button type="submit" class="btn btn-outline-primary">Update</button>
+                    </div>
+                </form>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Current image</label>
+            <div class="card p-3 mb-3">
+                <h5>Product Image</h5>
                 @if (!string.IsNullOrEmpty(Model.Image))
                 {
-                    <div class="mb-2">
-                        <img src="~/@Model.Image" alt="@Model.ProductName" class="img-thumbnail" style="max-width:200px" />
+                    <div class="text-center mb-2">
+                        <img src="~/@Model.Image" class="img-thumbnail" style="max-height:150px" />
                     </div>
                 }
-                <label class="form-label">Replace image</label>
-                <input type="file" name="imageFile" class="form-control" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Price</label>
-                <input name="price" value="@Model.Price" class="form-control" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Promotion Price</label>
-                <input name="promotionPrice" value="@Model.PromotionPrice" class="form-control" />
-            </div>
-
-            <form asp-action="UpdatePrice" method="post" class="mb-3">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="id" value="@Model.ProductID" />
-                <div class="input-group">
-                    <input type="number" step="0.01" name="price" value="@Model.Price" class="form-control" />
-                    <input type="number" step="0.01" name="promotionPrice" value="@Model.PromotionPrice" class="form-control" />
-                    <button type="submit" class="btn btn-outline-primary">Update Price</button>
-                </div>
-            </form>
-
-            <form asp-action="UpdateInventory" method="post" class="mb-3">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="id" value="@Model.ProductID" />
-                <div class="input-group">
-                    <input type="number" name="quantity" value="@Model.Quantity" class="form-control" />
-                    <button type="submit" class="btn btn-outline-primary">Update Inventory</button>
-                </div>
-            </form>
-
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-success">Save Changes</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <p class="small text-muted">To change image, use the main save form on the left.</p>
             </div>
         </div>
     </div>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-}
+}w

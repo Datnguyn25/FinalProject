@@ -41,6 +41,8 @@
 
                 @Html.AntiForgeryToken()
 
+                <input type="hidden" name="returnUrl" value="@Context.Request.Query["returnUrl"]" />
+
                 <div class="input-box">
                     <span class="icon">📧</span>
                     <input type="email" name="username" placeholder="Email" required>
@@ -56,6 +58,17 @@
 
                 </div>
 
+                <div class="options-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.85rem;">
+                    <label style="display: flex; align-items: center; cursor: pointer; color: #555;">
+                        <input type="checkbox" name="RememberMe" value="true" style="margin-right: 8px; cursor: pointer;">
+                        Remember me
+                    </label>
+                    <a asp-action="ForgotPassword" asp-controller="Account" style="text-decoration: none; color: #333; font-weight: 500;">
+                        Forgot Password?
+                    </a>
+                </div>
+
+
                 <button type="submit" class="login-btn">Login</button>
 
             </form>
@@ -67,6 +80,15 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png">
                 Login with Google
             </button>
+
+            <script>
+                function loginWithGoogle() {
+                    // Lấy trạng thái của checkbox RememberMe
+                    const isRemember = document.querySelector('input[name="RememberMe"]').checked;
+                    // Chuyển hướng kèm theo query string
+                    window.location.href = `/Account/GoogleLogin?rememberMe=${isRemember}`;
+                }
+            </script>
 
             <p class="register">
                 Don't have an account?

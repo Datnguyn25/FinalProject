@@ -1,14 +1,18 @@
 using FinalProject.Data;
 using FinalProject.Models;
 using FinalProject.Models.Momo;
+using FinalProject.Services.Email;
 using FinalProject.Services.Momo;
+using FinalProject.Services.Zalo;
+using FinalProject.Services.ZaloPay;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
-using FinalProject.Services.Email;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace FinalProject
 {
@@ -19,6 +23,9 @@ namespace FinalProject
             System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"./keys/"));
 
             // Add services to the container
             builder.Services.AddControllersWithViews();
@@ -77,13 +84,17 @@ namespace FinalProject
             });
 
             // Authentication (Google)
-            builder.Services.ConfigureApplicationCookie(options =>
+            builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, options =>
             {
                 options.LoginPath = "/Account/Login";
                 options.LogoutPath = "/Account/Logout";
                 options.AccessDeniedPath = "/Account/AccessDenied";
                 options.Cookie.Name = "FinalProjectAuthCookie";
 
+                options.ExpireTimeSpan = TimeSpan.FromDays(30); // Giữ đăng nhập 30 ngày
+                options.SlidingExpiration = true;              // Reset thời gian 30 ngày mỗi khi bạn có hoạt động
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
 
             // Session
@@ -94,18 +105,25 @@ namespace FinalProject
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            
 
             // HttpClient
             builder.Services.AddHttpClient();
 
             // MoMo
-            builder.Services.Configure<MomoOptionModel>(
-            builder.Configuration.GetSection("MomoAPI"));
+            builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
             builder.Services.AddScoped<IMomoService, MomoService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
+            
+            
+            // zalopay
+            builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
+
 
             var app = builder.Build();
 
+
+            
 
             // Configure middleware
             if (!app.Environment.IsDevelopment())

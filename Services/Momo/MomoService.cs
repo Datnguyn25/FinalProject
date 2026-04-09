@@ -21,46 +21,64 @@ namespace FinalProject.Services.Momo
         {
             model.OrderID = DateTime.UtcNow.Ticks.ToString();
             model.OrderInfo = "Customer: " + model.FullName + ". Context: " + model.OrderInfo;
+
+            long amountLong = Convert.ToInt64(model.Amount);
+
             var rawData =
-                $"partnerCode={_options.Value.PartnerCode}" +
-                $"&accessKey={_options.Value.AccessKey}" +
-                $"&requestId={model.OrderID}" +
-                $"&amount={model.Amount}" +
+                $"accessKey={_options.Value.AccessKey}" +
+                $"&amount={amountLong}" +
+                $"&extraData=" +
+                $"&ipnUrl={_options.Value.NotifyUrl}" + // Dùng ipnUrl
                 $"&orderId={model.OrderID}" +
                 $"&orderInfo={model.OrderInfo}" +
-                $"&returnUrl={_options.Value.ReturnUrl}" +
-                $"&notifyUrl={_options.Value.NotifyUrl}" +
-                $"&extraData=";
+                $"&partnerCode={_options.Value.PartnerCode}" +
+                $"&redirectUrl={_options.Value.ReturnUrl}" + // Dùng redirectUrl
+                $"&requestId={model.OrderID}" +
+                $"&requestType={_options.Value.RequestType}";
             var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
             var client = new RestClient(_options.Value.MomoApiUrl);
             var request = new RestRequest()  { Method = Method.Post };
-            request.AddHeader("Content-Type", "application/json; charset UTF = 8");
+            
 
             var requestData = new
             {
-                accessKey = _options.Value.AccessKey,
                 partnerCode = _options.Value.PartnerCode,
+                partnerName = "Test",
+                storeId = "MomoStore",
                 requestId = model.OrderID,
-                amount = model.Amount.ToString(),
+                amount = amountLong,
                 orderId = model.OrderID,
                 orderInfo = model.OrderInfo,
-                returnUrl = _options.Value.ReturnUrl,
-                notifyUrl = _options.Value.NotifyUrl,
+                redirectUrl = _options.Value.ReturnUrl, // Khớp với rawData
+                ipnUrl = _options.Value.NotifyUrl,    // Khớp với rawData
+                lang = "en",
                 extraData = "",
                 requestType = _options.Value.RequestType,
                 signature = signature
             };
-            request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
+            request.AddJsonBody(requestData);
 
             var response = await client.ExecuteAsync(request);
-            return JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
+            if (!response.IsSuccessful)
+            {
+                // Nếu lỗi, log nội dung lỗi ra để xem (nó chính là cái đống HTML gây lỗi đấy)
+                var errorContent = response.Content;
+                // Bạn có thể đặt breakpoint tại đây để kiểm tra biến errorContent
+                return new MomoCreatePaymentResponseModel { Message = "Momo API Error: " + response.StatusCode };
+            }
+
+            
+                return JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
+            
+            
+            
         }
 
         public MomoExecuteResponseModel PaymentExecuteAsync(IQueryCollection collection)
         {
-            var amount = collection.First(s => s.Key == "amount").Value;
-            var orderInfo = collection.First(s => s.Key == "orderInfo").Value;
-            var orderId = collection.First(s => s.Key == "orderId").Value;
+            var amount = collection.FirstOrDefault(s => s.Key == "amount").Value;
+            var orderInfo = collection.FirstOrDefault(s => s.Key == "orderInfo").Value;
+            var orderId = collection.FirstOrDefault(s => s.Key == "orderId").Value;
             return new MomoExecuteResponseModel
             {
                 Amount = amount,

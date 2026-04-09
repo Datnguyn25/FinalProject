@@ -13,7 +13,7 @@ public class ProductController : Controller
     }
 
     // ===== LIST + FILTER + SEARCH =====
-    public IActionResult Index(int? categoryId, string keyword, string searchType)
+    public IActionResult Index(int? cateId, string keyword, string searchType)
     {
         var products = _context.tb_Product
             .Include(p => p.Category)
@@ -21,9 +21,9 @@ public class ProductController : Controller
             .Include(p => p.Shop)
             .AsQueryable();
 
-        if (categoryId.HasValue)
+        if (cateId.HasValue)
         {
-            products = products.Where(p => p.CateID == categoryId);
+            products = products.Where(p => p.CateID == cateId);
         }
 
         if (!string.IsNullOrEmpty(keyword))
@@ -60,7 +60,7 @@ public class ProductController : Controller
 
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Keyword = keyword;
-        ViewBag.SelectedCategory = categoryId;
+        ViewBag.SelectedCategory = cateId;
         ViewBag.SearchType = searchType;
 
         return View(products.ToList());
