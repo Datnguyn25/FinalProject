@@ -9,16 +9,68 @@
 
 <div class="shop-container">
 
-    <!-- ===== LAYOUT CHÍNH: SIDEBAR + CONTENT ===== -->
     <div class="shop-layout">
 
-        <!-- ===== SIDEBAR LỌC GIÁ (NẰM SÁT BÊN TRÁI) ===== -->
+        <!-- ===== SIDEBAR ===== -->
         <div class="shop-sidebar">
             <h5 class="filter-title">Filter by price</h5>
 
+            <!-- ✅ SUB CATEGORY -->
+            @{
+                var categories = ViewBag.Categories as List<ProductCategory>;
+
+                int? currentParent = null;
+
+                if (selectedCategory != null && categories != null)
+                {
+                    var current = categories
+                        .FirstOrDefault(x => x.CateID == selectedCategory);
+
+                    if (current != null)
+                    {
+                        currentParent = current.ParentID ?? current.CateID;
+                    }
+                }
+            }
+
+            @if (currentParent != null)
+            {
+                var hasChild = false;
+
+                foreach (var c in ViewBag.Categories)
+                {
+                    if (c.ParentID == currentParent)
+                    {
+                        hasChild = true;
+                        break;
+                    }
+                }
+
+                if (hasChild)
+                {
+                    <hr />
+                    <h5 class="filter-title">Sub Categories</h5>
+
+                    <div class="shop-subcategory">
+                        @foreach (var sub in ViewBag.Categories)
+                        {
+                            if (sub.ParentID == currentParent)
+                            {
+                                <div>
+                                    <a href="/Product?cateId=@sub.CateID"
+                                           class="shop-cate @(selectedCategory == sub.CateID ? "active" : "")">
+                                        └ @sub.CateName
+                                    </a>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            }
+
+            <!-- PRICE FILTER -->
             <form method="get" asp-action="Index">
-                <!-- Giữ lại các tham số khác -->
-                <input type="hidden" name="categoryId" value="@selectedCategory" />
+                <input type="hidden" name="cateId" value="@selectedCategory" />
                 <input type="hidden" name="keyword" value="@ViewBag.Keyword" />
                 <input type="hidden" name="searchType" value="@searchType" />
 
@@ -28,7 +80,6 @@
                            name="minPrice"
                            min="0"
                            max="1000000"
-                           step="0"
                            value="@minPrice"
                            oninput="updatePriceValues()" />
 
@@ -37,7 +88,6 @@
                            name="maxPrice"
                            min="0"
                            max="1000000"
-                           step="0"
                            value="@maxPrice"
                            oninput="updatePriceValues()" />
                 </div>
@@ -46,9 +96,10 @@
                     Search
                 </button>
             </form>
+
         </div>
 
-        <!-- ===== NỘI DUNG CHÍNH (GIỮ NGUYÊN CODE CỦA BẠN) ===== -->
+        <!-- ===== MAIN ===== -->
         <div class="shop-main">
 
             <!-- SEARCH -->
@@ -74,7 +125,7 @@
 
             <hr />
 
-            <!-- CATEGORY -->
+            <!-- ✅ CATEGORY CHA ONLY -->
             <div class="shop-category">
 
                 <a href="/Product"
@@ -84,10 +135,13 @@
 
                 @foreach (var c in ViewBag.Categories)
                 {
-                    <a href="/Product?categoryId=@c.CateID"
-                           class="@(selectedCategory == c.CateID ? "shop-cate active" : "shop-cate")">
-                        @c.CateName
-                    </a>
+                    if (c.ParentID == null) // 👉 chỉ lấy cha
+                    {
+                        <a href="/Product?cateId=@c.CateID"
+                               class="@(selectedCategory == c.CateID ? "shop-cate active" : "shop-cate")">
+                            @c.CateName
+                        </a>
+                    }
                 }
 
             </div>
@@ -99,9 +153,7 @@
 
                 @if (Model.Count == 0)
                 {
-                    <p class="shop-empty">
-                        ❌ No products found!
-                    </p>
+                    <p class="shop-empty">❌ No products found!</p>
                 }
                 else
                 {
@@ -109,15 +161,13 @@
                     {
                         <div class="shop-card">
 
-                            <a href="/Product/Details/@item.ProductID"
-                                   class="shop-link">
+                            <a href="/Product/Details/@item.ProductID" class="shop-link">
 
                                 <img src="@(string.IsNullOrEmpty(item.Image)
-                                                                                                                                                                              ? Url.Content("~/assets/product-1.jpg")
-                                                                                                                                                                              : Url.Content("~/assets/" + item.Image))" />
+                                                                                                         ? Url.Content("~/assets/product-1.jpg")
+                                                                                                         : Url.Content("~/assets/" + item.Image))" />
 
                                 <div class="shop-body">
-
                                     <h4>@item.ProductName</h4>
 
                                     <p class="shop-price">
@@ -127,13 +177,12 @@
                                     <p class="shop-cate-name">
                                         @item.Category?.CateName
                                     </p>
-
                                 </div>
 
                             </a>
 
                             <div class="shop-actions-group">
-                                <!-- BUY NOW - NÚT CHÍNH -->
+
                                 <form asp-controller="Cart" asp-action="AddToCart" method="post">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="productId" value="@item.ProductID" />
@@ -143,15 +192,14 @@
                                     </button>
                                 </form>
 
-                                <!-- ADD TO CART - NÚT PHỤ -->
-                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                <form onsubmit="addToCart(event, @item.ProductID, '@(string.IsNullOrEmpty(item.Image) ? Url.Content("~/assets/product-1.jpg") : Url.Content("~/assets/" + item.Image))', this)">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="productId" value="@item.ProductID" />
-                                    <input type="hidden" name="actionType" value="add" />
                                     <button type="submit" class="shop-cart-btn">
                                         🛒 Add to Cart
                                     </button>
                                 </form>
+
                             </div>
 
                         </div>
@@ -164,21 +212,67 @@
     </div>
 </div>
 
-<!-- ===== SCRIPT CẬP NHẬT GIÁ ===== -->
 <script>
-    function formatCurrency(value) {
-        return Number(value).toLocaleString('vi-VN') + " VNĐ";
+      function animateCart(count, imgSrc, startElement) {
+
+        // 🛒 update số
+        const badge = document.getElementById("cart-count");
+        badge.innerText = count;
+
+        // 🛒 rung badge
+        badge.classList.add("animate");
+        setTimeout(() => badge.classList.remove("animate"), 400);
+
+        // 🛍️ hiệu ứng bay
+        const cart = document.querySelector(".floating-cart");
+        const img = document.createElement("img");
+
+        img.src = imgSrc;
+        img.classList.add("fly-img");
+
+        document.body.appendChild(img);
+
+        // vị trí bắt đầu
+        const rectStart = startElement.getBoundingClientRect();
+        img.style.left = rectStart.left + "px";
+        img.style.top = rectStart.top + "px";
+
+        // vị trí kết thúc (cart)
+        const rectEnd = cart.getBoundingClientRect();
+
+        setTimeout(() => {
+            img.style.left = rectEnd.left + "px";
+            img.style.top = rectEnd.top + "px";
+            img.style.width = "20px";
+            img.style.height = "20px";
+            img.style.opacity = "0.5";
+        }, 10);
+
+        // xóa sau khi bay xong
+        setTimeout(() => {
+            img.remove();
+        }, 800);
+    }
+        function addToCart(event, productId, imgSrc, form) {
+        event.preventDefault();
+
+        fetch('/Cart/AddToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: 'productId=' + productId +
+                  '&quantity=1' +
+                  '&__RequestVerificationToken=' + form.querySelector('input[name="__RequestVerificationToken"]').value
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            // 👉 gọi animation
+            animateCart(data.count, imgSrc, form);
+
+        });
     }
 
-    function updatePriceValues() {
-        var minPrice = document.querySelector("input[name='minPrice']").value;
-        var maxPrice = document.querySelector("input[name='maxPrice']").value;
-
-        document.getElementById("minPriceValue").innerText = formatCurrency(minPrice);
-        document.getElementById("maxPriceValue").innerText = formatCurrency(maxPrice);
-    }
-
-    // Cập nhật giá khi tải trang
-    window.onload = updatePriceValues;
 </script>
-
