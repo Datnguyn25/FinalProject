@@ -174,10 +174,10 @@ body {
     position: relative;
 }
 
-.login-left img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    .login-left img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
 .overlay-text {
@@ -187,10 +187,10 @@ body {
     color: white;
 }
 
-.overlay-text h1 {
-    font-size: 40px;
-    letter-spacing: 3px;
-}
+    .overlay-text h1 {
+        font-size: 40px;
+        letter-spacing: 3px;
+    }
 /* RIGHT FORM */
 
 .login-right {
@@ -967,6 +967,7 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
 .admin-menu {
     display: flex;
     flex-wrap: wrap;
@@ -1271,6 +1272,7 @@ h1, h2, h3 {
     background: white;
     box-shadow: 0 20px 50px rgba(180,150,120,0.2);
 }
+
 .custom-navbar {
     display: flex;
     align-items: center;
@@ -1321,9 +1323,9 @@ h1, h2, h3 {
     transition: 0.2s;
 }
 
-.register-link:hover {
-    opacity: 0.5;
-}
+    .register-link:hover {
+        opacity: 0.5;
+    }
 
 /* Nút Login chính - Dùng lại màu thương hiệu #c8a27a bạn đã định nghĩa */
 .login-link {
@@ -1339,11 +1341,11 @@ h1, h2, h3 {
     display: inline-block;
 }
 
-.login-link:hover {
-    background-color: #b89168 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(200, 162, 122, 0.2);
-}
+    .login-link:hover {
+        background-color: #b89168 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(200, 162, 122, 0.2);
+    }
 
 /* Phần chào hỏi khi đã đăng nhập */
 .welcome-text {
@@ -1351,9 +1353,9 @@ h1, h2, h3 {
     color: #3a2f25;
 }
 
-.welcome-text b {
-    color: #b07d4f; /* Highlight tên user bằng màu đậm hơn */
-}
+    .welcome-text b {
+        color: #b07d4f; /* Highlight tên user bằng màu đậm hơn */
+    }
 
 /* Nút Logout dạng link đơn giản */
 .logout-link {
@@ -1372,15 +1374,15 @@ h1, h2, h3 {
     box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
 }
 
-.logout-link:hover {
-    color: #111;
-    font-weight: 500;
-    text-decoration: none;
-    border-bottom: 1px solid #111;
-    padding-bottom: 1px;    
-    margin-left: 5px;
-    transition: 0.2s;
-}
+    .logout-link:hover {
+        color: #111;
+        font-weight: 500;
+        text-decoration: none;
+        border-bottom: 1px solid #111;
+        padding-bottom: 1px;
+        margin-left: 5px;
+        transition: 0.2s;
+    }
 
 .btn-login-main {
     background-color: #000 !important;
@@ -1433,4 +1435,554 @@ h1, h2, h3 {
     .shop-buy-btn:hover {
         background-color: #e84118;
         color: white;
+    }
+/* =========================
+        NAVBAR GIỮA
+=========================*/
+
+.custom-navbar .container-fluid {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.login-right {
+    position: absolute;
+    right: 20px;
+}
+
+
+
+
+
+/* =========================
+        GRID 4 CỘT SHOP
+=========================*/
+
+.shop-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4,1fr) !important;
+    gap: 30px;
+}
+
+
+
+/* =========================
+        CARD KIỂU ZARA
+=========================*/
+
+.shop-card {
+    border: none !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    transition: 0.3s ease;
+    background: white;
+}
+
+.shop-body {
+    padding: 12px 5px !important;
+}
+
+    .shop-body h4 {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+.shop-price {
+    font-weight: 600;
+    margin-top: 3px;
+}
+
+
+
+/* =========================
+        HOVER ZOOM ẢNH
+=========================*/
+
+.shop-card img {
+    height: 380px !important;
+    object-fit: cover;
+    transition: 0.5s ease;
+}
+
+.shop-card:hover img {
+    transform: scale(1.08);
+}
+
+.shop-card:hover {
+    transform: translateY(-6px);
+}
+
+
+
+/* =========================
+        BUTTON ZARA
+=========================*/
+
+.shop-actions-group {
+    display: flex;
+    gap: 8px;
+    padding: 0 5px 10px 5px;
+}
+
+.shop-cart-btn {
+    background: white !important;
+    border: 1px solid black !important;
+    color: black !important;
+}
+
+.shop-buy-btn {
+    background: black !important;
+    color: white !important;
+}
+
+
+
+/* =========================
+        RESPONSIVE
+=========================*/
+
+@media(max-width:1200px) {
+    .shop-grid {
+        grid-template-columns: repeat(3,1fr) !important;
+    }
+}
+
+@media(max-width:768px) {
+    .shop-grid {
+        grid-template-columns: repeat(2,1fr) !important;
+    }
+}
+
+/* =========================
+        HERO THU NHỎ
+   (Override kích thước cũ)
+=========================*/
+
+.hero {
+    height: 320px !important; /* Giảm từ 90vh xuống kích thước cố định */
+    padding: 40px 20px !important;
+}
+
+.hero-content h1 {
+    font-size: 32px !important; /* Giảm từ 60px */
+    letter-spacing: 2px;
+}
+
+.hero-content p {
+    font-size: 14px !important; /* Giảm kích thước mô tả */
+    margin-bottom: 15px;
+}
+
+.hero-btn {
+    padding: 8px 22px !important; /* Thu nhỏ nút */
+    font-size: 13px !important;
+    letter-spacing: 1px;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 768px) {
+    .hero {
+        height: 260px !important;
+    }
+
+    .hero-content h1 {
+        font-size: 24px !important;
+    }
+
+    .hero-content p {
+        font-size: 13px !important;
+    }
+}
+/* =========================
+   LAYOUT FILTER BÊN TRÁI
+=========================*/
+.shop-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+/* Thanh lọc giá nằm sát bên trái */
+.price-filter {
+    width: 220px;
+    background: #ffffff;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    position: sticky;
+    top: 100px;
+    margin-left: 0; /* Đảm bảo nằm sát trái */
+}
+
+/* Tiêu đề */
+.filter-title {
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* Nội dung bên phải */
+.shop-content {
+    flex: 1;
+}
+
+/* Thanh kéo giá */
+.price-range input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .shop-layout {
+        flex-direction: column;
+    }
+
+    .price-filter {
+        width: 100%;
+        position: relative;
+        top: 0;
+    }
+}
+/* =========================
+   PRODUCT ACTION BUTTONS - UPDATED
+=========================*/
+
+/* Bố cục dọc */
+.shop-actions-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 10px 5px 15px 5px;
+}
+
+    /* Style chung cho form */
+    .shop-actions-group form {
+        width: 100%;
+        margin: 0;
+    }
+
+/* Nút BUY NOW - lớn và nổi bật */
+.shop-buy-btn {
+    width: 100% !important;
+    padding: 14px 0 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 2px solid #000 !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    /* Hiệu ứng hover cho BUY NOW */
+    .shop-buy-btn:hover {
+        background-color: #fff !important;
+        color: #000 !important;
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+    }
+
+/* Nút ADD TO CART - nhỏ hơn */
+.shop-cart-btn {
+    display: block; /* Cho phép căn giữa bằng margin */
+    width: 70% !important; /* Thu nhỏ chiều rộng của nút */
+    padding: 8px 0 !important; /* Giảm chiều cao của nút */
+    font-size: 12px !important; /* Chữ nhỏ hơn */
+    font-weight: 600 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background-color: #fff !important;
+    color: #000 !important;
+    border: 1.5px solid #000 !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 auto !important; /* Căn giữa nút */
+    text-align: center;
+}
+    /* Hiệu ứng hover cho ADD TO CART */
+    .shop-cart-btn:hover {
+        background-color: #000 !important;
+        color: #fff !important;
+    }
+
+    /* Hiệu ứng khi nhấn */
+    .shop-buy-btn:active,
+    .shop-cart-btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+/* ===============================
+   FLOATING CART BUTTON
+================================*/
+
+.floating-cart {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: #c8a27a;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    z-index: 9999;
+    transition: all 0.3s ease;
+}
+
+    .floating-cart:hover {
+        background: #b89168;
+        transform: translateY(-5px) scale(1.05);
+    }
+
+    /* Số lượng sản phẩm trong giỏ */
+    .floating-cart .cart-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ff4757;
+        color: white;
+        font-size: 12px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+/* 🛒 rung badge */
+@keyframes shake {
+    0% {
+        transform: scale(1)
+    }
+
+    25% {
+        transform: scale(1.2)
+    }
+
+    50% {
+        transform: scale(0.9)
+    }
+
+    75% {
+        transform: scale(1.1)
+    }
+
+    100% {
+        transform: scale(1)
+    }
+}
+
+.cart-badge.animate {
+    animation: shake 0.4s ease;
+}
+
+/* 🛍️ ảnh bay */
+.fly-img {
+    position: fixed;
+    z-index: 9999;
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+    transition: all 0.8s cubic-bezier(.65,-0.3,.35,1.5);
+}
+/* ===== REGISTER UI UPGRADE ===== */
+
+.register-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa, #e4e7ec);
+    font-family: 'Inter', sans-serif;
+}
+
+.register-card {
+    width: 400px;
+    padding: 35px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.08);
+    animation: fadeIn 0.6s ease;
+    text-align: center;
+}
+
+    .register-card h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+.subtitle {
+    color: #777;
+    margin-bottom: 25px;
+}
+
+/* INPUT */
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+    .input-group input {
+        width: 100%;
+        height: 45px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        padding: 0 12px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+        .input-group input:focus {
+            border-color: black;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+        }
+
+/* PASSWORD BAR */
+#strengthBar {
+    transition: all 0.4s ease;
+}
+
+/* BUTTON */
+.register-btn {
+    width: 100%;
+    height: 45px;
+    border-radius: 10px;
+    border: none;
+    background: black;
+    color: white;
+    font-weight: 500;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+    .register-btn:hover {
+        background: #333;
+    }
+
+/* DIVIDER */
+.divider {
+    margin: 20px 0;
+    position: relative;
+}
+
+    .divider span {
+        background: white;
+        padding: 0 10px;
+        color: #aaa;
+        position: relative;
+        z-index: 1;
+    }
+
+    .divider:before {
+        content: "";
+        height: 1px;
+        width: 100%;
+        background: #eee;
+        position: absolute;
+        top: 50%;
+        left: 0;
+    }
+
+/* GOOGLE BUTTON */
+.google-btn {
+    width: 100%;
+    height: 45px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .google-btn img {
+        width: 20px;
+    }
+
+    .google-btn:hover {
+        background: #f5f5f5;
+    }
+
+/* LOGIN LINK */
+.login-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+    .login-link a {
+        font-weight: 500;
+        color: black;
+    }
+
+/* RULE BOX */
+#passwordRule {
+    background: #fafafa;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+/* CONFIRM TEXT */
+#confirmText {
+    display: block;
+    margin-top: 5px;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* LABEL NGOÀI INPUT */
+
+.input-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #222;
+}
+
+/* INPUT ĐẸP HƠN */
+.input-group input {
+    width: 100%;
+    height: 45px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 0 12px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+    .input-group input::placeholder {
+        color: #aaa;
+        font-size: 13px;
+    }
+
+    .input-group input:focus {
+        border-color: black;
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
     }
