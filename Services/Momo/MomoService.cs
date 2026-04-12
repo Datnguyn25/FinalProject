@@ -20,21 +20,22 @@ namespace FinalProject.Services.Momo
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentMomo(OrderInfoModel model)
         {
             model.OrderID = DateTime.UtcNow.Ticks.ToString();
-            model.OrderInfo = "Customer: " + model.FullName + ". Context: " + model.OrderInfo;
+            model.OrderInfo = "Order" + model.OrderID;
 
             long amountLong = Convert.ToInt64(model.Amount);
 
             var rawData =
-                $"accessKey={_options.Value.AccessKey}" +
-                $"&amount={amountLong}" +
-                $"&extraData=" +
-                $"&ipnUrl={_options.Value.NotifyUrl}" + // Dùng ipnUrl
-                $"&orderId={model.OrderID}" +
-                $"&orderInfo={model.OrderInfo}" +
-                $"&partnerCode={_options.Value.PartnerCode}" +
-                $"&redirectUrl={_options.Value.ReturnUrl}" + // Dùng redirectUrl
-                $"&requestId={model.OrderID}" +
-                $"&requestType={_options.Value.RequestType}";
+            
+    $"accessKey={_options.Value.AccessKey}" +
+    $"&amount={amountLong}" +
+    $"&extraData=" +
+    $"&ipnUrl={_options.Value.NotifyUrl}" +
+    $"&orderId={model.OrderID}" +
+    $"&orderInfo={model.OrderInfo}" +
+    $"&partnerCode={_options.Value.PartnerCode}" +
+    $"&redirectUrl={_options.Value.ReturnUrl}" +
+    $"&requestId={model.OrderID}" +
+    $"&requestType={_options.Value.RequestType}";
             var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
             var client = new RestClient(_options.Value.MomoApiUrl);
             var request = new RestRequest()  { Method = Method.Post };
