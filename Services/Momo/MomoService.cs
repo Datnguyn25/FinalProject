@@ -1,11 +1,13 @@
-﻿using FinalProject.Models;
+using FinalProject.Models;
 using FinalProject.Models.Momo;
-using Microsoft.Extensions.Options;
-using System.Security.Cryptography;
-using RestSharp;
-using System.Text.Json;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using RestSharp;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using FinalProject.Services.Momo;
 
 namespace FinalProject.Services.Momo
 {
@@ -16,83 +18,70 @@ namespace FinalProject.Services.Momo
         {
             _options = options;
         }
-
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentMomo(OrderInfoModel model)
         {
-            model.OrderID = DateTime.UtcNow.Ticks.ToString();
-            model.OrderInfo = "Order" + model.OrderID;
-
-            long amountLong = Convert.ToInt64(model.Amount);
-
+            model.OrderId = DateTime.UtcNow.Ticks.ToString();
+            model.OrderInfo = "Khách hàng: " + model.FullName + ". Nội dung: " + model.OrderInfo;
             var rawData =
-            
-    $"accessKey={_options.Value.AccessKey}" +
-    $"&amount={amountLong}" +
-    $"&extraData=" +
-    $"&ipnUrl={_options.Value.NotifyUrl}" +
-    $"&orderId={model.OrderID}" +
-    $"&orderInfo={model.OrderInfo}" +
-    $"&partnerCode={_options.Value.PartnerCode}" +
-    $"&redirectUrl={_options.Value.ReturnUrl}" +
-    $"&requestId={model.OrderID}" +
-    $"&requestType={_options.Value.RequestType}";
-            var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
-            var client = new RestClient(_options.Value.MomoApiUrl);
-            var request = new RestRequest()  { Method = Method.Post };
-            
+                $"partnerCode={_options.Value.PartnerCode}" +
+                $"&accessKey={_options.Value.AccessKey}" +
+                $"&requestId={model.OrderId}" +
+                $"&amount={model.Amount}" +
+                $"&orderId={model.OrderId}" +
+                $"&orderInfo={model.OrderInfo}" +
+                $"&returnUrl={_options.Value.ReturnUrl}" +
+                $"&notifyUrl={_options.Value.NotifyUrl}" +
+                $"&extraData=";
 
+            var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
+
+            var client = new RestClient(_options.Value.MomoApiUrl);
+            var request = new RestRequest() { Method = Method.Post };
+            request.AddHeader("Content-Type", "application/json; charset=UTF-8");
+
+            // Create an object representing the request data
             var requestData = new
             {
+                accessKey = _options.Value.AccessKey,
                 partnerCode = _options.Value.PartnerCode,
-                partnerName = "Test",
-                storeId = "MomoStore",
-                requestId = model.OrderID,
-                amount = amountLong,
-                orderId = model.OrderID,
-                orderInfo = model.OrderInfo,
-                redirectUrl = _options.Value.ReturnUrl, // Khớp với rawData
-                ipnUrl = _options.Value.NotifyUrl,    // Khớp với rawData
-                lang = "en",
-                extraData = "",
                 requestType = _options.Value.RequestType,
+                notifyUrl = _options.Value.NotifyUrl,
+                returnUrl = _options.Value.ReturnUrl,
+                orderId = model.OrderId,
+                amount = model.Amount.ToString(),
+                orderInfo = model.OrderInfo,
+                requestId = model.OrderId,
+                extraData = "",
                 signature = signature
             };
-            request.AddJsonBody(requestData);
+
+            request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
 
             var response = await client.ExecuteAsync(request);
-            if (!response.IsSuccessful)
-            {
-                // Nếu lỗi, log nội dung lỗi ra để xem (nó chính là cái đống HTML gây lỗi đấy)
-                var errorContent = response.Content;
-                // Bạn có thể đặt breakpoint tại đây để kiểm tra biến errorContent
-                return new MomoCreatePaymentResponseModel { Message = "Momo API Error: " + response.StatusCode };
-            }
+            var momoResponse = JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
+            return momoResponse;
 
-            
-                return JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
-            
-            
-            
         }
 
         public MomoExecuteResponseModel PaymentExecuteAsync(IQueryCollection collection)
         {
-            var amount = collection.FirstOrDefault(s => s.Key == "amount").Value;
-            var orderInfo = collection.FirstOrDefault(s => s.Key == "orderInfo").Value;
-            var orderId = collection.FirstOrDefault(s => s.Key == "orderId").Value;
-            return new MomoExecuteResponseModel
+            var amount = collection.First(s => s.Key == "amount").Value;
+            var orderInfo = collection.First(s => s.Key == "orderInfo").Value;
+            var orderId = collection.First(s => s.Key == "orderId").Value;
+
+            return new MomoExecuteResponseModel()
             {
                 Amount = amount,
-                OrderInfo = orderInfo,
-                OrderId = orderId
+                OrderId = orderId,
+                OrderInfo = orderInfo
+
             };
         }
 
-
         private string ComputeHmacSha256(string message, string secretKey)
         {
-            var keyBytes = System.Text.Encoding.UTF8.GetBytes(secretKey);
-            var messageBytes = System.Text.Encoding.UTF8.GetBytes(message);
+            var keyBytes = Encoding.UTF8.GetBytes(secretKey);
+            var messageBytes = Encoding.UTF8.GetBytes(message);
 
             byte[] hashBytes;
 
@@ -101,9 +90,10 @@ namespace FinalProject.Services.Momo
                 hashBytes = hmac.ComputeHash(messageBytes);
             }
 
-            var HashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+            var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
 
-            return HashString;
+            return hashString;
         }
     }
+
 }

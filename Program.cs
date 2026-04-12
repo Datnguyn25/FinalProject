@@ -120,6 +120,7 @@ namespace FinalProject
             // MoMo
             builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
             builder.Services.AddScoped<IMomoService, MomoService>();
+
             builder.Services.AddTransient<IEmailService, EmailService>();
             
             
