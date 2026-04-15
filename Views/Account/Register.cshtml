@@ -140,7 +140,7 @@
         }
 
         // SPECIAL
-        if(password.match(/[!%*?&]/)){
+        if(password.match(/[^a-zA-Z0-9]/)){
             specialRule.style.color = "green";
         } else {
             specialRule.style.color = "red";
