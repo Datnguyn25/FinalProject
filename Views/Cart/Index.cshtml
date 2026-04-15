@@ -1,7 +1,8 @@
 @model List<FinalProject.Models.CartItems>
+
 <a asp-controller="Product"
-   asp-action="Index"
-   class="admin-btn">
+       asp-action="Index"
+       class="admin-btn">
     ← Quay lại
 </a>
 
@@ -24,7 +25,7 @@
                     <th>Price</th>
                     <th>Qty</th>
                     <th>Total</th>
-                    <th></th>
+                    <th>Action</th>
                 </tr>
 
                 @foreach (var item in Model)
@@ -32,8 +33,8 @@
                     <tr>
                         <td>
                             <img src="@(string.IsNullOrEmpty(item.Image)
-                                                                ? Url.Content("~/assets/product-1.jpg")
-                                                                : Url.Content("~/assets/" + item.Image))"
+                                                                                             ? Url.Content("~/assets/product-1.jpg")
+                                                                                             : Url.Content("~/assets/" + item.Image))"
                                  class="cart-img" />
                         </td>
 
@@ -52,10 +53,25 @@
                         </td>
 
                         <td>
+
+                            <!-- ❌ XÓA -->
                             <a href="/Cart/Remove/@item.ProductID"
-                               class="cart-remove">
+                                   class="cart-remove">
                                 ❌
                             </a>
+
+                            <!-- 💳 BUY NOW -->
+                            <form asp-controller="Cart" asp-action="Checkout" method="post" style="margin-top:5px;">
+
+                                <input type="hidden" name="FullName" value="Guest" />
+                                <input type="hidden" name="SingleProductId" value="@item.ProductID" />
+
+                                <button name="PaymentMethod" value="Momo" class="buy-now-btn">
+                                    Buy Now
+                                </button>
+
+                            </form>
+
                         </td>
                     </tr>
                 }
@@ -63,11 +79,46 @@
 
         </div>
 
+        <!-- 💰 TOTAL -->
         <div class="cart-summary">
             Total:
             <span>
                 @Model.Sum(x => x.Price * x.Quantity) VNĐ
             </span>
+        </div>
+
+        <!-- 💳 THANH TOÁN TOÀN BỘ -->
+        <div class="cart-checkout">
+
+            <form asp-controller="Cart" asp-action="Checkout" method="post">
+
+                <input type="hidden" name="FullName" value="Guest" />
+
+                <h5>Phương thức thanh toán</h5>
+
+                <div class="payment-methods">
+                    <label>
+                        <input type="radio" name="PaymentMethod" value="COD" checked />
+                        COD
+                    </label>
+
+                    <label>
+                        <input type="radio" name="PaymentMethod" value="Momo" />
+                        MoMo
+                    </label>
+
+                    <label>
+                        <input type="radio" name="PaymentMethod" value="ZaloPay" />
+                        ZaloPay
+                    </label>
+                </div>
+
+                <button class="checkout-btn">
+                    Thanh toán tất cả
+                </button>
+
+            </form>
+
         </div>
     }
 

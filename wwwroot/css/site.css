@@ -2373,3 +2373,79 @@ body.fade-out {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+/* ===== FULL SIDE ADS ===== */
+.ads-banner {
+    position: fixed;
+    top: 80px; /* cách navbar */
+    bottom: 20px; /* cách dưới */
+    width: calc((100vw - 1200px) / 2 - 80px);
+    z-index: 20;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0,0,0,0.08);
+}
+
+    /* LEFT */
+    .ads-banner.left {
+        left: 0;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    /* RIGHT */
+    .ads-banner.right {
+        right: 0;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+
+    /* IMAGE FULL */
+    .ads-banner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+/* OVERLAY */
+.ads-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+    color: white;
+}
+
+    /* TEXT */
+    .ads-overlay h4 {
+        font-size: 16px;
+        margin-bottom: 5px;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .ads-overlay p {
+        font-size: 13px;
+        opacity: 0.8;
+    }
+
+    /* BUTTON */
+    .ads-overlay a {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 5px 12px;
+        background: white;
+        color: black;
+        font-size: 12px;
+        border-radius: 15px;
+        text-decoration: none;
+    }
+
+/* HOVER NHẸ */
+.ads-banner:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
+}
+@media (max-width: 1400px) {
+    .ads-banner {
+        display: none;
+    }
+}

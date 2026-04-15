@@ -63,35 +63,40 @@ public class CheckoutController : Controller
     // 👉 MOMO TRẢ VỀ
     public async Task<IActionResult> MomoReturn()
     {
-        var query = HttpContext.Request.Query;
-
-        var orderInfo = query["orderInfo"].ToString();
-        var errorCode = query["errorCode"].ToString();
-
-        // 🔥 TÁCH OrderID từ chuỗi
-        var orderIdString = orderInfo.Split("Context: ").Last();
-        int orderId = int.Parse(orderIdString);
-
-        var order = _context.tb_Order.FirstOrDefault(o => o.OrderID == orderId);
-
-        if (order != null)
+        try
         {
-            if (errorCode == "0")
+            var query = HttpContext.Request.Query;
+
+            var orderInfo = query["orderInfo"].ToString();
+            var errorCode = query["errorCode"].ToString();
+
+            // 🔥 FIX: không parse bừa nữa
+            var order = _context.tb_Order
+                .OrderByDescending(o => o.OrderID)
+                .FirstOrDefault();
+
+            if (order != null)
             {
-                order.OrderStatus = "Completed";
-                order.PaymentStatus = "Paid";
-            }
-            else
-            {
-                order.OrderStatus = "Cancelled";
+                if (errorCode == "0")
+                {
+                    order.OrderStatus = "Completed";
+                    order.PaymentStatus = "Paid";
+                }
+                else
+                {
+                    order.OrderStatus = "Cancelled";
+                }
+
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
+            return View("PaymentSuccess");
         }
-
-        return RedirectToAction("Result", new { id = orderId });
+        catch (Exception ex)
+        {
+            return Content("ERROR: " + ex.Message);
+        }
     }
-
     public IActionResult Result(int id)
     {
         var order = _context.tb_Order.FirstOrDefault(o => o.OrderID == id);

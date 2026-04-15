@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Thanh toán thành công</title>
+
+    <style>
+            body {
+                text-align: center;
+                font-family: Arial;
+                margin-top: 100px;
+            }
+
+            .success {
+                color: green;
+                font-size: 30px;
+                font-weight: bold;
+            }
+    </style>
+
+    <!-- 🔥 TỰ ĐỘNG CHUYỂN TRANG -->
+    <script>
+            setTimeout(function () {
+                window.location.href = '@Url.Action("Index", "Product")';
+            }, 3000); // 3 giây
+    </script>
+</head>
+<body>
+
+    <div class="success">
+        ✅ Thanh toán thành công!
+    </div>
+
+    <p>Đang quay về trang sản phẩm...</p>
+
+</body>
+</html>

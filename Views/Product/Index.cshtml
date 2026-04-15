@@ -223,6 +223,7 @@
 
         // 🛍️ hiệu ứng bay
         const cart = document.querySelector(".floating-cart");
+        if (!cart) return;
         const img = document.createElement("img");
 
         img.src = imgSrc;
@@ -251,7 +252,7 @@
             img.remove();
         }, 800);
     }
-        function addToCart(event, productId, imgSrc, form) {
+           function addToCart(event, productId, imgSrc, form) {
         event.preventDefault();
 
         fetch('/Cart/AddToCart', {
@@ -267,8 +268,16 @@
         .then(res => res.json())
         .then(data => {
 
-            // 👉 gọi animation
-            animateCart(data.count, imgSrc, form);
+            // 🔥 nếu chưa login → chuyển sang login
+            if (data.redirect) {
+                window.location.href = data.redirect;
+                return;
+            }
+
+            // 👉 đã login thì animate
+            if (document.querySelector(".floating-cart")) {
+                animateCart(data.count, imgSrc, form);
+            }
 
         });
     }

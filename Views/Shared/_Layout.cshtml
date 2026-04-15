@@ -40,6 +40,25 @@
             </div>
         </nav>
     </header>
+    <!-- LEFT -->
+    <div class="ads-banner left">
+        <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b" />
+        <div class="ads-overlay">
+            <h4>Minimal Style</h4>
+            <p>New Collection 2026</p>
+            
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="ads-banner right">
+        <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c" />
+        <div class="ads-overlay">
+            <h4>Street Wear</h4>
+            <p>Trending Outfit</p>
+            
+        </div>
+    </div>
 
     <div class="container">
         
@@ -119,10 +138,13 @@
     }
 
     <!-- 🛒 FLOATING CART -->
-    <a href="/Cart" class="floating-cart">
-        <span class="cart-icon">🛒</span>
-        <span class="cart-badge" id="cart-count">@count</span>
-    </a>
+    @if (ViewContext.RouteData.Values["controller"]?.ToString() == "Product")
+        {
+            <a href="/Cart" class="floating-cart">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge" id="cart-count">@count</span>
+            </a>
+        }
 
     <!-- 🛒✨ HIỆU ỨNG RUNG + BAY -->
     <script>
