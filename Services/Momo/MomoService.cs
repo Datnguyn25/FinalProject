@@ -23,15 +23,16 @@ namespace FinalProject.Services.Momo
             model.OrderId = DateTime.UtcNow.Ticks.ToString();
             model.OrderInfo = "Khách hàng: " + model.FullName + ". Nội dung: " + model.OrderInfo;
             var rawData =
-                $"partnerCode={_options.Value.PartnerCode}" +
-                $"&accessKey={_options.Value.AccessKey}" +
-                $"&requestId={model.OrderId}" +
-                $"&amount={model.Amount}" +
-                $"&orderId={model.OrderId}" +
-                $"&orderInfo={model.OrderInfo}" +
-                $"&returnUrl={_options.Value.ReturnUrl}" +
-                $"&notifyUrl={_options.Value.NotifyUrl}" +
-                $"&extraData=";
+     $"accessKey={_options.Value.AccessKey}" +
+     $"&amount={model.Amount}" +
+     $"&extraData=" +
+     $"&ipnUrl={_options.Value.NotifyUrl}" +
+     $"&orderId={model.OrderId}" +
+     $"&orderInfo={model.OrderInfo}" +
+     $"&partnerCode={_options.Value.PartnerCode}" +
+     $"&redirectUrl={_options.Value.ReturnUrl}" +
+     $"&requestId={model.OrderId}" +
+     $"&requestType={_options.Value.RequestType}";
 
             var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
 
@@ -42,17 +43,18 @@ namespace FinalProject.Services.Momo
             // Create an object representing the request data
             var requestData = new
             {
-                accessKey = _options.Value.AccessKey,
                 partnerCode = _options.Value.PartnerCode,
-                requestType = _options.Value.RequestType,
-                notifyUrl = _options.Value.NotifyUrl,
-                returnUrl = _options.Value.ReturnUrl,
-                orderId = model.OrderId,
-                amount = model.Amount.ToString(),
-                orderInfo = model.OrderInfo,
+                accessKey = _options.Value.AccessKey,
                 requestId = model.OrderId,
+                amount = model.Amount,
+                orderId = model.OrderId,
+                orderInfo = model.OrderInfo,
+                redirectUrl = _options.Value.ReturnUrl, // 🔥 sửa
+                ipnUrl = _options.Value.NotifyUrl,      // 🔥 sửa
+                requestType = _options.Value.RequestType,
                 extraData = "",
-                signature = signature
+                signature = signature,
+                lang = "en"
             };
 
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
