@@ -2,63 +2,27 @@
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Admin Dashboard";
 }
-
 @model List<FinalProject.Models.Promotion>
-<a href="/Admin" class="btn btn-secondary mb-2">
-    ← Back
-</a>
 
-<h2>Promotions</h2>
+<h2 class="admin-title">🎯 Promotions</h2>
 
-<form asp-action="CreatePromotion" method="post">
-    <input name="Name" placeholder="Name" />
-    <input name="DiscountPercent" placeholder="Discount" />
-    <button>Add</button>
-</form>
+<div class="table-responsive">
+    <table class="admin-table">
+        <tr>
+            <th>Name</th>
+            <th>Discount</th>
+            <th>Status</th>
+        </tr>
 
-@foreach (var item in Model)
-{
-    <div>
-        @item.Name - @item.DiscountPercent %
-
-        <a asp-action="DeletePromotion"
-           asp-route-id="@item.PromotionID">
-            Delete
-        </a>
-
-    </div>
-}
-
-<h2 class="admin-title">Promotions</h2>
-
-<form method="post" action="/Admin/CreatePromotion">
-
-<input name="Name"
-placeholder="Name"
-class="admin-input"/>
-
-<input name="DiscountPercent"
-placeholder="%"
-class="admin-input"/>
-
-<button class="admin-btn">
-Add
-</button>
-
-</form>
-
-<hr>
-
-@foreach (var p in Model)
-{
-<div class="admin-row">
-
-@p.Name - @p.DiscountPercent %
-
-<a href="/Admin/DeletePromotion/@p.PromotionID"
-class="admin-delete">
-Delete
-</a>
-
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.Name %</td>
+                <td>
+                    <span class="admin-badge badge-success">Active</span>
+                </td>
+            </tr>
+        }
+    </table>
 </div>
-}

@@ -2,78 +2,51 @@
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Admin Dashboard";
 }
-
 @model List<FinalProject.Models.Product>
 
-<div class="shop-container">
-    <a href="/Admin" class="btn btn-secondary mb-2">
-        ← Back
-    </a>
+<h2 class="admin-title">📦 Product Management</h2>
 
-    <h2 class="shop-title-page">⚙️ Product Management</h2>
+<div class="admin-grid">
+    <div class="admin-card">
+        <h3>Total Products</h3>
+        <h2>@Model.Count</h2>
+    </div>
+</div>
 
+<a asp-action="CreateProduct" class="admin-btn">➕ Add Product</a>
 
-    <a asp-action="CreateProduct" class="shop-add-btn">
-        ➕ Add Product
-    </a>
+<hr />
 
-    <p class="shop-total">
-        Total: <b>@Model.Count</b> products
-    </p>
+<div class="shop-grid">
+    @foreach (var item in Model)
+    {
+        <div class="shop-card">
 
-    <hr />
-
-    <div class="shop-grid">
-
-        @if (Model.Count == 0)
-        {
-            <p class="shop-empty">
-                No products
-            </p>
-        }
-        else
-        {
-            @foreach (var item in Model)
-            {
-                <div class="shop-card">
-
-                    <img src="@(string.IsNullOrEmpty(item.Image)
-                                                 ? Url.Content("~/assets/product-1.jpg")
-                                                 : Url.Content("~/assets/" + item.Image))" />
+            <img src="@(string.IsNullOrEmpty(item.Image)
+                                             ? Url.Content("~/assets/product-1.jpg")
+                                             : Url.Content("~/assets/" + item.Image))" />
 
             <div class="shop-body">
 
-                        <h4>@item.ProductName</h4>
+                <h4>@item.ProductName</h4>
+                <p class="shop-price">@item.Price VNĐ</p>
 
-                        <p class="shop-price">
-                            @item.Price VNĐ
-                        </p>
+                <span class="admin-badge badge-warning">
+                    @item.Category?.CateName
+                </span>
 
-                        <p class="shop-cate-name">
-                            @item.Category?.CateName
-                        </p>
+                <div class="shop-actions-group">
+                    <a href="/Admin/EditProduct/@item.ProductID"
+                       class="shop-cart-btn">Edit</a>
 
-                        <div style="margin-top:10px">
-
-                            <a href="/Admin/EditProduct/@item.ProductID"
-                               class="shop-btn">
-                                ✏️ Edit
-                            </a>
-
-                            <a href="/Admin/DeleteProduct/@item.ProductID"
-                               class="shop-btn"
-                               onclick="return confirm('Delete this product?')">
-                                ❌ Delete
-                            </a>
-
-                        </div>
-
-                    </div>
-
+                    <a href="/Admin/DeleteProduct/@item.ProductID"
+                           class="shop-buy-btn"
+                           onclick="return confirm('Delete product?')">
+                        Delete
+                    </a>
                 </div>
-                }
-        }
 
-    </div>
-
+            </div>
+        </div>
+    }
 </div>

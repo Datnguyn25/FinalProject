@@ -1,13 +1,130 @@
 @{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Revenue Dashboard";
 }
-<a href="/Admin" class="btn btn-secondary mb-2">
-    ← Back
-</a>
 
-<h2 class="admin-title">Revenue</h2>
+<div class="revenue-container">
 
-<div class="admin-revenue">
-    @ViewBag.TotalRevenue VNĐ
+    <h2 class="revenue-title">💰 Revenue Dashboard</h2>
+
+    <!-- 🔥 SUMMARY -->
+    <div class="revenue-cards">
+
+        <div class="card box1">
+            <h4>Total Revenue</h4>
+            <p>@ViewBag.TotalRevenue VNĐ</p>
+        </div>
+
+        <div class="card box2">
+            <h4>Total Orders</h4>
+            <p>@ViewBag.TotalOrders</p>
+        </div>
+
+    </div>
+
+    <!-- 📊 CHART -->
+    <div class="chart-box">
+        <canvas id="revenueChart"></canvas>
+    </div>
+
+    <!-- 🔥 TOP PRODUCTS -->
+    <div class="top-products">
+        <h3>🔥 Top Selling Products</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity Sold</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var p in ViewBag.TopProducts)
+                {
+                    <tr>
+                        <td>@p.Name</td>
+                        <td>@p.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
 </div>
+
+<!-- 📊 CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('revenueChart');
+
+    new Chart(ctx, {
+    type: 'line',
+    data: {
+    labels: @Html.Raw(Json.Serialize(ViewBag.Dates)),
+    datasets: [{
+    label: 'Revenue',
+    data: @Html.Raw(Json.Serialize(ViewBag.Revenues)),
+    borderWidth: 3,
+    tension: 0.3,
+    fill: true
+    }]
+    }
+    });
+</script>
+
+<style>
+    .revenue-container {
+    padding: 20px;
+    }
+
+    .revenue-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    }
+
+    .revenue-cards {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    }
+
+    .card {
+    flex: 1;
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    font-size: 18px;
+    }
+
+    .box1 {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    }
+
+    .box2 {
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+    }
+
+    .chart-box {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    }
+
+    .top-products {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    }
+
+    .table {
+    width: 100%;
+    }
+
+    .table th {
+    background: #f1f1f1;
+    }
+</style>

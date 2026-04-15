@@ -26,10 +26,6 @@ namespace FinalProject.Controllers
             return RedirectToAction("Orders");
         }
 
-        public IActionResult Revenue()
-        {
-            ViewBag.TotalRevenue = _context.tb_OrderDetails.Sum(d => d.Price * d.Quantity);
-            return View();
-        }
+      
     }
 }

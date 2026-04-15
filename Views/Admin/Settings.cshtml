@@ -2,25 +2,15 @@
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Admin Dashboard";
 }
+<h2 class="admin-title">⚙️ Settings</h2>
 
-@model FinalProject.Models.SystemSetting
-<a href="/Admin" class="btn btn-secondary mb-2">
-    ← Back
-</a>
-
-<h2>System Settings</h2>
-
-<form method="post">
-
-    <label>Site Name</label>
-    <input asp-for="SiteName" />
+<div class="admin-form">
+    <label>Website Name</label>
+    <input class="admin-input" />
 
     <label>Email</label>
-    <input asp-for="Email" />
+    <input class="admin-input" />
 
-    <label>Shipping Fee</label>
-    <input asp-for="ShippingFee" />
-
-    <button>Save</button>
-
-</form>
+    <br /><br />
+    <button class="admin-btn">Save</button>
+</div>

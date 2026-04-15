@@ -48,8 +48,42 @@ namespace FinalProject.Controllers
             var logs = _context.tb_SystemLog.OrderByDescending(l => l.Timestamp).ToList();
             return View(logs);
         }
+        public IActionResult Revenue()
+        {
+            var orders = _context.tb_Order.ToList();
 
+            ViewBag.TotalRevenue = orders.Sum(o => o.TotalPrice);
+            ViewBag.TotalOrders = orders.Count;
 
+            // 📊 Revenue theo ngày
+            var revenueByDate = orders
+                .GroupBy(o => o.OrderDate.Date)
+                .Select(g => new {
+                    Date = g.Key.ToString("dd/MM"),
+                    Total = g.Sum(x => x.TotalPrice)
+                })
+                .OrderBy(x => x.Date)
+                .ToList();
+
+            ViewBag.Dates = revenueByDate.Select(x => x.Date).ToList();
+            ViewBag.Revenues = revenueByDate.Select(x => x.Total).ToList();
+
+            // 🔥 TOP PRODUCTS (FIX LỖI CHO BẠN)
+            var topProducts = _context.tb_OrderDetails
+                .GroupBy(x => x.Product.ProductName)
+                .Select(g => new
+                {
+                    Name = g.Key,
+                    Quantity = g.Sum(x => x.Quantity)
+                })
+                .OrderByDescending(x => x.Quantity)
+                .Take(5)
+                .ToList();
+
+            ViewBag.TopProducts = topProducts;
+
+            return View();
+        }
 
 
     }

@@ -9,6 +9,10 @@ namespace FinalProject.Models
         [Key]
         public int OrderID { get; set; }
 
+        // 🔥 Ngày tạo đơn (dùng cho thống kê)
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+        // 🧾 Ngày đặt hàng (hiển thị)
         public DateTime OrderDate { get; set; } = DateTime.Now;
 
         [StringLength(50)]
@@ -25,10 +29,14 @@ namespace FinalProject.Models
 
         public int Discount { get; set; } = 0;
 
+        // 🔥 Tổng tiền (QUAN TRỌNG cho Revenue)
+        public decimal TotalPrice { get; set; } = 0;
+
         // Navigation
         [ForeignKey("CustomerID")]
         public User Customer { get; set; }
 
         public ICollection<OrderDetails> OrderDetails { get; set; }
+        
     }
 }

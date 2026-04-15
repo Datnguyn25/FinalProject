@@ -946,6 +946,7 @@ body {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
+
 /* =========================
         LOGIN RIGHT
 =========================*/
@@ -2378,7 +2379,7 @@ body.fade-out {
     position: fixed;
     top: 80px; /* cách navbar */
     bottom: 20px; /* cách dưới */
-    width: calc((100vw - 1200px) / 2 - 80px);
+   
     z-index: 20;
     overflow: hidden;
     box-shadow: 0 0 30px rgba(0,0,0,0.08);
@@ -2447,5 +2448,249 @@ body.fade-out {
 @media (max-width: 1400px) {
     .ads-banner {
         display: none;
+    }
+}
+/* 🔥 BIẾN ADMIN MENU THÀNH SIDEBAR */
+.admin-menu {
+    position: fixed; /* 👉 ghim bên trái */
+    top: 80px; /* chỉnh theo chiều cao navbar của bạn */
+    left: 0;
+    width: 220px;
+    display: flex;
+    flex-direction: column; /* 👉 chuyển thành dọc */
+    gap: 12px;
+    padding: 15px;
+}
+
+/* 👉 fix nội dung bị đè */
+.admin-title,
+.admin-cards {
+    margin-left: 240px; /* = width menu + chút khoảng cách */
+}
+/* layout */
+.admin-layout {
+    display: flex;
+}
+
+/* sidebar */
+.admin-menu {
+    width: 220px;
+    background: white;
+    border-right: 1px solid #eee;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: calc(100vh - 60px);
+}
+
+/* content */
+.admin-content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* ❌ XÓA ĐƯỜNG GẠCH NGANG */
+hr {
+    display: none;
+}
+/* ===============================
+        ADMIN LAYOUT FIX FULL
+=================================*/
+
+/* layout tổng */
+.admin-layout {
+    display: flex;
+}
+
+/* SIDEBAR (menu bên trái) */
+.admin-menu {
+    position: fixed;
+    top: 60px; /* chỉnh theo navbar */
+    left: 0;
+    width: 220px;
+    height: calc(100vh - 60px);
+    background: white;
+    border-right: 1px solid #eee;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+}
+
+    /* link trong menu */
+    .admin-menu a {
+        background: #fff;
+        border: 1px solid #eee;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #111;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+        .admin-menu a:hover {
+            background: #f5f5f5;
+        }
+
+/* CONTENT (phần bên phải) */
+.admin-content {
+    margin-left: 220px; /* 🔥 QUAN TRỌNG */
+    padding: 20px;
+    width: calc(100% - 220px);
+}
+
+/* TITLE */
+.admin-title {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* ===============================
+        TABLE FIX TRÀN
+=================================*/
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* 🔥 scroll ngang */
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 800px; /* tránh bị co */
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+    .admin-table th {
+        background: #c8a27a;
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .admin-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .admin-table tr:hover {
+        background: #fafafa;
+    }
+
+/* ===============================
+        BUTTON
+=================================*/
+
+.admin-btn {
+    background: #c8a27a;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    border: none;
+}
+
+    .admin-btn:hover {
+        background: #b89168;
+    }
+
+/* ===============================
+        RESPONSIVE
+=================================*/
+
+@media (max-width: 768px) {
+    .admin-menu {
+        position: relative;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .admin-content {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+/* ===== HOME: ẢNH TO ===== */
+.ads-banner {
+    width: 500px;
+    transition: all 0.6s ease;
+}
+
+/* ===== KHI SANG PRODUCT ===== */
+body.from-home .ads-banner {
+    animation: slideOut 0.6s ease forwards;
+}
+
+/* animation trượt + nhỏ + mờ */
+@keyframes slideOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(60px) scale(0.6);
+        opacity: 0.3;
+        filter: blur(3px);
+    }
+}
+
+/* riêng trái/phải cho đẹp hơn */
+body.from-home .ads-banner.left {
+    animation: slideLeft 0.6s ease forwards;
+}
+
+body.from-home .ads-banner.right {
+    animation: slideRight 0.6s ease forwards;
+}
+
+@keyframes slideLeft {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: translateX(-80px) scale(0.6);
+        opacity: 0.3;
+        filter: blur(3px);
+    }
+}
+
+@keyframes slideRight {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: translateX(80px) scale(0.6);
+        opacity: 0.3;
+        filter: blur(3px);
+    }
+}
+
+/* làm nổi bật product */
+body.from-home .shop-container {
+    animation: zoomInShop 0.5s ease;
+}
+
+@keyframes zoomInShop {
+    from {
+        transform: scale(0.95);
+        opacity: 0.7;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
     }
 }

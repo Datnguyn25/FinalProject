@@ -47,34 +47,45 @@
 
 <body>
 
-    <div class="main-content">
+    <!-- HEADER -->
+    <header class="top-navbar d-flex justify-content-between align-items-center px-4 py-2 shadow-sm">
 
-        <!-- HEADER -->
-        <header class="top-navbar d-flex justify-content-between align-items-center mb-3 rounded shadow-sm">
+        <div class="d-flex align-items-center gap-2">
+            <a href="/Home/Index" class="btn btn-outline-dark btn-sm btn-back">
+                HOME
+            </a>
+            <h5 class="m-0">@ViewData["Title"]</h5>
+        </div>
 
-            <!-- LEFT -->
-            <div class="d-flex align-items-center gap-2">
-                <!-- 🔥 NÚT QUAY LẠI -->
-                <a href="/Home/Index" onclick="goHome(event)" class="btn btn-outline-dark btn-sm btn-back">
-                    HOME
-                </a>
+        <div class="user-info d-flex align-items-center">
+            <span class="me-3 text-muted">
+                HELLO, <strong>@User.Identity.Name</strong>
+            </span>
+            <img src="https://ui-avatars.com/api/?name=@User.Identity.Name"
+                 class="rounded-circle" width="35">
+        </div>
 
-                <h5 class="m-0">@ViewData["Title"]</h5>
-            </div>
+    </header>
 
-            <!-- RIGHT -->
-            <div class="user-info d-flex align-items-center">
-                <span class="me-3 text-muted">
-                    HELLO, <strong>@User.Identity.Name</strong>
-                </span>
-                <img src="https://ui-avatars.com/api/?name=@User.Identity.Name"
-                     class="rounded-circle" width="35">
-            </div>
+    <!-- 🔥 LAYOUT CHÍNH -->
+    <div class="admin-layout">
 
-        </header>
+        <!-- SIDEBAR -->
+        <div class="admin-menu">
+            <a asp-controller="Admin" asp-action="Users">👤 Users</a>
+            <a asp-controller="Admin" asp-action="Sellers">🛍 Sellers</a>
+            <a asp-controller="Admin" asp-action="Products">📦 Products</a>
+            <a asp-controller="Admin" asp-action="Orders">🧾 Orders</a>
+            <a asp-controller="Admin" asp-action="Categories">📂 Categories</a>
+            <a asp-controller="Admin" asp-action="Promotions">🎯 Promotions</a>
+            <a asp-controller="Admin" asp-action="Revenue">💰 Revenue</a>
+            <a asp-controller="Admin" asp-action="Settings">⚙️ Settings</a>
+            <a asp-controller="Admin" asp-action="Logs">📜 Logs</a>
+        </div>
 
-        <!-- BODY -->
-        <main role="main">
+        <!-- CONTENT -->
+        <div class="admin-content">
+
             @if (TempData["SuccessMsg"] != null)
             {
                 <div class="alert alert-success">@TempData["SuccessMsg"]</div>
@@ -85,13 +96,14 @@
             }
 
             @RenderBody()
-        </main>
+
+        </div>
+
     </div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-</html>
 <script>
     function goHome(e) {
         e.preventDefault();
