@@ -1,11 +1,19 @@
 using FinalProject.Data;
+using FinalProject.Filters;
 using FinalProject.Models;
 using FinalProject.Models.Momo;
+using FinalProject.Services.Email;
 using FinalProject.Services.Momo;
+using FinalProject.Services.Zalo;
+using FinalProject.Services.ZaloPay;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace FinalProject
 {
@@ -13,19 +21,25 @@ namespace FinalProject
     {
         public static void Main(string[] args)
         {
+            System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             var builder = WebApplication.CreateBuilder(args);
 
-            var connectionString = builder.Configuration.GetConnectionString("FinalProject");
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"./keys/"))
+                .SetApplicationName("FinalProject_Unique_Name");
 
-            builder.Services.AddControllersWithViews();
+            // Add services to the container
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<SystemLogFilter>();
+            });
 
+            // Database
             builder.Services.AddDbContext<WebDbContext>(options =>
-<<<<<<< HEAD
-                options.UseSqlServer(builder.Configuration.GetConnectionString("FinalProject")));
-=======
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("FinalProject"),
-                    sqlServerOptionsAction: sqlOptions =>
+                    sqlOptions =>
                     {
                         sqlOptions.EnableRetryOnFailure(
                             maxRetryCount: 5,
@@ -35,71 +49,107 @@ namespace FinalProject
                     }
                 )
             );
->>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
 
-            // Add Identity
+            // Identity
             builder.Services.AddDefaultIdentity<User>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
+
+                options.Password.RequireDigit = true;              // B?t bu?c có s?
+                options.Password.RequiredLength = 8;               // Ít nh?t 8 ký t?
+                options.Password.RequireNonAlphanumeric = true;    // B?t bu?c ký t? ??c bi?t
+                options.Password.RequireUppercase = true;          // B?t bu?c ch? hoa
+                options.Password.RequireLowercase = true;          // B?t bu?c ch? th??ng
+                options.Password.RequiredUniqueChars = 1;           // s? ký t? khác nhau t?i thi?u
             })
-                .AddRoles<IdentityRole<int>>()
-                .AddEntityFrameworkStores<WebDbContext>();
-                
+            .AddRoles<IdentityRole<int>>()
+            .AddEntityFrameworkStores<WebDbContext>();
 
-            builder.Services.Configure<IdentityOptions>(options =>
+            builder.Services.AddAuthentication().AddGoogle(options =>
             {
-                // Default Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
-            });
+                options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 
-            // Google Authentication
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddGoogle(options =>
-            {
-                options.ClientId = "391898321966-7es0tec74nvjfm60aoev79o780epfqev.apps.googleusercontent.com";
-                options.ClientSecret = "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";
+                //always displays name claim from google, not email
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
 
+                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+                options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "given_name");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "family_name");
+
+                options.SaveTokens = true;
+
+                //chon tai khoan khi dang nhap bang google
                 options.Events.OnRedirectToAuthorizationEndpoint = context =>
                 {
                     context.Response.Redirect(context.RedirectUri + "&prompt=select_account");
                     return Task.CompletedTask;
                 };
             });
-            builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddSession();
 
+            // Authentication (Google)
+            builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.Cookie.Name = "FinalProjectAuthCookie";
+
+                options.ExpireTimeSpan = TimeSpan.FromDays(30); // Giữ đăng nhập 30 ngày
+                options.SlidingExpiration = true;              // Reset thời gian 30 ngày mỗi khi bạn có hoạt động
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+
+                options.Cookie.MaxAge = options.ExpireTimeSpan;
+            });
+
+            // Session
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            
+
+            // HttpClient
             builder.Services.AddHttpClient();
 
-            //Connect MomoAPI
-            builder.Services.Configure<MomoOptionModel> (builder.Configuration.GetSection("MomoAPI"));
+            // MoMo
+            builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
             builder.Services.AddScoped<IMomoService, MomoService>();
+
+            builder.Services.AddTransient<IEmailService, EmailService>();
+            
+            
+            // zalopay
+            builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
+            builder.Services.AddScoped<SystemLogFilter>();
+
+
 
             var app = builder.Build();
 
+
+            
+
+            // Configure middleware
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-           
-
-          
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+
             app.UseSession();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.MapControllerRoute(

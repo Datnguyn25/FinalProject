@@ -1,0 +1,56 @@
+﻿@model FinalProject.Models.Shop
+
+@{
+    ViewData["Title"] = "Register Business Account";
+}
+
+<div class="register-business-container">
+    <h1>Register Business Account</h1>
+    <p>Fill in the details below to open your shop</p>
+
+    <form asp-action="RegisterBusiness" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="ShopName">Shop Name</label>
+            <input asp-for="ShopName" class="form-control" />
+            <span asp-validation-for="ShopName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ShopDescription">Description</label>
+            <textarea asp-for="ShopDescription" class="form-control"></textarea>
+            <span asp-validation-for="ShopDescription" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ContactEmail">Contact Email</label>
+            <input asp-for="ContactEmail" class="form-control" />
+            <span asp-validation-for="ContactEmail" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ContactPhone">Contact Phone</label>
+            <input asp-for="ContactPhone" class="form-control" />
+            <span asp-validation-for="ContactPhone" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ShopAddress">Address</label>
+            <input asp-for="ShopAddress" class="form-control" />
+            <span asp-validation-for="ShopAddress" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Shop Logo</label>
+            <input type="file" name="logoFile" class="form-control" />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-login-main">Open My Shop</button>
+            <a asp-controller="Home" asp-action="Index" class="link-reg">Cancel</a>
+        </div>
+    </form>
+</div>

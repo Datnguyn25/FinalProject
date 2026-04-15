@@ -1,84 +1,173 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FinalProject</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FinalProject.styles.css" asp-append-version="true" />
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
+
     <header>
-        <nav class="navbar navbar-expand-sm custom-navbar">
-            <div class="nav-container">
+        <nav class="navbar custom-navbar">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
 
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    Fashion Web
-                </a>
+                <div class="nav-left">
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                        Fashion Web
+                    </a>
+                </div>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#mainNavbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <div class="nav-right">
+                    
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <a class="btn btn-sm btn-outline-danger me-2" asp-controller="Admin" asp-action="Index">
+                            <span class="admin-icon">⚙️</span> Dashboard
+                        </a>
+                    }
+                    @* ---------------------- *@
 
-                <div class="collapse navbar-collapse" id="mainNavbar">
-
-                    <ul class="navbar-nav ms-auto">
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Product" asp-action="Index">Shop</a>
-                        </li>
-
-                        @using System.Security.Claims
-
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-primary">
-                                    Xin chào <b>@User.Identity.Name</b>
-                                </span>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-danger" asp-controller="Account" asp-action="Logout">Logout</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
-                        }
-                       
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Product</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
-                        </li>
-
-                    </ul>
-
+                    @await Html.PartialAsync("_LoginPartial")
                 </div>
 
             </div>
         </nav>
+    </header>
 
     <div class="container">
+        
+        @if (TempData["SuccessMsg"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMsg"]</div>
+        }
+        @if (TempData["ErrorMsg"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMsg"]</div>
+        }
+        
         @RenderBody()
     </div>
-    <script src="~/css/sie.css"></script>
-    </header>
+
+    <!-- LOGIN POPUP -->
+    <div id="loginPopup" class="login-popup">
+        <div class="login-popup-box">
+
+            <h4>Choose an option</h4>
+
+            <div class="login-popup-btns">
+
+                <a href="/Account/Register"
+                       class="btn btn-dark">
+                    Don't have an account? Register
+                </a>
+
+                <a href="/Account/Login"
+                       class="btn btn-outline-dark">
+                    Already have an account? Login
+                </a>
+
+            </div>
+
+            <span onclick="closeLoginPopup()" class="close-popup">
+                ×
+            </span>
+
+        </div>
+    </div>
+
+    <!-- SCRIPT CŨ GIỮ NGUYÊN -->
+    <script>
+            function openLoginPopup() {
+                document.getElementById("loginPopup").style.display = "flex";
+            }
+
+            function closeLoginPopup() {
+                document.getElementById("loginPopup").style.display = "none";
+            }
+
+            function updateCartCount() {
+                fetch('/Cart/GetCartCount')
+                    .then(res => res.json())
+                    .then(data => {
+                        document.querySelector('.cart-badge').innerText = data.count;
+                    });
+            }
+
+            document.addEventListener("DOMContentLoaded", updateCartCount);
+    </script>
+
+    <!-- 🛒 LẤY COUNT TỪ SESSION -->
+    @using Newtonsoft.Json
+@using FinalProject.Models
+
+@{
+        var session = Context.Session.GetString("Cart");
+        int count = 0;
+
+        if (!string.IsNullOrEmpty(session))
+        {
+            var cart = JsonConvert.DeserializeObject<List<CartItems>>(session);
+            count = cart.Sum(x => x.Quantity);
+        }
+    }
+
+    <!-- 🛒 FLOATING CART -->
+    <a href="/Cart" class="floating-cart">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-badge" id="cart-count">@count</span>
+    </a>
+
+    <!-- 🛒✨ HIỆU ỨNG RUNG + BAY -->
+    <script>
+            function animateCart(count, imgSrc, startElement) {
+
+                const badge = document.getElementById("cart-count");
+                badge.innerText = count;
+
+                // 🛒 rung
+                badge.classList.add("animate");
+                setTimeout(() => badge.classList.remove("animate"), 400);
+
+                // 🛍️ bay
+                const cart = document.querySelector(".floating-cart");
+                const img = document.createElement("img");
+
+                img.src = imgSrc;
+                img.classList.add("fly-img");
+
+                document.body.appendChild(img);
+
+                const rectStart = startElement.getBoundingClientRect();
+                img.style.left = rectStart.left + "px";
+                img.style.top = rectStart.top + "px";
+
+                const rectEnd = cart.getBoundingClientRect();
+
+                setTimeout(() => {
+                    img.style.left = rectEnd.left + "px";
+                    img.style.top = rectEnd.top + "px";
+                    img.style.width = "20px";
+                    img.style.height = "20px";
+                    img.style.opacity = "0.5";
+                }, 10);
+
+                setTimeout(() => {
+                    img.remove();
+                }, 800);
+            }
+    </script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

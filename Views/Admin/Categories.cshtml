@@ -1,0 +1,39 @@
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+@model List<FinalProject.Models.ProductCategory>
+<a href="/Admin" class="btn btn-secondary mb-2">
+    ← Back
+</a>
+
+<h2 class="admin-title">Categories</h2>
+
+<form method="post" action="/Admin/CreateCategory">
+
+    <input name="CateName"
+           class="admin-input"
+           placeholder="Category name" />
+
+    <button class="admin-btn">
+        Add
+    </button>
+
+</form>
+
+<hr>
+
+@foreach (var c in Model)
+{
+    <div class="admin-row">
+
+        @c.CateName
+
+        <a href="/Admin/DeleteCategory/@c.CateID"
+           class="admin-delete">
+            Delete
+        </a>
+
+    </div>
+}

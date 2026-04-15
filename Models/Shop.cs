@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinalProject.Models
@@ -13,7 +14,7 @@ namespace FinalProject.Models
         public string ShopName { get; set; }
 
         [StringLength(255)]
-        public string LogoUrl { get; set; }
+        public string? LogoUrl { get; set; }
 
         // SQL là XML → map thành string
         public string CoverImageUrl { get; set; }
@@ -57,6 +58,12 @@ namespace FinalProject.Models
         public int? RoleId { get; set; }
 
         [ForeignKey("RoleId")]
-        public virtual Roles Role { get; set; }
+        public virtual IdentityRole<int> Role { get; set; }
+
+        // NEW: link shop to the owning User (seller)
+        public int? OwnerId { get; set; }
+
+        [ForeignKey("OwnerId")]
+        public virtual User Owner { get; set; }
     }
 }

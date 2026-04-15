@@ -20,7 +20,7 @@
 
         <div class="login-card">
 
-            <h2>Welcome Back</h2>
+            <h2>Welcome</h2>
             <p class="sub">Login to your account</p>
 
             @if (ViewBag.Error != null)
@@ -37,26 +37,39 @@
                 </div>
             }
 
-            <form method="post">
+            <form method="post" asp-action="Login" asp-controller="Account">
 
                 @Html.AntiForgeryToken()
 
+                <input type="hidden" name="returnUrl" value="@Context.Request.Query["returnUrl"]" />
+
                 <div class="input-box">
                     <span class="icon">📧</span>
-                    <input type="email" placeholder="Email" required>
+                    <input type="email" name="username" placeholder="Email" required>
                 </div>
 
                 <div class="input-box">
 
                     <span class="icon">🔒</span>
 
-                    <input type="password" id="password" placeholder="Password" oninput="showEye()">
+                    <input type="password" name="password" id="password" placeholder="Password" oninput="showEye()" required>
 
                     <span id="eye" class="toggle" onclick="togglePassword()">👁</span>
 
                 </div>
 
-                <button class="login-btn">Login</button>
+                <div class="options-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.85rem;">
+                    <label style="display: flex; align-items: center; cursor: pointer; color: #555;">
+                        <input type="checkbox" name="RememberMe" value="true" style="margin-right: 8px; cursor: pointer;">
+                        Remember me
+                    </label>
+                    <a asp-action="ForgotPassword" asp-controller="Account" style="text-decoration: none; color: #333; font-weight: 500;">
+                        Forgot Password?
+                    </a>
+                </div>
+
+
+                <button type="submit" class="login-btn">Login</button>
 
             </form>
 
@@ -67,6 +80,15 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png">
                 Login with Google
             </button>
+
+            <script>
+                function loginWithGoogle() {
+                    // Lấy trạng thái của checkbox RememberMe
+                    const isRemember = document.querySelector('input[name="RememberMe"]').checked;
+                    // Chuyển hướng kèm theo query string
+                    window.location.href = `/Account/GoogleLogin?rememberMe=${isRemember}`;
+                }
+            </script>
 
             <p class="register">
                 Don't have an account?
@@ -113,3 +135,26 @@
     }
 
 </script>
+<script>
+    // Hàm showEye và togglePassword cũ của bạn giữ nguyên ở đây
+    function showEye() { ... }
+    function togglePassword() { ... }
+</script>
+
+@if (TempData["RegisterSuccess"] != null)
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: 'Congratulations!',
+                text: '@TempData["RegisterSuccess"]',
+                icon: 'success',
+                confirmButtonText: 'Login Now',
+                confirmButtonColor: '#333',
+                timer: 4000,
+                timerProgressBar: true
+            });
+        });
+    </script>
+}

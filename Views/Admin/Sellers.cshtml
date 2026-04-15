@@ -1,0 +1,40 @@
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+@model List<FinalProject.Models.User>
+<a href="/Admin" class="btn btn-secondary mb-2">
+    ← Back
+</a>
+
+<h2 class="admin-title">Sellers</h2>
+
+<table class="admin-table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var s in Model)
+    {
+        <tr>
+            <td>@s.Id</td>
+            <td>@s.FullName</td>
+            <td>@s.Email</td>
+
+            <td>
+                <a href="/Admin/ApproveSeller/@s.Id" class="admin-btn">
+                    Approve
+                </a>
+
+                <a href="/Admin/BanSeller/@s.Id" class="admin-btn">
+                    Ban
+                </a>
+            </td>
+
+        </tr>
+    }
+</table>

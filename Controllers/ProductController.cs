@@ -1,4 +1,4 @@
-ï»¿using FinalProject.Data;
+using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +12,9 @@ public class ProductController : Controller
         _context = context;
     }
 
-    // ===== LIST + FILTER + SEARCH =====
-    public IActionResult Index(int? categoryId, string keyword, string searchType)
+    // ===== LIST + FILTER + SEARCH + PRICE FILTER =====
+    public IActionResult Index(int? cateId, string keyword, string searchType,
+                               decimal? minPrice, decimal? maxPrice)
     {
         var products = _context.tb_Product
             .Include(p => p.Category)
@@ -21,13 +22,29 @@ public class ProductController : Controller
             .Include(p => p.Shop)
             .AsQueryable();
 
-        // ===== FILTER CATEGORY =====
-        if (categoryId.HasValue)
+        // ===== FILTER BY CATEGORY =====
+        if (cateId.HasValue)
         {
-            products = products.Where(p => p.CateID == categoryId);
+            // L?y category con
+            var childIds = _context.tb_ProductCategory
+                .Where(c => c.ParentID == cateId)
+                .Select(c => c.CateID)
+                .ToList();
+
+            // N?u là category cha ? l?y luôn con
+            if (childIds.Any())
+            {
+                products = products.Where(p =>
+                   p.CateID == cateId || (p.CateID.HasValue && childIds.Contains(p.CateID.Value)));
+            }
+            else
+            {
+                // N?u là category con ? l?c bình th??ng
+                products = products.Where(p => p.CateID == cateId);
+            }
         }
 
-        // ===== SEARCH (DROPDOWN) =====
+        // ===== SEARCH =====
         if (!string.IsNullOrEmpty(keyword))
         {
             keyword = keyword.ToLower();
@@ -52,7 +69,7 @@ public class ProductController : Controller
                         p.MetaDescription.ToLower().Contains(keyword));
                     break;
 
-                default: // name
+                default:
                     products = products.Where(p =>
                         p.ProductName != null &&
                         p.ProductName.ToLower().Contains(keyword));
@@ -60,16 +77,30 @@ public class ProductController : Controller
             }
         }
 
-        // ===== VIEWBAG =====
+        // ===== PRICE FILTER =====
+      
+        if (minPrice.HasValue)
+        {
+            products = products.Where(p => p.Price >= minPrice.Value);
+        }
+
+        if (maxPrice.HasValue)
+        {
+            products = products.Where(p => p.Price <= maxPrice.Value);
+        }
+
+        // ===== VIEWBAG FOR UI =====
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Keyword = keyword;
-        ViewBag.SelectedCategory = categoryId;
+        ViewBag.SelectedCategory = cateId;
         ViewBag.SearchType = searchType;
+        ViewBag.MinPrice = minPrice ?? 0;
+        ViewBag.MaxPrice = maxPrice ?? 10000;
 
         return View(products.ToList());
     }
 
-    // ===== DETAIL =====
+    // ===== DETAILS =====
     public IActionResult Details(int id)
     {
         var product = _context.tb_Product
@@ -79,19 +110,17 @@ public class ProductController : Controller
             .FirstOrDefault(p => p.ProductID == id);
 
         if (product == null)
-        {
             return NotFound();
-        }
 
         return View(product);
     }
+
     // ===== CREATE =====
     public IActionResult Create()
     {
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Brands = _context.tb_Brand.ToList();
         ViewBag.Shops = _context.tb_Shop.ToList();
-
         return View();
     }
 
@@ -108,15 +137,13 @@ public class ProductController : Controller
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Brands = _context.tb_Brand.ToList();
         ViewBag.Shops = _context.tb_Shop.ToList();
-
         return View(model);
     }
-
 
     // ===== EDIT =====
     public IActionResult Edit(int id)
     {
-        var product = _context.tb_Product.Find(id);
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == id);
 
         if (product == null)
             return NotFound();
@@ -124,32 +151,40 @@ public class ProductController : Controller
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Brands = _context.tb_Brand.ToList();
         ViewBag.Shops = _context.tb_Shop.ToList();
-
         return View(product);
     }
 
     [HttpPost]
     public IActionResult Edit(Product model)
     {
-        if (ModelState.IsValid)
-        {
-            _context.tb_Product.Update(model);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == model.ProductID);
 
-        ViewBag.Categories = _context.tb_ProductCategory.ToList();
-        ViewBag.Brands = _context.tb_Brand.ToList();
-        ViewBag.Shops = _context.tb_Shop.ToList();
+        if (product == null)
+            return NotFound();
 
-        return View(model);
+        product.ProductName = model.ProductName;
+        product.Price = model.Price;
+        product.PromotionPrice = model.PromotionPrice;
+        product.Quantity = model.Quantity;
+        product.CateID = model.CateID;
+        product.BrandID = model.BrandID;
+        product.ShopID = model.ShopID;
+        product.ProductDescription = model.ProductDescription;
+        product.Image = model.Image;
+        product.SeoTitle = model.SeoTitle;
+        product.MetaKeywords = model.MetaKeywords;
+        product.MetaDescription = model.MetaDescription;
+        product.UpdatedDate = DateTime.Now;
+
+        _context.SaveChanges();
+
+        return RedirectToAction("Index");
     }
-
 
     // ===== DELETE =====
     public IActionResult Delete(int id)
     {
-        var product = _context.tb_Product.Find(id);
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == id);
 
         if (product != null)
         {
@@ -158,5 +193,5 @@ public class ProductController : Controller
         }
 
         return RedirectToAction("Index");
-    }   
+    }
 }

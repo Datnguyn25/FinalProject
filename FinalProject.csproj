@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,12 +8,17 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\asset\**" />
+    <Compile Remove="wwwroot\images\**" />
     <Content Remove="wwwroot\asset\**" />
+    <Content Remove="wwwroot\images\**" />
     <EmbeddedResource Remove="wwwroot\asset\**" />
+    <EmbeddedResource Remove="wwwroot\images\**" />
     <None Remove="wwwroot\asset\**" />
+    <None Remove="wwwroot\images\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.15.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.16" />
@@ -30,6 +35,7 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Models\Momo\" />
+    <Folder Include="wwwroot\imagess\" />
   </ItemGroup>
 
 </Project>

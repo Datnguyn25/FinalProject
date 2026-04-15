@@ -21,7 +21,7 @@ else
         {
             <tr>
                 <td>@item.Product?.ProductName</td>
-                <td>@item.Product?.Price.ToString("N0")</td>
+                <td>@item.Product?.Price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) đ</td>
 
                 <td>
                     <a href="/Cart/Decrease/@item.CartItemId">-</a>

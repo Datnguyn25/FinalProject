@@ -40,15 +40,30 @@
         <br />
 
         <!-- ACTION -->
-        <a href="/Cart/AddToCart?productId=@Model.ProductID"
-           style="background:green;
-                  color:white;
-                  padding:10px 15px;
-                  border-radius:5px;
-                  text-decoration:none;">
-            🛒 Add to Cart
-            <a href="/Cart/AddToCart?productId=@Model.ProductID">🛒 Add to Cart</a>
-        </a>
+        <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display: flex; gap: 10px; align-items: center;">
+            <input type="hidden" name="productId" value="@Model.ProductID" />
+
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 12px; color: #666;">Qty:</label>
+                <input type="number" name="quantity" value="1" min="1"
+                       style="width: 60px; padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" name="actionType" value="add"
+                        style="background: #28a745; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    🛒 Add to Cart
+                </button>
+
+                <button type="submit" name="actionType" value="buyNow"
+                        style="background: #ff4757; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    ⚡ Buy Now
+                </button>
+            </div>
+        </form>
+
+        <br />
+        <a href="/Product" style="color: #666; text-decoration: none;"></a>
 
         <br /><br />
 

@@ -1,4 +1,4 @@
-﻿using FinalProject.Data;
+using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

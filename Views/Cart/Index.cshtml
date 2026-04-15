@@ -1,39 +1,74 @@
-﻿@model List<FinalProject.Models.CartItems>
+@model List<FinalProject.Models.CartItems>
+<a asp-controller="Product"
+   asp-action="Index"
+   class="admin-btn">
+    ← Quay lại
+</a>
 
-<h2>🛒 Your Cart</h2>
+<div class="shop-container">
 
-@if (Model == null || Model.Count == 0)
-{
-    <p>Cart is empty!</p>
-}
-else
-{
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Total</th>
-            <th></th>
-        </tr>
+    <h2 class="shop-title-page">🛒 Your Cart</h2>
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td><img src="@item.Image" width="80" /></td>
-                <td>@item.ProductName</td>
-                <td>@item.Price</td>
-                <td>@item.Quantity</td>
-                <td>@(item.Price* item.Quantity)</td>
-                <td>
-                    <a href="/Cart/Remove/@item.ProductID">❌</a>
-                </td>
-            </tr>
-        }
-    </table>
+    @if (Model == null || Model.Count == 0)
+    {
+        <p class="shop-empty">Cart is empty!</p>
+    }
+    else
+    {
+        <div class="cart-box">
 
-    <h3>
-        Total: @Model.Sum(x => x.Price * x.Quantity) VNĐ
-    </h3>
-}
+            <table class="cart-table">
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@(string.IsNullOrEmpty(item.Image)
+                                                                ? Url.Content("~/assets/product-1.jpg")
+                                                                : Url.Content("~/assets/" + item.Image))"
+                                 class="cart-img" />
+                        </td>
+
+                        <td>@item.ProductName</td>
+
+                        <td>@item.Price</td>
+
+                        <td>
+                            <span class="cart-qty">
+                                @item.Quantity
+                            </span>
+                        </td>
+
+                        <td class="cart-total">
+                            @(item.Price* item.Quantity)
+                        </td>
+
+                        <td>
+                            <a href="/Cart/Remove/@item.ProductID"
+                               class="cart-remove">
+                                ❌
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+        </div>
+
+        <div class="cart-summary">
+            Total:
+            <span>
+                @Model.Sum(x => x.Price * x.Quantity) VNĐ
+            </span>
+        </div>
+    }
+
+</div>

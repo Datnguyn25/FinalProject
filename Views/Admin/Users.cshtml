@@ -1,0 +1,53 @@
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+@model List<FinalProject.Models.User>
+<a href="/Admin" class="btn btn-secondary mb-2">
+    ← Back
+</a>
+
+<h2 class="admin-title">Users</h2>
+
+<table class="admin-table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td>@u.Id</td>
+            <td>@u.FullName</td>
+            <td>@u.Email</td>
+
+            <td>
+                @if (u.IsBanned)
+                {
+                    <span class="admin-bad">Banned</span>
+                }
+                else
+                {
+                    <span class="admin-good">Active</span>
+                }
+            </td>
+
+            <td>
+                @if (!u.IsBanned)
+                {
+                    <a href="/Admin/LockUser/@u.Id" class="admin-btn">Lock</a>
+                }
+                else
+                {
+                    <a href="/Admin/UnlockUser/@u.Id" class="admin-btn">Unlock</a>
+                }
+            </td>
+
+        </tr>
+    }
+</table>

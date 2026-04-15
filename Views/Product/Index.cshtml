@@ -1,157 +1,276 @@
-<<<<<<< HEAD
-﻿<style>
-    h2, h3, h4, p, b, span, label {
-        color: white !important;
-    }
+@model List<Product>
 
-    a {
-        color: white !important;
-    }
-
-    select, input {
-        color: black;
-    }
-</style> 
-@model List<FinalProject.Models.Product>
-
-=======
-﻿@model List<Product>
->>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
 @{
     var selectedCategory = ViewBag.SelectedCategory as int?;
     var searchType = ViewBag.SearchType as string;
+    var minPrice = ViewBag.MinPrice ?? 0;
+    var maxPrice = ViewBag.MaxPrice ?? 100000000;
 }
 
-<h2>🛍 Product List</h2>
-<a asp-action="Create"
-   style="background:#007bff;
-          color:white;
-          padding:8px 15px;
-          border-radius:5px;
-          text-decoration:none;
-          display:inline-block;
-          margin-bottom:10px;">
-    ➕ Add Product
-</a>
+<div class="shop-container">
 
+    <div class="shop-layout">
 
-<p>Total: <b>@Model.Count</b> products</p>
+        <!-- ===== SIDEBAR ===== -->
+        <div class="shop-sidebar">
+            <h5 class="filter-title">Filter by price</h5>
 
-<!-- SEARCH (CÓ DROPDOWN) -->
-<form method="get" asp-action="Index" style="margin-bottom:20px;">
+            <!-- ✅ SUB CATEGORY -->
+            @{
+                var categories = ViewBag.Categories as List<ProductCategory>;
 
-    <!-- DROPDOWN -->
-    <select name="searchType" style="padding:5px;">
-        <option value="name" selected="@(searchType == "name")">
-            🔍 Product Name
-        </option>
+                int? currentParent = null;
 
-        <option value="seo" selected="@(searchType == "seo")">
-            📌 SEO Title
-        </option>
+                if (selectedCategory != null && categories != null)
+                {
+                    var current = categories
+                        .FirstOrDefault(x => x.CateID == selectedCategory);
 
-        <option value="keyword" selected="@(searchType == "keyword")">
-            🏷 Meta Keywords
-        </option>
+                    if (current != null)
+                    {
+                        currentParent = current.ParentID ?? current.CateID;
+                    }
+                }
+            }
 
-        <option value="desc" selected="@(searchType == "desc")">
-            📝 Description
-        </option>
+            @if (currentParent != null)
+            {
+                var hasChild = false;
 
-    </select>
+                foreach (var c in ViewBag.Categories)
+                {
+                    if (c.ParentID == currentParent)
+                    {
+                        hasChild = true;
+                        break;
+                    }
+                }
 
-    <!-- INPUT -->
-    <input type="text" name="keyword"
-           value="@ViewBag.Keyword"
-           placeholder="Search product..."
-           style="padding:5px;width:200px;" />
+                if (hasChild)
+                {
+                    <hr />
+                    <h5 class="filter-title">Sub Categories</h5>
 
-    <button type="submit">Search</button>
+                    <div class="shop-subcategory">
+                        @foreach (var sub in ViewBag.Categories)
+                        {
+                            if (sub.ParentID == currentParent)
+                            {
+                                <div>
+                                    <a href="/Product?cateId=@sub.CateID"
+                                           class="shop-cate @(selectedCategory == sub.CateID ? "active" : "")">
+                                        └ @sub.CateName
+                                    </a>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            }
 
-</form>
+            <!-- PRICE FILTER -->
+            <form method="get" asp-action="Index">
+                <input type="hidden" name="cateId" value="@selectedCategory" />
+                <input type="hidden" name="keyword" value="@ViewBag.Keyword" />
+                <input type="hidden" name="searchType" value="@searchType" />
 
-<hr />
+                <div class="price-filter">
+                    <label>Price from: <b id="minPriceValue">@minPrice</b> VNĐ</label>
+                    <input type="range"
+                           name="minPrice"
+                           min="0"
+                           max="1000000"
+                           value="@minPrice"
+                           oninput="updatePriceValues()" />
 
-<!-- CATEGORY -->
-<h3>📂 Category</h3>
+                    <label>To: <b id="maxPriceValue">@maxPrice</b> VNĐ</label>
+                    <input type="range"
+                           name="maxPrice"
+                           min="0"
+                           max="1000000"
+                           value="@maxPrice"
+                           oninput="updatePriceValues()" />
+                </div>
 
-<a href="/Product"
-   style="margin-right:10px;
-   @(selectedCategory == null ? "color:red;font-weight:bold" : "")">
-    All
-</a>
+                <button type="submit" class="shop-filter-btn">
+                    Search
+                </button>
+            </form>
 
-@foreach (var c in ViewBag.Categories)
-{
-    <a href="/Product?categoryId=@c.CategoryId"
-       style="margin-right:10px;
-       @(selectedCategory == c.CategoryId ? "color:red;font-weight:bold" : "")">
-        @c.CategoryName
-    </a>
-}
+        </div>
 
-<hr />
+        <!-- ===== MAIN ===== -->
+        <div class="shop-main">
 
-<!-- PRODUCT LIST -->
-<div style="display:flex;flex-wrap:wrap;">
+            <!-- SEARCH -->
+            <form method="get" asp-action="Index" class="shop-search">
 
-    @if (Model.Count == 0)
-    {
-        <p style="color:red;font-weight:bold;">
-            ❌ No products found!
-        </p>
-    }
-    else
-    {
-        @foreach (var item in Model)
-        {
-<<<<<<< HEAD
-            <div style="border:1px solid #ccc;
-=======
-            <a href="/Product/Detail/@p.ProductID" class="product-card"/>
-        <div style="border:1px solid #ccc;
->>>>>>> 342cecc507d78faff00b79ec29079f2828c0259e
-                        padding:10px;
-                        margin:10px;
-                        width:220px;
-                        border-radius:10px;
-                        text-align:center;">
+                <select name="searchType" class="shop-input">
+                    <option value="name" selected="@(searchType == "name")">🔍 Product Name</option>
+                    <option value="seo" selected="@(searchType == "seo")">📌 SEO Title</option>
+                    <option value="keyword" selected="@(searchType == "keyword")">🏷 Meta Keywords</option>
+                    <option value="desc" selected="@(searchType == "desc")">📝 Description</option>
+                </select>
 
-                <!-- CLICK CARD -->
-                <a href="/Product/Details/@item.ProductID"
-                   style="text-decoration:none;color:black;">
+                <input type="text" name="keyword"
+                       value="@ViewBag.Keyword"
+                       placeholder="Search product..."
+                       class="shop-input" />
 
-                    <img src="@(string.IsNullOrEmpty(item.Image)
-                                     ? Url.Content("~/assets/product-1.jpg")
-                                     : Url.Content("~/assets/" + item.Image))"
-                 style="width:100%;height:150px;object-fit:cover;" />
+                <button type="submit" class="shop-btn">
+                    Search
+                </button>
 
-                    <h4>@item.ProductName</h4>
+            </form>
 
-                    <p style="color:red;font-weight:bold;">
-                        @item.Price VNĐ
-                    </p>
+            <hr />
 
+            <!-- ✅ CATEGORY CHA ONLY -->
+            <div class="shop-category">
+
+                <a href="/Product"
+                       class="@(selectedCategory == null ? "shop-cate active" : "shop-cate")">
+                    All
                 </a>
 
-                <!-- CATEGORY -->
-                <p style="color:gray;">
-                    @item.Category?.CateName
-                </p>
+                @foreach (var c in ViewBag.Categories)
+                {
+                    if (c.ParentID == null) // 👉 chỉ lấy cha
+                    {
+                        <a href="/Product?cateId=@c.CateID"
+                               class="@(selectedCategory == c.CateID ? "shop-cate active" : "shop-cate")">
+                            @c.CateName
+                        </a>
+                    }
+                }
 
-                <!-- ADD TO CART -->
-                <a href="/Cart/AddToCart?productId=@item.ProductID"
-                   style="background:green;
-                          color:white;
-                          padding:5px 10px;
-                          border-radius:5px;
-                          text-decoration:none;">
-                    🛒 Add to Cart
-                </a>
-             
             </div>
-        }
+
+            <hr />
+
+            <!-- PRODUCT LIST -->
+            <div class="shop-grid">
+
+                @if (Model.Count == 0)
+                {
+                    <p class="shop-empty">❌ No products found!</p>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <div class="shop-card">
+
+                            <a href="/Product/Details/@item.ProductID" class="shop-link">
+
+                                <img src="@(string.IsNullOrEmpty(item.Image)
+                                                                                                         ? Url.Content("~/assets/product-1.jpg")
+                                                                                                         : Url.Content("~/assets/" + item.Image))" />
+
+                                <div class="shop-body">
+                                    <h4>@item.ProductName</h4>
+
+                                    <p class="shop-price">
+                                        @item.Price.ToString("0.000") VNĐ
+                                    </p>
+
+                                    <p class="shop-cate-name">
+                                        @item.Category?.CateName
+                                    </p>
+                                </div>
+
+                            </a>
+
+                            <div class="shop-actions-group">
+
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@item.ProductID" />
+                                    <input type="hidden" name="actionType" value="buyNow" />
+                                    <button type="submit" class="shop-buy-btn">⚡ Buy Now</button>
+                                </form>
+
+                                <form onsubmit="addToCart(event, @item.ProductID, '@(string.IsNullOrEmpty(item.Image) ? Url.Content("~/assets/product-1.jpg") : Url.Content("~/assets/" + item.Image))', this)">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@item.ProductID" />
+                                    <button type="submit" class="shop-cart-btn">
+                                        🛒 Add to Cart
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+      function animateCart(count, imgSrc, startElement) {
+
+        // 🛒 update số
+        const badge = document.getElementById("cart-count");
+        badge.innerText = count;
+
+        // 🛒 rung badge
+        badge.classList.add("animate");
+        setTimeout(() => badge.classList.remove("animate"), 400);
+
+        // 🛍️ hiệu ứng bay
+        const cart = document.querySelector(".floating-cart");
+        const img = document.createElement("img");
+
+        img.src = imgSrc;
+        img.classList.add("fly-img");
+
+        document.body.appendChild(img);
+
+        // vị trí bắt đầu
+        const rectStart = startElement.getBoundingClientRect();
+        img.style.left = rectStart.left + "px";
+        img.style.top = rectStart.top + "px";
+
+        // vị trí kết thúc (cart)
+        const rectEnd = cart.getBoundingClientRect();
+
+        setTimeout(() => {
+            img.style.left = rectEnd.left + "px";
+            img.style.top = rectEnd.top + "px";
+            img.style.width = "20px";
+            img.style.height = "20px";
+            img.style.opacity = "0.5";
+        }, 10);
+
+        // xóa sau khi bay xong
+        setTimeout(() => {
+            img.remove();
+        }, 800);
+    }
+        function addToCart(event, productId, imgSrc, form) {
+        event.preventDefault();
+
+        fetch('/Cart/AddToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: 'productId=' + productId +
+                  '&quantity=1' +
+                  '&__RequestVerificationToken=' + form.querySelector('input[name="__RequestVerificationToken"]').value
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            // 👉 gọi animation
+            animateCart(data.count, imgSrc, form);
+
+        });
     }
 
-</div>
-}
+</script>
