@@ -30,6 +30,7 @@ namespace FinalProject.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
             modelBuilder.Entity<IdentityRole<int>>().HasData(
                 new IdentityRole<int>
                 {

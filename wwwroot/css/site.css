@@ -1716,13 +1716,17 @@ h1, h2, h3 {
 /* ===== REGISTER UI UPGRADE ===== */
 
 .register-wrapper {
-    min-height: 100vh;
+    
     display: flex;
     justify-content: center;
     align-items: center;
     background: linear-gradient(135deg, #f5f7fa, #e4e7ec);
     font-family: 'Inter', sans-serif;
+    margin-top: 120px;
+    
+    min-height: calc(100vh - 80px);
 }
+
 
 .register-card {
     width: 400px;
@@ -2626,9 +2630,16 @@ hr {
     transition: all 0.6s ease;
 }
 
+
 /* ===== KHI SANG PRODUCT ===== */
 body.from-home .ads-banner {
     animation: slideOut 0.6s ease forwards;
+}
+/* ===== CART + CHECKOUT (phóng to lại) ===== */
+body.big-ads .ads-banner {
+    transform: scale(1);
+    opacity: 1;
+    filter: blur(0);
 }
 
 /* animation trượt + nhỏ + mờ */
@@ -2694,11 +2705,100 @@ body.from-home .shop-container {
         opacity: 1;
     }
 }
-
-.register-wrapper {
-    margin-top: 120px; 
+/* ===== AUTH PAGE STYLE ===== */
+.auth-container {
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 80px);
+    justify-content: center;
+    background: radial-gradient(circle at 20% 20%, #111 0%, #000 100%);
+}
+
+/* FORM CARD */
+.auth-box {
+    width: 400px;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* TITLE */
+.auth-box h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+/* INPUT */
+.auth-input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    transition: 0.3s;
+}
+
+    .auth-input:focus {
+        outline: none;
+        border-color: #fff;
+        box-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+
+/* BUTTON */
+.auth-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fff, #aaa);
+    color: #000;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+    .auth-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.2);
+    }
+
+/* LINK */
+.auth-link {
+    text-align: center;
+    margin-top: 15px;
+    color: #ccc;
+}
+
+    .auth-link a {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+/* GLOW BACKGROUND */
+.auth-glow {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+    filter: blur(100px);
+    z-index: 0;
 }

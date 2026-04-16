@@ -1,0 +1,40 @@
+﻿@model FinalProject.Models.Promotion
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<h2>Create Promotion</h2>
+
+<form method="post">
+
+    <div class="form-group">
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Discount (%)</label>
+        <input asp-for="DiscountPercent" type="number" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Start Date</label>
+        <input asp-for="StartDate" type="datetime-local" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>End Date</label>
+        <input asp-for="EndDate" type="datetime-local" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <select asp-for="Status" class="form-control">
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+</form>

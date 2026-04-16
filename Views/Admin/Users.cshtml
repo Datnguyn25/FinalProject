@@ -25,16 +25,7 @@
             </tr>
         </thead>
         <input type="text" id="searchUser" placeholder="Search user..." class="admin-input" />
-        <tbody id="userTable">
-            @foreach (var u in Model)
-            {
-                <tr>
-                    <td>@u.Id</td>
-                    <td>@u.FullName</td>
-                    <td>@u.Email</td>
-                </tr>
-            }
-        </tbody>
+        
         <tbody>
             @foreach (var u in Model)
             {

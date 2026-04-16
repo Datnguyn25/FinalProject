@@ -3,6 +3,171 @@
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+    /* ===== BACKGROUND GLOW ===== */
+    .register-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .register-wrapper::before {
+            content: "";
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.07), transparent);
+            top: -120px;
+            left: -120px;
+            filter: blur(120px);
+        }
+
+        .register-wrapper::after {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.05), transparent);
+            bottom: -100px;
+            right: -100px;
+            filter: blur(120px);
+        }
+
+    /* ===== CARD GLASS ===== */
+    .register-card {
+        background: rgba(255,255,255,0.08) !important;
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        animation: fadeUp 0.6s ease;
+        transition: 0.4s;
+    }
+
+        .register-card:hover {
+            transform: translateY(-5px) scale(1.01);
+        }
+
+    /* ===== FADE ===== */
+    @@keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== INPUT ===== */
+    .input-group input {
+        transition: 0.3s;
+    }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+    /* ===== LABEL FLOAT NHẸ ===== */
+    .input-label {
+        transition: 0.3s;
+    }
+
+    .input-group input:focus + .input-label,
+    .input-group input:not(:placeholder-shown) + .input-label {
+        transform: translateY(-2px);
+        font-size: 0.8rem;
+        color: #000;
+    }
+
+    /* ===== BUTTON ===== */
+    .register-btn {
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .register-btn::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .register-btn:hover::after {
+            left: 100%;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+    /* ===== GOOGLE ===== */
+    .google-btn {
+        transition: 0.3s;
+    }
+
+        .google-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+    /* ===== LINK ===== */
+    .login-link a {
+        position: relative;
+    }
+
+        .login-link a::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background: #000;
+            transition: 0.3s;
+        }
+
+        .login-link a:hover::after {
+            width: 100%;
+        }
+
+    /* ===== PASSWORD RULE STYLE ===== */
+    #passwordRule ul {
+        padding-left: 18px;
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    /* ===== CONFIRM TEXT ===== */
+    #confirmText {
+        font-size: 0.85rem;
+        display: block;
+        margin-top: 5px;
+    }
+
+    /* ===== STRENGTH BAR ===== */
+    #strengthBar {
+        height: 5px;
+        width: 0;
+        background: red;
+        margin-top: 8px;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+</style>
+
 <div class="register-wrapper">
     <div class="register-card">
 
@@ -10,8 +175,6 @@
         <p class="subtitle">Join our fashion community</p>
 
         <form method="post" action="/Account/Register">
-
-           
 
             <div class="input-group">
                 <label class="input-label">Full Name</label>
@@ -47,6 +210,7 @@
 
                 <div id="strengthBar"></div>
                 <span id="strengthText"></span>
+
                 <div id="passwordRule" style="display:none; margin-top:10px;">
                     <b>Password must contain:</b>
                     <ul>
@@ -86,7 +250,6 @@
                 onclick="window.location.href='/Account/GoogleLogin'">
 
             <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png">
-
             Register with Google
 
         </button>
@@ -103,8 +266,11 @@
 
 <script>
     function showRule(){
-        var rule = document.getElementById("passwordRule");
-        rule.style.display = "block";
+        document.getElementById("passwordRule").style.display = "block";
+    }
+
+    function hideRule(){
+        document.getElementById("passwordRule").style.display = "none";
     }
 
     function checkStrength(){
@@ -115,51 +281,63 @@
         var numberRule = document.getElementById("rule-number");
         var specialRule = document.getElementById("rule-special");
 
-        // DEBUG (nếu không chạy sẽ biết ngay)
-        console.log("typing...");
+        var strengthBar = document.getElementById("strengthBar");
 
-        // LENGTH
+        let strength = 0;
+
         if(password.length >= 8){
             lengthRule.style.color = "green";
-        } else {
-            lengthRule.style.color = "red";
-        }
+            strength++;
+        } else lengthRule.style.color = "red";
 
-        // UPPER
         if(password.match(/[A-Z]/)){
             upperRule.style.color = "green";
-        } else {
-            upperRule.style.color = "red";
-        }
+            strength++;
+        } else upperRule.style.color = "red";
 
-        // NUMBER
         if(password.match(/[0-9]/)){
             numberRule.style.color = "green";
-        } else {
-            numberRule.style.color = "red";
-        }
+            strength++;
+        } else numberRule.style.color = "red";
 
-        // SPECIAL
         if(password.match(/[^a-zA-Z0-9]/)){
             specialRule.style.color = "green";
+            strength++;
+        } else specialRule.style.color = "red";
+
+        strengthBar.style.width = (strength * 25) + "%";
+
+        if(strength <= 1) strengthBar.style.background = "red";
+        else if(strength == 2) strengthBar.style.background = "orange";
+        else if(strength == 3) strengthBar.style.background = "blue";
+        else strengthBar.style.background = "green";
+    }
+
+    function checkConfirm(){
+        var pass = document.getElementById("password").value;
+        var confirm = document.getElementById("confirmPassword").value;
+        var text = document.getElementById("confirmText");
+
+        if(confirm.length === 0){
+            text.innerHTML = "";
+            return;
+        }
+
+        if(pass === confirm){
+            text.innerHTML = "✔ Password matched";
+            text.style.color = "green";
         } else {
-            specialRule.style.color = "red";
+            text.innerHTML = "✖ Password not match";
+            text.style.color = "red";
         }
     }
-        function validatePhone(input) {
-        // 1. Chỉ giữ lại các chữ số, xóa bỏ mọi ký tự khác (chữ, dấu cách, ký tự đặc biệt)
+
+    function validatePhone(input) {
         let value = input.value.replace(/\D/g, '');
-
-        // 2. Nếu độ dài vượt quá 12, cắt bỏ phần thừa
-        if (value.length > 12) {
-            value = value.slice(0, 12);
-        }
-
-        // 3. Gán lại giá trị sạch vào ô input
+        if (value.length > 12) value = value.slice(0, 12);
         input.value = value;
     }
 
-    // Bổ sung: Chặn luôn việc nhấn phím không phải số (tăng trải nghiệm người dùng)
     document.getElementById('phoneNumber').addEventListener('keypress', function(e) {
         if (e.which < 48 || e.which > 57) {
             e.preventDefault();

@@ -3,6 +3,7 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 @model List<FinalProject.Models.Promotion>
+<a href="/Admin/CreatePromotion" class="admin-btn">+ Add Promotion</a>
 
 <h2 class="admin-title">🎯 Promotions</h2>
 
@@ -12,15 +13,45 @@
             <th>Name</th>
             <th>Discount</th>
             <th>Status</th>
+            <th>Time</th>
         </tr>
 
         @foreach (var p in Model)
         {
+            
+                var now = DateTime.Now;
+                var isActive = now >= p.StartDate && now <= p.EndDate;
+                var isUpcoming = now < p.StartDate;
+                var isExpired = now > p.EndDate;
+            
+
             <tr>
                 <td>@p.Name</td>
-                <td>@p.Name %</td>
+                <td>@p.DiscountPercent %</td>
                 <td>
-                    <span class="admin-badge badge-success">Active</span>
+                    @if (isActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else if (isUpcoming)
+                    {
+                        <span class="badge bg-warning">Upcoming</span>
+                    }
+                    else if (isExpired)
+                    {
+                        <span class="badge bg-danger">Expired</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+
+                <td>
+                    <div style="font-size:13px">
+                        <div>Start: @p.StartDate.ToString("dd/MM/yyyy")</div>
+                        <div>End: @p.EndDate.ToString("dd/MM/yyyy")</div>
+                    </div>
                 </td>
             </tr>
         }

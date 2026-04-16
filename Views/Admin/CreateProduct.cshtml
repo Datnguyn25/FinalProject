@@ -38,6 +38,16 @@
 
         </select>
     </div>
+    <div class="form-group">
+        <label>Promotion</label>
+        <select name="PromotionId" class="form-control">
+            <option value="">-- None --</option>
+            @foreach (var p in ViewBag.Promotions)
+            {
+                <option value="@p.Id">@p.Name (-@p.DiscountPercent%)</option>
+            }
+        </select>
+    </div>
 
     <br />
 
