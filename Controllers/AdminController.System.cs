@@ -7,13 +7,7 @@ namespace FinalProject.Controllers
     {
         public IActionResult Promotions() => View(_context.tb_Promotion.ToList());
 
-        [HttpPost]
-        public IActionResult CreatePromotion(Promotion promo)
-        {
-            _context.tb_Promotion.Add(promo);
-            _context.SaveChanges();
-            return RedirectToAction("Promotions");
-        }
+       
 
         public IActionResult Settings()
         {

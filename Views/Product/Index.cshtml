@@ -159,6 +159,10 @@
                 {
                     @foreach (var item in Model)
                     {
+
+                       
+   
+
                         <div class="shop-card">
 
                             <a href="/Product/Details/@item.ProductID" class="shop-link">
@@ -170,8 +174,44 @@
                                 <div class="shop-body">
                                     <h4>@item.ProductName</h4>
 
+                                    @{
+                                        var now = DateTime.Now;
+
+                                        var isSale = item.Promotion != null
+                                            && item.Promotion.Status
+                                            && item.Promotion.StartDate <= now
+                                            && item.Promotion.EndDate >= now;
+
+                                        var finalPrice = isSale
+                                            ? item.Price * (100 - item.Promotion.DiscountPercent) / 100
+                                            : item.Price;
+                                    }
+
                                     <p class="shop-price">
-                                        @item.Price.ToString("0.000") VNĐ
+
+                                        @if (isSale)
+                                        {
+                                            <span class="badge bg-danger">
+                                                -@item.Promotion.DiscountPercent%
+                                            </span>
+
+                                            <br />
+
+                                            <span style="text-decoration:line-through;color:gray">
+                                                @item.Price.ToString("N0") VNĐ
+                                            </span>
+
+                                            <br />
+
+                                            <span style="color:red;font-weight:bold">
+                                                @finalPrice.ToString("N0") VNĐ
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>@item.Price.ToString("N0") VNĐ</span>
+                                        }
+
                                     </p>
 
                                     <p class="shop-cate-name">
@@ -201,7 +241,9 @@
                             </div>
 
                         </div>
+
                     }
+
                 }
 
             </div>

@@ -85,6 +85,32 @@ namespace FinalProject.Controllers
             return View();
         }
 
+        public IActionResult CreatePromotion()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreatePromotion(Promotion model)
+        {
+            _context.tb_Promotion.Add(model);
+            _context.SaveChanges();
+            return RedirectToAction("Promotions");
+        }
+        public void AutoUpdatePromotion()
+        {
+            var now = DateTime.Now;
+            var list = _context.tb_Promotion.ToList();
+
+            foreach (var p in list)
+            {
+                if (p.EndDate < now)
+                    p.Status = false;
+            }
+
+            _context.SaveChanges();
+        }
+
 
     }
 

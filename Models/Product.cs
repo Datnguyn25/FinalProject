@@ -79,5 +79,8 @@ namespace FinalProject.Models
         public int? UpdatedBy { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
+
+        public int? PromotionId { get; set; }
+        public Promotion Promotion { get; set; }
     }
 }
