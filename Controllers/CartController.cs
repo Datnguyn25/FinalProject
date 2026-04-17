@@ -215,5 +215,11 @@ public class CartController : Controller
         TempData["Error"] = "Thanh toán thất bại";
         return RedirectToAction("Checkout");
     }
-   
+
+    public IActionResult Success(string method)
+    {
+        ViewBag.Method = method;
+        return View(); 
+    }
+
 }
