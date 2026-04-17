@@ -54,6 +54,9 @@ namespace FinalProject
             builder.Services.AddDefaultIdentity<User>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Khóa trong 15 phút
+                options.Lockout.MaxFailedAccessAttempts = 5;                       // Sai 5 lần thì khóa
+                options.Lockout.AllowedForNewUsers = true;
 
                 options.Password.RequireDigit = true;              // B?t bu?c có s?
                 options.Password.RequiredLength = 8;               // Ít nh?t 8 ký t?

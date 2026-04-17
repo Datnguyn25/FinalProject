@@ -174,8 +174,18 @@
 
             @if (ViewBag.Error != null)
             {
-                <div class="alert alert-danger" style="color: red; margin-bottom: 10px; font-size: 0.9rem;">
-                    ⚠️ @ViewBag.Error
+                <div id="lockout-msg" class="alert alert-danger" style="color: red; margin-bottom: 15px; font-size: 0.9rem; padding: 15px; background: rgba(255,77,77,0.1); border-radius: 8px; border: 1px solid rgba(255,77,77,0.2);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span id="lock-icon">⚠️</span>
+                        <span id="error-text">@ViewBag.Error</span>
+                    </div>
+
+                    @if (ViewBag.SecondsLeft != null)
+                    {
+                        <div id="countdown-wrapper" style="margin-top: 8px; font-weight: 600; font-family: 'Inter', sans-serif;">
+                            Try again in: <span id="timer" style="color: #fff; background: #ff4d4d; padding: 2px 8px; border-radius: 4px; min-width: 40px; display: inline-block; text-align: center;">@ViewBag.SecondsLeft</span> seconds
+                        </div>
+                    }
                 </div>
             }
 
@@ -268,6 +278,49 @@
             password.type = "password";
         }
     }
+
+    // --- NEW LOGIC COUNTDOWN ---
+    document.addEventListener("DOMContentLoaded", function () {
+        const timerDisplay = document.getElementById("timer");
+        const submitBtn = document.querySelector(".login-btn");
+        const alertBox = document.getElementById("lockout-msg");
+        const errorText = document.getElementById("error-text");
+        const lockIcon = document.getElementById("lock-icon");
+        const countdownWrapper = document.getElementById("countdown-wrapper");
+
+        if (timerDisplay) {
+            let seconds = parseInt(timerDisplay.textContent);
+
+            // Vô hiệu hóa nút Login ngay lập tức
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.5";
+            submitBtn.style.cursor = "not-allowed";
+
+            const countdownInterval = setInterval(function () {
+                seconds--;
+                timerDisplay.textContent = seconds;
+
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+
+                    // Thay đổi giao diện khi hết thời gian khóa
+                    errorText.textContent = "Lockout expired. You can try to login again.";
+                    lockIcon.textContent = "✅";
+                    countdownWrapper.style.display = "none";
+
+                    // Đổi màu alert sang xanh lá cho dễ nhận biết
+                    alertBox.style.background = "rgba(46, 204, 113, 0.1)";
+                    alertBox.style.color = "#2ecc71";
+                    alertBox.style.borderColor = "rgba(46, 204, 113, 0.2)";
+
+                    // Kích hoạt lại nút Login
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = "1";
+                    submitBtn.style.cursor = "pointer";
+                }
+            }, 1000);
+        }
+    });
 </script>
 
 @if (TempData["RegisterSuccess"] != null)

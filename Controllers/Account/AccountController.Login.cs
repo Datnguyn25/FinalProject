@@ -50,7 +50,18 @@ namespace FinalProject.Controllers
 
             if (result.IsLockedOut)
             {
-                ViewBag.Error = "Your account is temporarily locked. Please try again later.";
+                var user = await _userManager.FindByNameAsync(model.Username);
+                var lockoutEndDate = await _userManager.GetLockoutEndDateAsync(user);
+
+                if (lockoutEndDate.HasValue)
+                {
+                    var remainingTime = lockoutEndDate.Value - DateTimeOffset.UtcNow;
+                    // Lấy tổng số giây còn lại
+                    var secondsLeft = (int)remainingTime.TotalSeconds;
+
+                    ViewBag.SecondsLeft = secondsLeft;
+                    ViewBag.Error = "Your account is locked due to multiple failed attempts.";
+                }
             }
             else
             {
