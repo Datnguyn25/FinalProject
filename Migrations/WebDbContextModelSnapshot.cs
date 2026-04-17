@@ -134,6 +134,9 @@ namespace FinalProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
 
@@ -159,11 +162,107 @@ namespace FinalProject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("OrderID");
 
                     b.HasIndex("CustomerID");
 
                     b.ToTable("tb_Order");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderID = 1,
+                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(486),
+                            CustomerID = 1,
+                            Delivered = true,
+                            DeliveryDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Discount = 0,
+                            OrderDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentStatus = "Paid",
+                            TotalPrice = 1250000m
+                        },
+                        new
+                        {
+                            OrderID = 2,
+                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(495),
+                            CustomerID = 1,
+                            Delivered = true,
+                            DeliveryDate = new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Discount = 0,
+                            OrderDate = new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentStatus = "Paid",
+                            TotalPrice = 850000m
+                        },
+                        new
+                        {
+                            OrderID = 3,
+                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(498),
+                            CustomerID = 1,
+                            Delivered = true,
+                            DeliveryDate = new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Discount = 0,
+                            OrderDate = new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentStatus = "Paid",
+                            TotalPrice = 2100000m
+                        },
+                        new
+                        {
+                            OrderID = 4,
+                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(500),
+                            CustomerID = 1,
+                            Delivered = true,
+                            DeliveryDate = new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Discount = 0,
+                            OrderDate = new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentStatus = "Paid",
+                            TotalPrice = 1500000m
+                        },
+                        new
+                        {
+                            OrderID = 5,
+                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(503),
+                            CustomerID = 1,
+                            Delivered = true,
+                            DeliveryDate = new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Discount = 0,
+                            OrderDate = new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentStatus = "Paid",
+                            TotalPrice = 3200000m
+                        },
+                        new
+                        {
+                            OrderID = 6,
+                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(505),
+                            CustomerID = 1,
+                            Delivered = true,
+                            DeliveryDate = new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Discount = 0,
+                            OrderDate = new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentStatus = "Paid",
+                            TotalPrice = 950000m
+                        },
+                        new
+                        {
+                            OrderID = 7,
+                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(507),
+                            CustomerID = 1,
+                            Delivered = true,
+                            DeliveryDate = new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Discount = 0,
+                            OrderDate = new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderStatus = "Completed",
+                            PaymentStatus = "Paid",
+                            TotalPrice = 1800000m
+                        });
                 });
 
             modelBuilder.Entity("FinalProject.Models.OrderDetails", b =>
@@ -198,6 +297,64 @@ namespace FinalProject.Migrations
                     b.HasIndex("ShopId");
 
                     b.ToTable("tb_OrderDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderDetailId = 1,
+                            OrderId = 1,
+                            Price = 450000m,
+                            ProductId = 1,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            OrderDetailId = 2,
+                            OrderId = 2,
+                            Price = 550000m,
+                            ProductId = 2,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            OrderDetailId = 3,
+                            OrderId = 3,
+                            Price = 450000m,
+                            ProductId = 1,
+                            Quantity = 5
+                        },
+                        new
+                        {
+                            OrderDetailId = 4,
+                            OrderId = 4,
+                            Price = 550000m,
+                            ProductId = 2,
+                            Quantity = 3
+                        },
+                        new
+                        {
+                            OrderDetailId = 5,
+                            OrderId = 5,
+                            Price = 450000m,
+                            ProductId = 1,
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            OrderDetailId = 6,
+                            OrderId = 6,
+                            Price = 550000m,
+                            ProductId = 2,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            OrderDetailId = 7,
+                            OrderId = 7,
+                            Price = 450000m,
+                            ProductId = 1,
+                            Quantity = 4
+                        });
                 });
 
             modelBuilder.Entity("FinalProject.Models.Product", b =>
@@ -259,6 +416,9 @@ namespace FinalProject.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<int?>("PromotionId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("PromotionPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -294,6 +454,8 @@ namespace FinalProject.Migrations
 
                     b.HasIndex("CateID");
 
+                    b.HasIndex("PromotionId");
+
                     b.HasIndex("ShopID");
 
                     b.ToTable("tb_Product");
@@ -302,19 +464,19 @@ namespace FinalProject.Migrations
                         new
                         {
                             ProductID = 1,
-                            BrandID = 1,
-                            CateID = 1,
+                            BrandID = 3,
+                            CateID = 4,
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Detail = "<p>Breathable fabric, perfect for office and formal events.</p>",
+                            Detail = "100% Cotton",
                             Hot = true,
                             Image = "white-shirt.jpg",
                             ListImages = "img1.jpg,img2.jpg",
-                            MetaDescription = "Buy premium white oxford shirt at the best price.",
-                            MetaKeywords = "white shirt, oxford shirt, formal",
-                            Price = 45000m,
-                            ProductDescription = "Classic fit white oxford shirt made from 100% cotton.",
+                            MetaDescription = "shirt",
+                            MetaKeywords = "shirt",
+                            Price = 450000m,
+                            ProductDescription = "Classic fit white oxford shirt",
                             ProductName = "Premium White Oxford Shirt",
-                            PromotionPrice = 39.99m,
+                            PromotionPrice = 399000m,
                             Quantity = 100,
                             SeoTitle = "premium-white-oxford-shirt",
                             ShopID = 1,
@@ -325,21 +487,550 @@ namespace FinalProject.Migrations
                         new
                         {
                             ProductID = 2,
-                            BrandID = 1,
-                            CateID = 2,
+                            BrandID = 4,
+                            CateID = 6,
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Detail = "<p>Soft chiffon material with adjustable waist strap.</p>",
+                            Detail = "Chiffon material",
                             Hot = false,
                             Image = "floral-dress.jpg",
                             ListImages = "img3.jpg,img4.jpg",
-                            MetaDescription = "Beautiful floral dress for your summer vacation.",
-                            MetaKeywords = "summer dress, floral dress, maxi dress",
-                            Price = 55000m,
-                            ProductDescription = "Elegant floral print dress for summer outings.",
+                            MetaDescription = "dress",
+                            MetaKeywords = "dress",
+                            Price = 550000m,
+                            ProductDescription = "Elegant floral print dress",
                             ProductName = "Floral Summer Maxi Dress",
-                            PromotionPrice = 49.00m,
+                            PromotionPrice = 490000m,
                             Quantity = 50,
                             SeoTitle = "floral-summer-maxi-dress",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 3,
+                            BrandID = 2,
+                            CateID = 5,
+                            CreatedDate = new DateTime(2026, 3, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Stretchy fabric",
+                            Hot = true,
+                            Image = "anh1sanpham.jpg",
+                            ListImages = "img5.jpg",
+                            MetaDescription = "pants",
+                            MetaKeywords = "chinos",
+                            Price = 600000m,
+                            ProductDescription = "High-quality khaki pants",
+                            ProductName = "Slim Fit Navy Chinos",
+                            PromotionPrice = 550000m,
+                            Quantity = 80,
+                            SeoTitle = "slim-fit-navy-chinos",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 4,
+                            BrandID = 5,
+                            CateID = 7,
+                            CreatedDate = new DateTime(2026, 3, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Handmade",
+                            Hot = false,
+                            Image = "anh2sanpham.jpg",
+                            ListImages = "img6.jpg",
+                            MetaDescription = "bag",
+                            MetaKeywords = "bag",
+                            Price = 1200000m,
+                            ProductDescription = "Genuine leather bag",
+                            ProductName = "Leather Crossbody Bag",
+                            PromotionPrice = 990000m,
+                            Quantity = 30,
+                            SeoTitle = "leather-crossbody-bag",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 5,
+                            BrandID = 1,
+                            CateID = 9,
+                            CreatedDate = new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Waterproof 50m",
+                            Hot = true,
+                            Image = "anh3sanpham.jpg",
+                            ListImages = "img7.jpg",
+                            MetaDescription = "watch",
+                            MetaKeywords = "watch",
+                            Price = 3500000m,
+                            ProductDescription = "Elegant gold-plated watch",
+                            ProductName = "Classic Gold Watch",
+                            PromotionPrice = 3200000m,
+                            Quantity = 15,
+                            SeoTitle = "classic-gold-watch",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 6,
+                            BrandID = 1,
+                            CateID = 8,
+                            CreatedDate = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Breathable mesh upper",
+                            Hot = true,
+                            Image = "anh4sanpham.jpg",
+                            ListImages = "nike1.jpg,nike2.jpg",
+                            MetaDescription = "nike air max",
+                            MetaKeywords = "nike, shoes",
+                            Price = 3500000m,
+                            ProductDescription = "Advanced cushioning for daily comfort.",
+                            ProductName = "Nike Air Max 270",
+                            PromotionPrice = 3200000m,
+                            Quantity = 40,
+                            SeoTitle = "nike-air-max-270",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 7,
+                            BrandID = 2,
+                            CateID = 8,
+                            CreatedDate = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Primeknit upper",
+                            Hot = true,
+                            Image = "anh5sanpham.jpg",
+                            ListImages = "adi1.jpg,adi2.jpg",
+                            MetaDescription = "adidas ultraboost",
+                            MetaKeywords = "adidas, running",
+                            Price = 4200000m,
+                            ProductDescription = "Ultimate energy return for runners.",
+                            ProductName = "Adidas Ultraboost 22",
+                            PromotionPrice = 3800000m,
+                            Quantity = 35,
+                            SeoTitle = "adidas-ultraboost-22",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 8,
+                            BrandID = 3,
+                            CateID = 4,
+                            CreatedDate = new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Airism technology",
+                            Hot = false,
+                            Image = "anh6sanpham.jpg",
+                            ListImages = "uni1.jpg",
+                            MetaDescription = "airism shirt",
+                            MetaKeywords = "uniqlo, t-shirt",
+                            Price = 350000m,
+                            ProductDescription = "Smooth and quick-drying fabric.",
+                            ProductName = "Uniqlo Airism T-Shirt",
+                            PromotionPrice = 299000m,
+                            Quantity = 200,
+                            SeoTitle = "uniqlo-airism-tshirt",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 9,
+                            BrandID = 4,
+                            CateID = 4,
+                            CreatedDate = new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Premium wool blend",
+                            Hot = true,
+                            Image = "anh7sanpham.jpg",
+                            ListImages = "zara1.jpg",
+                            MetaDescription = "slim fit suit",
+                            MetaKeywords = "zara, suit",
+                            Price = 2500000m,
+                            ProductDescription = "Modern slim fit for formal events.",
+                            ProductName = "Zara Slim Fit Suit",
+                            PromotionPrice = 2100000m,
+                            Quantity = 20,
+                            SeoTitle = "zara-slim-suit",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 10,
+                            BrandID = 5,
+                            CateID = 4,
+                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "100% Cotton denim",
+                            Hot = false,
+                            Image = "anh8sanpham.jpg",
+                            ListImages = "hm1.jpg",
+                            MetaDescription = "denim jacket",
+                            MetaKeywords = "hm, denim",
+                            Price = 900000m,
+                            ProductDescription = "Classic denim jacket with a modern twist.",
+                            ProductName = "H&M Denim Jacket",
+                            PromotionPrice = 750000m,
+                            Quantity = 60,
+                            SeoTitle = "hm-denim-jacket",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 11,
+                            BrandID = 1,
+                            CateID = 5,
+                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Tech fleece fabric",
+                            Hot = true,
+                            Image = "anh9sanpham.jpg",
+                            ListImages = "nike3.jpg",
+                            MetaDescription = "nike tech fleece",
+                            MetaKeywords = "nike, fleece",
+                            Price = 2200000m,
+                            ProductDescription = "Lightweight warmth for cold days.",
+                            ProductName = "Nike Tech Fleece",
+                            PromotionPrice = 1900000m,
+                            Quantity = 45,
+                            SeoTitle = "nike-tech-fleece",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 12,
+                            BrandID = 2,
+                            CateID = 4,
+                            CreatedDate = new DateTime(2026, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "French terry cotton",
+                            Hot = false,
+                            Image = "anh10sanpham.jpg",
+                            ListImages = "adi3.jpg",
+                            MetaDescription = "adidas originals",
+                            MetaKeywords = "adidas, hoodie",
+                            Price = 1500000m,
+                            ProductDescription = "Iconic style with cozy comfort.",
+                            ProductName = "Adidas Originals Hoodie",
+                            PromotionPrice = 1200000m,
+                            Quantity = 70,
+                            SeoTitle = "adidas-hoodie",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 13,
+                            BrandID = 3,
+                            CateID = 5,
+                            CreatedDate = new DateTime(2026, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Slim straight cut",
+                            Hot = true,
+                            Image = "anh11sanpham.jpg",
+                            ListImages = "uni2.jpg",
+                            MetaDescription = "selvedge denim",
+                            MetaKeywords = "uniqlo, jeans",
+                            Price = 1200000m,
+                            ProductDescription = "Authentic selvedge denim.",
+                            ProductName = "Uniqlo Selvedge Jeans",
+                            PromotionPrice = 999000m,
+                            Quantity = 90,
+                            SeoTitle = "uniqlo-jeans",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 14,
+                            BrandID = 4,
+                            CateID = 6,
+                            CreatedDate = new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Lightweight fabric",
+                            Hot = false,
+                            Image = "anh12sanpham.jpg",
+                            ListImages = "zara2.jpg",
+                            MetaDescription = "floral skirt",
+                            MetaKeywords = "zara, skirt",
+                            Price = 800000m,
+                            ProductDescription = "Beautiful floral pattern for spring.",
+                            ProductName = "Zara Floral Skirt",
+                            PromotionPrice = 650000m,
+                            Quantity = 55,
+                            SeoTitle = "zara-floral-skirt",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 15,
+                            BrandID = 5,
+                            CateID = 4,
+                            CreatedDate = new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Soft brushed inside",
+                            Hot = false,
+                            Image = "anh13sanpham.jpg",
+                            ListImages = "hm2.jpg",
+                            MetaDescription = "oversized top",
+                            MetaKeywords = "hm, sweatshirt",
+                            Price = 500000m,
+                            ProductDescription = "Relaxed fit for everyday wear.",
+                            ProductName = "H&M Oversized Sweatshirt",
+                            PromotionPrice = 400000m,
+                            Quantity = 120,
+                            SeoTitle = "hm-sweatshirt",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 16,
+                            BrandID = 1,
+                            CateID = 3,
+                            CreatedDate = new DateTime(2026, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Padded shoulder straps",
+                            Hot = false,
+                            Image = "anh14sanpham.jpg",
+                            ListImages = "nike4.jpg",
+                            MetaDescription = "nike backpack",
+                            MetaKeywords = "nike, bag",
+                            Price = 850000m,
+                            ProductDescription = "Classic design with ample storage.",
+                            ProductName = "Nike Heritage Backpack",
+                            PromotionPrice = 700000m,
+                            Quantity = 40,
+                            SeoTitle = "nike-backpack",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 17,
+                            BrandID = 2,
+                            CateID = 8,
+                            CreatedDate = new DateTime(2026, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Synthetic leather upper",
+                            Hot = true,
+                            Image = "anh15sanpham.jpg",
+                            ListImages = "adi4.jpg",
+                            MetaDescription = "stan smith shoes",
+                            MetaKeywords = "adidas, sneakers",
+                            Price = 2300000m,
+                            ProductDescription = "Timeless tennis-inspired sneakers.",
+                            ProductName = "Adidas Stan Smith",
+                            PromotionPrice = 1950000m,
+                            Quantity = 50,
+                            SeoTitle = "adidas-stan-smith",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 18,
+                            BrandID = 3,
+                            CateID = 5,
+                            CreatedDate = new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Heattech technology",
+                            Hot = false,
+                            Image = "anh16sanpham.jpg",
+                            ListImages = "uni3.jpg",
+                            MetaDescription = "thermal wear",
+                            MetaKeywords = "uniqlo, leggings",
+                            Price = 450000m,
+                            ProductDescription = "Thermal leggings for winter warmth.",
+                            ProductName = "Uniqlo Heattech Leggings",
+                            PromotionPrice = 350000m,
+                            Quantity = 150,
+                            SeoTitle = "uniqlo-heattech",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 19,
+                            BrandID = 4,
+                            CateID = 3,
+                            CreatedDate = new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Metallic buckle",
+                            Hot = false,
+                            Image = "anh17sanpham.jpg",
+                            ListImages = "zara3.jpg",
+                            MetaDescription = "leather belt",
+                            MetaKeywords = "zara, belt",
+                            Price = 600000m,
+                            ProductDescription = "100% genuine leather belt.",
+                            ProductName = "Zara Leather Belt",
+                            PromotionPrice = 450000m,
+                            Quantity = 100,
+                            SeoTitle = "zara-belt",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 20,
+                            BrandID = 5,
+                            CateID = 4,
+                            CreatedDate = new DateTime(2026, 4, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Cotton and elastane",
+                            Hot = false,
+                            Image = "anh18sanpham.jpg",
+                            ListImages = "hm3.jpg",
+                            MetaDescription = "tank top",
+                            MetaKeywords = "hm, top",
+                            Price = 250000m,
+                            ProductDescription = "Simple and stylish ribbed top.",
+                            ProductName = "H&M Ribbed Tank Top",
+                            PromotionPrice = 180000m,
+                            Quantity = 180,
+                            SeoTitle = "hm-tank-top",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 21,
+                            BrandID = 1,
+                            CateID = 5,
+                            CreatedDate = new DateTime(2026, 4, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Sweat-wicking fabric",
+                            Hot = true,
+                            Image = "anh19sanpham.jpg",
+                            ListImages = "nike5.jpg",
+                            MetaDescription = "sport shorts",
+                            MetaKeywords = "nike, shorts",
+                            Price = 750000m,
+                            ProductDescription = "Stay dry during your workout.",
+                            ProductName = "Nike Dri-FIT Shorts",
+                            PromotionPrice = 600000m,
+                            Quantity = 85,
+                            SeoTitle = "nike-shorts",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 22,
+                            BrandID = 2,
+                            CateID = 3,
+                            CreatedDate = new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Adjustable strap",
+                            Hot = false,
+                            Image = "anh20sanpham.jpg",
+                            ListImages = "adi5.jpg",
+                            MetaDescription = "baseball cap",
+                            MetaKeywords = "adidas, cap",
+                            Price = 450000m,
+                            ProductDescription = "Classic 6-panel cap.",
+                            ProductName = "Adidas Baseball Cap",
+                            PromotionPrice = 350000m,
+                            Quantity = 110,
+                            SeoTitle = "adidas-cap",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 23,
+                            BrandID = 3,
+                            CateID = 4,
+                            CreatedDate = new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Linen cotton blend",
+                            Hot = true,
+                            Image = "anh21sanpham.jpg",
+                            ListImages = "uni4.jpg",
+                            MetaDescription = "linen shirt",
+                            MetaKeywords = "uniqlo, shirt",
+                            Price = 750000m,
+                            ProductDescription = "Cool and breathable linen shirt.",
+                            ProductName = "Uniqlo Linen Shirt",
+                            PromotionPrice = 599000m,
+                            Quantity = 65,
+                            SeoTitle = "uniqlo-linen-shirt",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 24,
+                            BrandID = 4,
+                            CateID = 5,
+                            CreatedDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Flowy material",
+                            Hot = true,
+                            Image = "anh22sanpham.jpg",
+                            ListImages = "zara4.jpg",
+                            MetaDescription = "wide leg",
+                            MetaKeywords = "zara, trousers",
+                            Price = 1300000m,
+                            ProductDescription = "High-waisted wide leg pants.",
+                            ProductName = "Zara Wide Leg Trousers",
+                            PromotionPrice = 1100000m,
+                            Quantity = 45,
+                            SeoTitle = "zara-trousers",
+                            ShopID = 1,
+                            Status = true,
+                            VAT = true,
+                            ViewCount = 0
+                        },
+                        new
+                        {
+                            ProductID = 25,
+                            BrandID = 5,
+                            CateID = 4,
+                            CreatedDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Detail = "Soft wool blend",
+                            Hot = true,
+                            Image = "anh23sanpham.jpg",
+                            ListImages = "hm4.jpg",
+                            MetaDescription = "winter coat",
+                            MetaKeywords = "hm, coat",
+                            Price = 2800000m,
+                            ProductDescription = "Stay warm and stylish in winter.",
+                            ProductName = "H&M Wool Blend Coat",
+                            PromotionPrice = 2400000m,
+                            Quantity = 15,
+                            SeoTitle = "hm-wool-coat",
                             ShopID = 1,
                             Status = true,
                             VAT = true,
@@ -875,7 +1566,7 @@ namespace FinalProject.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5f752bdb-1878-41cd-a23d-48510b8b7528",
+                            ConcurrencyStamp = "881370c9-277a-49c8-914c-8ad53940efa7",
                             CreatedAt = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@fashionstore.com",
                             EmailConfirmed = true,
@@ -886,10 +1577,10 @@ namespace FinalProject.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@FASHIONSTORE.COM",
                             NormalizedUserName = "ADMIN@FASHIONSTORE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE9ZB7nugbR0USVfdbscK+65vP4r7dypDXAWmNjvreTggBlKL+hezMuBMzahDKNCqw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH25h7ZQvQE8hOwTaBbjOB32HV7wnHtkWSfxmcVzInrNEyS3y96uH2cNkm9/UPRG1A==",
                             PhoneNumberConfirmed = false,
                             PhoneVerified = false,
-                            SecurityStamp = "bc1ac220-d26d-4a45-b229-78143b32d605",
+                            SecurityStamp = "23e669af-337e-4e6a-910b-8f6801457c72",
                             TwoFactorEnabled = false,
                             UserName = "admin@fashionstore.com"
                         });
@@ -928,21 +1619,21 @@ namespace FinalProject.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "4828f4c2-ddb3-4a59-9037-eb3f8db83436",
+                            ConcurrencyStamp = "ef13c806-04c4-49cf-bc8c-db22786294d4",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "c227cf8f-7cc5-4830-b0a8-cdf8bd07bd9f",
+                            ConcurrencyStamp = "05dfec67-bfca-4f86-afb4-768728a5d7b7",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "677cdaa2-a80c-4501-8cb8-737c548eef24",
+                            ConcurrencyStamp = "4845c675-36ee-46c8-8fe3-091fb3126fa2",
                             Name = "Shop",
                             NormalizedName = "SHOP"
                         });
@@ -1134,6 +1825,10 @@ namespace FinalProject.Migrations
                         .WithMany("Products")
                         .HasForeignKey("CateID");
 
+                    b.HasOne("FinalProject.Models.Promotion", "Promotion")
+                        .WithMany()
+                        .HasForeignKey("PromotionId");
+
                     b.HasOne("FinalProject.Models.Shop", "Shop")
                         .WithMany()
                         .HasForeignKey("ShopID")
@@ -1143,6 +1838,8 @@ namespace FinalProject.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+
+                    b.Navigation("Promotion");
 
                     b.Navigation("Shop");
                 });

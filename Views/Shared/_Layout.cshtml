@@ -18,8 +18,23 @@
 
 <body class="
     @(Context.Request.Query["from"] == "home" ? "from-home" : "")
+
     @(controllerName == "Cart" ? "ads-big" : "")
     ">
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    }
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                // nếu là trang Product
+                if ("@currentController" === "Product") {
+                    document.body.classList.add("product-page");
+                }
+
+            });
+    </script>
 
     <header>
         <nav class="navbar custom-navbar">
