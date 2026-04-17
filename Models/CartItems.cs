@@ -14,6 +14,7 @@ namespace FinalProject.Models
         public int ProductID { get; set; }
 
         public int Quantity { get; set; }
+        public string Size { get; set; }
 
         // Navigation Properties
         [ForeignKey("CartId")]
@@ -26,5 +27,6 @@ namespace FinalProject.Models
         public string ProductName { get; set; }
         public string Image { get; set; }
         public decimal Price { get; set; } // Add this property to fix CS1061
+      
     }
 }

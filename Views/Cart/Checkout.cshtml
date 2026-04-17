@@ -1,4 +1,6 @@
 ﻿@model FinalProject.ViewModels.CheckoutVM
+@using System.Globalization
+
 @{
     ViewData["Title"] = "Checkout";
     var cart = ViewBag.Cart as List<CartItems> ?? new List<CartItems>();
@@ -13,6 +15,7 @@
             <h4>Shipping Information</h4>
             <form asp-controller="Cart" asp-action="Checkout" method="post" id="checkoutForm">
                 <div asp-validation-summary="All" class="text-danger" style="margin-bottom: 15px; font-weight: 500;"></div>
+
                 <div class="admin-form" style="max-width: 100%; border: none; padding: 0;">
                     <label>Full Name</label>
                     <input asp-for="FullName" class="admin-input" placeholder="Nguyen Van A" required />
@@ -45,22 +48,34 @@
         <div class="cart-box">
             <h4>Order Summary</h4>
             <hr />
+
             @foreach (var item in cart)
             {
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;">
                     <span>@item.ProductName x @item.Quantity</span>
-                    <span>@(item.Price* item.Quantity) VNĐ</span>
+
+                    <!-- ✅ FIX GIÁ -->
+                    <span>
+                        @((item.Price * item.Quantity).ToString("N0", new CultureInfo("vi-VN"))) VNĐ
+                    </span>
                 </div>
             }
+
             <hr />
+
             <div class="cart-summary" style="text-align: left; font-size: 18px;">
                 <strong>Total: </strong>
-                <span style="color: #b07d4f;">@ViewBag.Total VNĐ</span>
+
+                <!-- ✅ FIX TOTAL -->
+                <span style="color: #b07d4f;">
+                    @(((decimal)ViewBag.Total).ToString("N0", new CultureInfo("vi-VN"))) VNĐ
+                </span>
             </div>
 
             <button type="submit" form="checkoutForm" class="login-btn" style="margin-top: 20px; background: #000 !important;">
                 PLACE ORDER
             </button>
+
             <div id="zaloPayQRContainer" style="display:none; margin-top: 20px; text-align: center; border: 1px dashed #ccc; padding: 10px;">
                 <p style="font-size: 13px;">Quét mã để thanh toán qua ZaloPay</p>
                 <div id="zalo-qr-code"></div>
@@ -72,27 +87,26 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script>
         document.getElementById('checkoutForm').addEventListener('submit', function (e) {
             const selectedMethod = document.querySelector('input[name="PaymentMethod"]:checked').value;
             const btn = document.querySelector('.login-btn');
 
-            // Cấu hình giao diện nút bấm cho từng loại
             if (selectedMethod === "Momo") {
                 btn.innerHTML = "REDIRECTING TO MOMO...";
-                btn.style.background = "#A50064"; // Màu đặc trưng Momo
+                btn.style.background = "#A50064";
             }
             else if (selectedMethod === "ZaloPay") {
                 btn.innerHTML = "REDIRECTING TO ZALOPAY...";
-                btn.style.background = "#0068FF"; // Màu đặc trưng ZaloPay
+                btn.style.background = "#0068FF";
             }
             else {
                 btn.innerHTML = "PROCESSING ORDER...";
                 btn.style.background = "#333";
             }
 
-            // Vô hiệu hóa nút để tránh nhấn đúp (Double click)
             btn.style.opacity = "0.7";
             btn.style.pointerEvents = "none";
         });

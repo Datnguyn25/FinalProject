@@ -8,5 +8,6 @@
         public string Address { get; set; }
         public string? Note { get; set; }
         public string PaymentMethod { get; set; }
+        public Dictionary<int, string> Sizes { get; set; } = new();
     }
 }

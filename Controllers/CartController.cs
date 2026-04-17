@@ -4,6 +4,7 @@ using FinalProject.Services.Momo;
 using FinalProject.Services.Zalo;
 using FinalProject.Services.ZaloPay;
 using FinalProject.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -21,19 +22,16 @@ public class CartController : Controller
         _zaloPayService = zaloPayService;
     }
 
-    // VIEW CART
     public IActionResult Index()
     {
         var cart = GetCart();
         return View(cart);
     }
 
-    // ADD TO CART
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult AddToCart(int productId, int quantity = 1, string actionType = "add")
+    public IActionResult AddToCart(int productId, int quantity = 1, string actionType = "add", string size = "M")
     {
-        // 🔥 FIX 1: CHECK LOGIN TRƯỚC
         if (!User.Identity.IsAuthenticated)
         {
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -48,7 +46,9 @@ public class CartController : Controller
         if (product == null) return NotFound();
 
         var cart = GetCart();
-        var existingItem = cart.FirstOrDefault(x => x.ProductID == productId);
+
+        // 🔥 FIX: phân biệt theo size
+        var existingItem = cart.FirstOrDefault(x => x.ProductID == productId && x.Size == size);
 
         if (existingItem == null)
         {
@@ -58,7 +58,8 @@ public class CartController : Controller
                 ProductName = product.ProductName,
                 Image = product.Image,
                 Price = product.Price,
-                Quantity = quantity
+                Quantity = quantity,
+                Size = size // 🔥 LƯU SIZE
             });
         }
         else
@@ -84,7 +85,6 @@ public class CartController : Controller
         return RedirectToAction("Index", "Cart");
     }
 
-    // REMOVE
     public IActionResult Remove(int id)
     {
         var cart = GetCart();
@@ -100,7 +100,6 @@ public class CartController : Controller
         return RedirectToAction("Index");
     }
 
-    // GET SESSION
     private List<CartItems> GetCart()
     {
         var session = HttpContext.Session.GetString("Cart");
@@ -108,7 +107,6 @@ public class CartController : Controller
         return JsonConvert.DeserializeObject<List<CartItems>>(session);
     }
 
-    // SAVE SESSION
     private void SaveCart(List<CartItems> cart)
     {
         HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
@@ -117,7 +115,6 @@ public class CartController : Controller
     [HttpGet]
     public IActionResult Checkout()
     {
-        // 🔥 FIX 2: CHẶN CHƯA LOGIN
         if (!User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Login", "Account");
@@ -136,18 +133,12 @@ public class CartController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Checkout(CheckoutVM model, int? SingleProductId)
     {
-        // 🔥 FIX 3: CHẶN CHƯA LOGIN
         if (!User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Login", "Account");
         }
 
         var cart = GetCart();
-
-        if (SingleProductId != null)
-        {
-            cart = cart.Where(x => x.ProductID == SingleProductId).ToList();
-        }
 
         ViewBag.Cart = cart;
         ViewBag.Total = cart.Sum(x => x.Price * x.Quantity);
@@ -159,7 +150,8 @@ public class CartController : Controller
 
         double totalAmount = (double)cart.Sum(x => (double)x.Price * x.Quantity);
 
-        if (model.PaymentMethod == "Momo")
+        // ✅ MOMO
+        if (model.PaymentMethod?.ToLower() == "momo")
         {
             var orderInfo = new OrderInfoModel
             {
@@ -175,11 +167,12 @@ public class CartController : Controller
                 return Redirect(response.PayUrl);
             }
 
-            ModelState.AddModelError("", "Hệ thống Momo đang bận, vui lòng thử lại sau.");
+            ModelState.AddModelError("", "Lỗi kết nối MoMo");
             return View(model);
         }
 
-        if (model.PaymentMethod == "ZaloPay")
+        // ✅ ZALOPAY
+        if (model.PaymentMethod?.ToLower() == "zalopay")
         {
             var orderInfo = new OrderInfoModel
             {
@@ -195,32 +188,19 @@ public class CartController : Controller
                 return Redirect(payUrl);
             }
 
-            ModelState.AddModelError("", "Không thể khởi tạo thanh toán ZaloPay.");
+            ModelState.AddModelError("", "Lỗi ZaloPay");
             return View(model);
         }
 
+        // ✅ COD
         HttpContext.Session.Remove("Cart");
         return RedirectToAction("Success", new { method = "COD" });
     }
-
-    [HttpGet]
-    [Route("Cart/ZaloPayCallBack")]
-    public IActionResult ZaloPayCallBack()
-    {
-        var status = Request.Query["status"];
-
-        if (status == "1")
-        {
-            HttpContext.Session.Remove("Cart");
-            return RedirectToAction("Success", new { method = "ZaloPay" });
-        }
-
-        TempData["Error"] = "Transaction was done unsuccessfully";
-        return RedirectToAction("Checkout");
-    }
-
+    // 🔥 MOMO CALLBACK
+    [AllowAnonymous]
     [HttpGet]
     [Route("Checkout/PaymentCallBack")]
+     // 🔥 QUAN TRỌNG
     public IActionResult PaymentCallBack()
     {
         var response = _momoService.PaymentExecuteAsync(HttpContext.Request.Query);
@@ -232,19 +212,8 @@ public class CartController : Controller
             return RedirectToAction("Success", new { method = "Momo" });
         }
 
-        TempData["Error"] = "Transaction failed or canceled";
+        TempData["Error"] = "Thanh toán thất bại";
         return RedirectToAction("Checkout");
     }
-
-    public IActionResult Success(string method)
-    {
-        ViewBag.Method = method;
-        return View();
-    }
-
-    public IActionResult GetCartCount()
-    {
-        var cart = GetCart();
-        return Json(new { count = cart.Sum(x => x.Quantity) });
-    }
+   
 }

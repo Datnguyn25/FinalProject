@@ -3,6 +3,9 @@
     var method = ViewBag.Method as string;
 }
 
+{
+  
+
 <div class="shop-container" style="text-align: center; padding: 100px 20px;">
     <div style="font-size: 80px; margin-bottom: 20px;">
         @(method == "Momo" ? "💳" : "📦")
@@ -35,3 +38,8 @@
         </a>
     </div>
 </div>
+<script>
+    setTimeout(function () {
+        window.location.href = "/Product";
+    }, 3000);
+</script>

@@ -227,6 +227,9 @@
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="productId" value="@item.ProductID" />
                                     <input type="hidden" name="actionType" value="buyNow" />
+                                  
+  
+
                                     <button type="submit" class="shop-buy-btn">⚡ Buy Now</button>
                                 </form>
 
@@ -324,4 +327,124 @@
         });
     }
 
+</script>
+<div id="sizeModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;">
+    <div style="background:white;padding:20px;width:300px;margin:10% auto;border-radius:10px;text-align:center;">
+        <h4> size</h4>
+
+        <select id="sizeSelect">
+            <option value="S">S</option>
+            <option value="M" selected>M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+        </select>
+
+        <br><br>
+
+        <button onclick="confirmSize()">OK</button>
+        <button onclick="closeSize()">Cancel</button>
+    </div>
+</div>
+<script>
+    let currentForm = null;
+
+    // bắt click tất cả button
+    document.querySelectorAll(".shop-buy-btn, .shop-cart-btn").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+
+            let form = this.closest("form");
+
+            // 👉 kiểm tra có phải quần áo/giày không
+            let productName = form.closest(".shop-card").innerText.toLowerCase();
+
+            let needSize =
+                productName.includes("shirt") ||
+                productName.includes("dress") ||
+                productName.includes("nike") ||
+                productName.includes("adidas") ||
+                productName.includes("jeans");
+
+            if (!needSize) return; // 👉 không cần size thì chạy bình thường
+
+            e.preventDefault();
+            currentForm = form;
+            document.getElementById("sizeModal").style.display = "block";
+        });
+    });
+
+    function confirmSize() {
+        let size = document.getElementById("sizeSelect").value;
+
+        let input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "size";
+        input.value = size;
+
+        currentForm.appendChild(input);
+
+        document.getElementById("sizeModal").style.display = "none";
+
+        currentForm.submit();
+    }
+
+    function closeSize() {
+        document.getElementById("sizeModal").style.display = "none";
+    }
+</script>
+<div id="sizeModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;">
+    <div style="background:white;padding:20px;width:300px;margin:10% auto;border-radius:10px;text-align:center;">
+        <h4> size</h4>
+
+        <select id="sizeSelect">
+            <option value="S">S</option>
+            <option value="M" selected>M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+        </select>
+
+        <br><br>
+
+        <button onclick="confirmSize()">OK</button>
+        <button onclick="closeSize()">Cancel</button>
+    </div>
+</div>
+<script>
+    let currentForm = null;
+    let currentProductId = 0;
+    let currentImg = '';
+
+    document.querySelectorAll(".shop-cart-btn, .shop-buy-btn").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+
+            let form = this.closest("form");
+
+            e.preventDefault();
+
+            currentForm = form;
+            currentProductId = form.querySelector('input[name="productId"]').value;
+
+            currentImg = form.closest(".shop-card").querySelector("img").src;
+
+            document.getElementById("sizeModal").style.display = "block";
+        });
+    });
+
+    function confirmSize() {
+        let size = document.getElementById("sizeSelect").value;
+
+        let input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "size";
+        input.value = size;
+
+        currentForm.appendChild(input);
+
+        document.getElementById("sizeModal").style.display = "none";
+
+        currentForm.submit();
+    }
+
+    function closeSize() {
+        document.getElementById("sizeModal").style.display = "none";
+    }
 </script>

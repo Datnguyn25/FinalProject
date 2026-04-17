@@ -49,7 +49,7 @@
                         </td>
 
                         <td class="cart-total">
-                            @(item.Price* item.Quantity)
+                            @((item.Price * item.Quantity).ToString("N0")) VNĐ
                         </td>
 
                         <td>
@@ -72,6 +72,7 @@
 
                             </form>
 
+
                         </td>
                     </tr>
                 }
@@ -83,7 +84,7 @@
         <div class="cart-summary">
             Total:
             <span>
-                @Model.Sum(x => x.Price * x.Quantity) VNĐ
+                @Model.Sum(x => x.Price * x.Quantity).ToString("N0") VNĐ
             </span>
         </div>
 
@@ -94,8 +95,8 @@
 
                 <input type="hidden" name="FullName" value="Guest" />
 
-                <h5>Phương thức thanh toán</h5>
-
+                <h5>Payment Method</h5>
+                
                 <div class="payment-methods">
                     <label>
                         <input type="radio" name="PaymentMethod" value="COD" checked />
@@ -114,7 +115,7 @@
                 </div>
 
                 <button class="checkout-btn">
-                    Thanh toán tất cả
+                    Checkout All
                 </button>
 
             </form>
