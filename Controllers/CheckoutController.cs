@@ -18,15 +18,38 @@ public class CheckoutController : Controller
 
     // 👉 BẤM THANH TOÁN
     [HttpPost]
-    public async Task<IActionResult> Checkout(string paymentMethod)
+    public async Task<IActionResult> Checkout(string paymentMethod, string PromotionCode)
     {
+
+        decimal originalTotal = 55000; // You should calculate this from Session/DB cart items
+        decimal finalTotal = originalTotal;
+        int discountPercent = 0;
+
+        if (!string.IsNullOrEmpty(PromotionCode))
+        {
+            var now = DateTime.Now;
+            var promo = _context.tb_Promotion.FirstOrDefault(p =>
+                p.PromotionCode == PromotionCode &&
+                p.Status == true &&
+                now >= p.StartDate &&
+                now <= p.EndDate);
+
+            if (promo != null)
+            {
+                discountPercent = promo.DiscountPercent;
+                finalTotal = originalTotal * (100 - discountPercent) / 100;
+            }
+        }
         // 1. Tạo đơn hàng
         var order = new Order
         {
-            UserId = 1,
+            UserId = 1, // Should get from User.Identity
             OrderStatus = "Pending",
             PaymentStatus = "Unpaid",
-            OrderDate = DateTime.Now
+            OrderDate = DateTime.Now,
+            TotalPrice = finalTotal, // Store the final price!
+            ShippingAddress = "Fixed Address for test", // You have FullName/Address in VM
+            ReceiverPhone = "0123456789"
         };
 
         _context.tb_Order.Add(order);
@@ -39,7 +62,7 @@ public class CheckoutController : Controller
             order.PaymentStatus = "Paid";
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Result", new { id = order.OrderId });
+            return RedirectToAction("Result", "Checkout", new { id = order.OrderId });
         }
 
         // 3. MOMO
@@ -49,7 +72,7 @@ public class CheckoutController : Controller
             Amount = 55000,
 
             // 🔥 FIX Ở ĐÂY
-            OrderInfo = "Thanh toan don hang " + order.OrderId
+            OrderInfo = "Thanh toan don hang " + order.OrderId + (discountPercent > 0 ? $" (Discount {discountPercent}%)" : "")
         };
         var response = await _momoService.CreatePaymentMomo(momoModel);
 
@@ -100,6 +123,6 @@ public class CheckoutController : Controller
     public IActionResult Result(int id)
     {
         var order = _context.tb_Order.FirstOrDefault(o => o.OrderId == id);
-        return View(order);
+        return View("PaymentSuccess", order);
     }
 }
