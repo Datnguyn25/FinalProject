@@ -21,7 +21,7 @@ namespace FinalProject.Services.Momo
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentMomo(OrderInfoModel model)
         {
             model.OrderId = DateTime.UtcNow.Ticks.ToString();
-            model.OrderInfo = "Khách hàng: " + model.FullName + ". Nội dung: " + model.OrderInfo;
+            model.OrderInfo = "Thanh toán đơn hàng";
             var rawData =
      $"accessKey={_options.Value.AccessKey}" +
      $"&amount={model.Amount}" +
@@ -49,10 +49,10 @@ namespace FinalProject.Services.Momo
                 amount = model.Amount,
                 orderId = model.OrderId,
                 orderInfo = model.OrderInfo,
-                redirectUrl = _options.Value.ReturnUrl, // 🔥 sửa
-                ipnUrl = _options.Value.NotifyUrl,      // 🔥 sửa
+                redirectUrl = _options.Value.ReturnUrl,
+                ipnUrl = _options.Value.NotifyUrl,
                 requestType = _options.Value.RequestType,
-                extraData = "",
+                extraData =  "" ,// 🔥 FIX QUAN TRỌNG
                 signature = signature,
                 lang = "en"
             };

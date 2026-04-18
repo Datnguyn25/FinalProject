@@ -12,11 +12,15 @@ namespace FinalProject.Models
         public int? OrderId { get; set; }
         public int? ProductId { get; set; }
         public int? ShopId { get; set; }
+       
 
         public int Quantity { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
+
+        // Added to match CartController usage
+        public string ?Size { get; set; } 
 
         // Navigation
         [ForeignKey("OrderId")]

@@ -1,0 +1,63 @@
+﻿@model FinalProject.Models.Order
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var total = Model.OrderDetails.Sum(x => x.Price * x.Quantity);
+}
+
+<div class="shop-container">
+    <div class="shop-main">
+
+        <h2 style="margin-bottom:20px;">🧾 INVOICE</h2>
+
+        <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 0 10px #ddd;">
+
+            <p><b>Order ID:</b> @Model.OrderID</p>
+            <p><b>Date:</b> @Model.OrderDate</p>
+            <p><b>Status:</b> @Model.OrderStatus</p>
+            <p><b>Payment:</b> @Model.PaymentStatus</p>
+
+            <hr />
+
+            <table style="width:100%;text-align:center;border-collapse:collapse;">
+                <thead style="background:#c7a17a;color:#fff;">
+                    <tr>
+                        <th style="padding:10px;">Product</th>
+                        <th>Size</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr style="border-bottom:1px solid #ddd;">
+                            <td style="padding:10px;">
+                                @item.Product?.ProductName
+                            </td>
+                            <td>@item.Size</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price.ToString("N0") VNĐ</td>
+                            <td>@(item.Quantity * item.Price).ToString("N0") VNĐ</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <h3 style="text-align:right;margin-top:20px;">
+                Total: @total.ToString("N0") VNĐ
+            </h3>
+
+            <br />
+
+            <a asp-controller="Product" asp-action="Index"
+                   style="color:#007bff;">
+                Continue Shopping
+            </a>
+
+        </div>
+
+    </div>
+</div>

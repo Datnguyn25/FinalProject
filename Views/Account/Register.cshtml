@@ -1,3 +1,5 @@
+@model FinalProject.ViewModels.Register
+
 @{
     ViewData["Title"] = "Register";
 }
@@ -174,8 +176,8 @@
         <h2>Create Account</h2>
         <p class="subtitle">Join our fashion community</p>
 
-        <form method="post" action="/Account/Register">
-
+        <form asp-controller="Account" asp-action="Register" method="post">
+            <div asp-validation-summary="All" style="color:red"></div>
             <div class="input-group">
                 <label class="input-label">Full Name</label>
                 <input type="text" name="FullName" placeholder="Nguyen Van A" required>
@@ -194,7 +196,7 @@
                        placeholder="0912345678"
                        required
                        oninput="validatePhone(this)"
-                       maxlength="12">
+                       maxlength="10">
             </div>
 
             <div class="input-group">
@@ -236,7 +238,7 @@
                 <span id="confirmText"></span>
             </div>
 
-            <button class="register-btn">
+            <button type="submit" class="register-btn">
                 Create Account
             </button>
 
@@ -338,9 +340,11 @@
         input.value = value;
     }
 
-    document.getElementById('phoneNumber').addEventListener('keypress', function(e) {
-        if (e.which < 48 || e.which > 57) {
-            e.preventDefault();
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('phoneNumber').addEventListener('keypress', function(e) {
+            if (e.which < 48 || e.which > 57) {
+                e.preventDefault();
+            }
+        });
     });
 </script>

@@ -6,8 +6,10 @@ using FinalProject.Services.ZaloPay;
 using FinalProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.Security.Claims;
 
 public class CartController : Controller
 {
@@ -47,7 +49,6 @@ public class CartController : Controller
 
         var cart = GetCart();
 
-        // 🔥 FIX: phân biệt theo size
         var existingItem = cart.FirstOrDefault(x => x.ProductID == productId && x.Size == size);
 
         if (existingItem == null)
@@ -59,7 +60,7 @@ public class CartController : Controller
                 Image = product.Image,
                 Price = product.Price,
                 Quantity = quantity,
-                Size = size // 🔥 LƯU SIZE
+                Size = size
             });
         }
         else
@@ -150,35 +151,45 @@ public class CartController : Controller
 
         double totalAmount = (double)cart.Sum(x => (double)x.Price * x.Quantity);
 
-        // ✅ MOMO
+        // ================= MOMO =================
         if (model.PaymentMethod?.ToLower() == "momo")
         {
+            // 🔥 FIX SESSION MẤT
+            HttpContext.Session.SetString("CartBackup", JsonConvert.SerializeObject(cart));
+            HttpContext.Session.SetString("TempCart", JsonConvert.SerializeObject(cart));
+
             var orderInfo = new OrderInfoModel
             {
                 FullName = model.FullName,
                 Amount = totalAmount,
-                OrderInfo = "Thanh toán đơn hàng Fashion Store"
+                OrderInfo = "Thanh toán đơn hàng"
             };
 
             var response = await _momoService.CreatePaymentMomo(orderInfo);
 
-            if (response != null && !string.IsNullOrEmpty(response.PayUrl))
+            if (response == null)
             {
-                return Redirect(response.PayUrl);
+                ModelState.AddModelError("", "MoMo không trả về dữ liệu");
+                return View(model);
             }
 
-            ModelState.AddModelError("", "Lỗi kết nối MoMo");
-            return View(model);
+            if (string.IsNullOrEmpty(response.PayUrl))
+            {
+                ModelState.AddModelError("", "MoMo lỗi: " + response.Message);
+                return View(model);
+            }
+
+            return Redirect(response.PayUrl);
         }
 
-        // ✅ ZALOPAY
+        // ================= ZALOPAY =================
         if (model.PaymentMethod?.ToLower() == "zalopay")
         {
             var orderInfo = new OrderInfoModel
             {
                 FullName = model.FullName,
                 Amount = totalAmount,
-                OrderInfo = "Thanh toán đơn hàng Fashion Store"
+                OrderInfo = "Thanh toán đơn hàng"
             };
 
             var payUrl = await _zaloPayService.CreatePaymentUrl(orderInfo);
@@ -192,34 +203,85 @@ public class CartController : Controller
             return View(model);
         }
 
-        // ✅ COD
+        // ================= COD =================
         HttpContext.Session.Remove("Cart");
         return RedirectToAction("Success", new { method = "COD" });
     }
-    // 🔥 MOMO CALLBACK
+
+    // ================= MOMO CALLBACK =================
     [AllowAnonymous]
     [HttpGet]
-    [Route("Checkout/PaymentCallBack")]
-     // 🔥 QUAN TRỌNG
+    [Route("Checkout/PaymentCallBack")] // 🔥 FIX 404
     public IActionResult PaymentCallBack()
     {
-        var response = _momoService.PaymentExecuteAsync(HttpContext.Request.Query);
-        string errorCode = HttpContext.Request.Query["errorCode"];
+        var resultCode = HttpContext.Request.Query["resultCode"].ToString();
 
-        if (errorCode == "0")
+        if (resultCode == "0")
         {
+            // 🔥 FIX SESSION
+            var session = HttpContext.Session.GetString("CartBackup");
+
+            if (string.IsNullOrEmpty(session))
+            {
+                session = HttpContext.Session.GetString("TempCart");
+            }
+
+            if (string.IsNullOrEmpty(session))
+            {
+                return Content("Mất session → không có giỏ hàng");
+            }
+
+            var cart = JsonConvert.DeserializeObject<List<CartItems>>(session);
+
+            // 🔥 FIX USER ID
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var order = new Order
+            {
+                CustomerID = userId,
+                OrderDate = DateTime.Now,
+                CreatedDate = DateTime.Now,
+                OrderStatus = "Completed",
+                PaymentStatus = "Paid",
+                TotalPrice = cart.Sum(x => x.Price * x.Quantity)
+            };
+
+            _context.tb_Order.Add(order);
+            _context.SaveChanges();
+
+            foreach (var item in cart)
+            {
+                _context.tb_OrderDetails.Add(new OrderDetails
+                {
+                    OrderId = order.OrderID,
+                    ProductId = item.ProductID,
+                    Quantity = item.Quantity,
+                    Price = item.Price,
+                    Size = item.Size
+                });
+            }
+
+            _context.SaveChanges();
+
             HttpContext.Session.Remove("Cart");
-            return RedirectToAction("Success", new { method = "Momo" });
+            HttpContext.Session.Remove("CartBackup");
+            HttpContext.Session.Remove("TempCart");
+
+            return RedirectToAction("Invoice", new { id = order.OrderID });
         }
 
-        TempData["Error"] = "Thanh toán thất bại";
-        return RedirectToAction("Checkout");
+        return Content("Thanh toán thất bại");
     }
 
-    public IActionResult Success(string method)
+    public IActionResult Invoice(int id)
     {
-        ViewBag.Method = method;
-        return View(); 
-    }
+        var order = _context.tb_Order
+            .Include(o => o.OrderDetails)
+            .ThenInclude(d => d.Product)
+            .FirstOrDefault(o => o.OrderID == id);
 
+        if (order == null) return NotFound();
+
+        return View(order);
+    }
 }
