@@ -6,11 +6,11 @@
     var shopItems = ViewBag.ShopItems as IEnumerable<FinalProject.Models.OrderDetails>;
 }
 
-<h1>Order #@Model.OrderID</h1>
+<h1>Order #@Model.OrderId</h1>
 
 <p>
     <strong>Date:</strong> @Model.OrderDate.ToString("g")<br />
-    <strong>Customer:</strong> @Model.Customer?.FullName ?? ("Customer #" + Model.CustomerID)<br />
+    <strong>Customer:</strong> @Model.User?.FullName ?? ("User #" + Model.UserId)<br />
     <strong>Order Status:</strong> @Model.OrderStatus<br />
     <strong>Payment Status:</strong> @Model.PaymentStatus<br />
 </p>
@@ -47,13 +47,13 @@
 <div class="mb-3">
     <form asp-action="ConfirmOrder" method="post" style="display:inline-block;">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="id" value="@Model.OrderID" />
+        <input type="hidden" name="id" value="@Model.OrderId" />
         <button class="btn btn-success">Confirm Order</button>
     </form>
 
     <form asp-action="UpdateShipping" method="post" class="d-inline-block ms-2">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="id" value="@Model.OrderID" />
+        <input type="hidden" name="id" value="@Model.OrderId" />
         <select name="status" class="form-select d-inline-block" style="width:auto; display:inline-block;">
             <option value="Processed">Processed</option>
             <option value="Delivering">Delivering</option>

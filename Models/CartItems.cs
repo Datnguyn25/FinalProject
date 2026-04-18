@@ -11,7 +11,7 @@ namespace FinalProject.Models
 
         // Foreign Keys
         public int CartId { get; set; }
-        public int ProductID { get; set; }
+        public int ProductId { get; set; }
 
         public int Quantity { get; set; }
         public string Size { get; set; }
@@ -20,7 +20,7 @@ namespace FinalProject.Models
         [ForeignKey("CartId")]
         public Carts Cart { get; set; }
 
-        [ForeignKey("ProductID")]
+        [ForeignKey("ProductId")]
         public Product Product { get; set; }
 
         // Product properties

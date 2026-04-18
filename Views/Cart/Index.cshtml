@@ -55,7 +55,7 @@
                         <td>
 
                             <!-- ❌ XÓA -->
-                            <a href="/Cart/Remove/@item.ProductID"
+                            <a href="/Cart/Remove/@item.ProductId"
                                    class="cart-remove">
                                 ❌
                             </a>
@@ -64,7 +64,7 @@
                             <form asp-controller="Cart" asp-action="Checkout" method="post" style="margin-top:5px;">
 
                                 <input type="hidden" name="FullName" value="Guest" />
-                                <input type="hidden" name="SingleProductId" value="@item.ProductID" />
+                                <input type="hidden" name="SingleProductId" value="@item.ProductId" />
 
                                 <button name="PaymentMethod" value="Momo" class="buy-now-btn">
                                     Buy Now

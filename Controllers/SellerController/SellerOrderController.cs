@@ -39,10 +39,10 @@ namespace FinalProject.Controllers.SellerController
 
             // Orders that contain at least one OrderDetails entry for this shop
             var orders = _context.tb_Order
-                .Include(o => o.Customer)
+                .Include(o => o.User)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Product)
-                .Where(o => o.OrderDetails.Any(od => od.ShopId == shop.ShopID))
+                .Where(o => o.OrderDetails.Any(od => od.ShopId == shop.ShopId))
                 .OrderByDescending(o => o.OrderDate)
                 .ToList();
 
@@ -57,15 +57,15 @@ namespace FinalProject.Controllers.SellerController
             if (shop == null) return Forbid();
 
             var order = _context.tb_Order
-                .Include(o => o.Customer)
+                .Include(o => o.User)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Product)
-                .FirstOrDefault(o => o.OrderID == id);
+                .FirstOrDefault(o => o.OrderId == id);
 
             if (order == null) return NotFound();
 
             // ensure order includes items for this shop
-            var shopItems = order.OrderDetails.Where(od => od.ShopId == shop.ShopID).ToList();
+            var shopItems = order.OrderDetails.Where(od => od.ShopId == shop.ShopId).ToList();
             if (!shopItems.Any()) return Forbid();
 
             // attach only shop-specific items to ViewBag for display
@@ -85,12 +85,11 @@ namespace FinalProject.Controllers.SellerController
 
             var order = _context.tb_Order
                 .Include(o => o.OrderDetails)
-                .FirstOrDefault(o => o.OrderID == id);
+                .FirstOrDefault(o => o.OrderId == id);
 
             if (order == null) return NotFound();
 
-            if (!order.OrderDetails.Any(od => od.ShopId == shop.ShopID)) return Forbid();
-
+            if (!order.OrderDetails.Any(od => od.ShopId == shop.ShopId)) return Forbid();
             order.OrderStatus = "Confirmed";
             _context.tb_Order.Update(order);
             _context.SaveChanges();
@@ -108,10 +107,10 @@ namespace FinalProject.Controllers.SellerController
 
             var order = _context.tb_Order
                 .Include(o => o.OrderDetails)
-                .FirstOrDefault(o => o.OrderID == id);
+                .FirstOrDefault(o => o.OrderId == id);
 
             if (order == null) return NotFound();
-            if (!order.OrderDetails.Any(od => od.ShopId == shop.ShopID)) return Forbid();
+            if (!order.OrderDetails.Any(od => od.ShopId == shop.ShopId)) return Forbid();
 
             // Allowed statuses: Processed, Delivering, Completed (or others if needed)
             order.OrderStatus = status ?? order.OrderStatus;

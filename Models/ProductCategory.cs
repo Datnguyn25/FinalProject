@@ -7,7 +7,7 @@ namespace FinalProject.Models
     public class ProductCategory
     {
         [Key]
-        public int CateID { get; set; }
+        public int CateId { get; set; }
 
         [StringLength(250)]
         public string CateName { get; set; }
@@ -20,9 +20,9 @@ namespace FinalProject.Models
         public int? Sort { get; set; }
 
         // Self reference (Danh mục cha)
-        public int? ParentID { get; set; }
+        public int? ParentId { get; set; }
 
-        [ForeignKey("ParentID")]
+        [ForeignKey("ParentId")]
         public ProductCategory ParentCategory { get; set; }
 
         public ICollection<ProductCategory> ChildCategories { get; set; }

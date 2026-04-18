@@ -19,11 +19,11 @@
         @foreach (var c in Model)
         {
             <tr>
-                <td>@c.CateID</td>
+                <td>@c.CateId</td>
                 <td>@c.CateName</td>
                 <td>
-                    <a href="/Admin/EditCategory/@c.CateID" class="admin-btn">Edit</a>
-                    <a href="/Admin/DeleteCategory/@c.CateID" class="admin-btn-danger">Delete</a>
+                    <a href="/Admin/EditCategory/@c.CateId" class="admin-btn">Edit</a>
+                    <a href="/Admin/DeleteCategory/@c.CateId" class="admin-btn-danger">Delete</a>
                 </td>
             </tr>
         }

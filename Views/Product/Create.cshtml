@@ -16,30 +16,30 @@
 
     <div>
         Category
-        <select asp-for="CateID">
+        <select asp-for="CateId">
             @foreach (var c in ViewBag.Categories)
             {
-                <option value="@c.CateID">@c.CateName</option>
+                <option value="@c.CateId">@c.CateName</option>
             }
         </select>
     </div>
 
     <div>
         Brand
-        <select asp-for="BrandID">
+        <select asp-for="BrandId">
             @foreach (var b in ViewBag.Brands)
             {
-                <option value="@b.BrandID">@b.BrandName</option>
+                <option value="@b.BrandId">@b.BrandName</option>
             }
         </select>
     </div>
 
     <div>
         Shop
-        <select asp-for="ShopID">
+        <select asp-for="ShopId">
             @foreach (var s in ViewBag.Shops)
             {
-                <option value="@s.ShopID">@s.ShopName</option>
+                <option value="@s.ShopId">@s.ShopName</option>
             }
         </select>
     </div>

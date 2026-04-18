@@ -23,7 +23,7 @@ public class ShopController : Controller
     {
         var products = _context.tb_Product
             .Include(p => p.Shop)
-            .Where(p => p.ShopID == id)
+            .Where(p => p.ShopId == id)
             .ToList();
 
         ViewBag.Shop = _context.tb_Shop.Find(id);

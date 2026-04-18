@@ -63,13 +63,13 @@ namespace FinalProject.Controllers.SellerController
                 // handle logo upload
                 if (logoFile != null && logoFile.Length > 0)
                 {
-                    var uploads = Path.Combine(_env.WebRootPath, "uploads", "shops", shop.ShopID.ToString());
+                    var uploads = Path.Combine(_env.WebRootPath, "uploads", "shops", shop.ShopId.ToString());
                     Directory.CreateDirectory(uploads);
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(logoFile.FileName);
                     var filePath = Path.Combine(uploads, fileName);
                     using var fs = new FileStream(filePath, FileMode.Create);
                     logoFile.CopyTo(fs);
-                    shop.LogoUrl = Path.Combine("uploads", "shops", shop.ShopID.ToString(), fileName).Replace('\\', '/');
+                    shop.LogoUrl = Path.Combine("uploads", "shops", shop.ShopId.ToString(), fileName).Replace('\\', '/');
                 }
 
                 // update fields allowed for seller
@@ -98,7 +98,7 @@ namespace FinalProject.Controllers.SellerController
             if (shop == null) return Forbid();
 
             var reviews = _context.tb_ShopReview
-                .Where(r => r.ShopId == shop.ShopID && r.IsApproved)
+                .Where(r => r.ShopId == shop.ShopId && r.IsApproved)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToList();
 
@@ -114,7 +114,7 @@ namespace FinalProject.Controllers.SellerController
 
             var review = _context.tb_ShopReview
                 .Include(r => r.Shop)
-                .FirstOrDefault(r => r.ReviewId == id && r.ShopId == shop.ShopID);
+                .FirstOrDefault(r => r.ReviewId == id && r.ShopId == shop.ShopId);
 
             if (review == null) return NotFound();
 

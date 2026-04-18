@@ -304,10 +304,12 @@ body {
 /* REGISTER */
 
 .register-wrapper {
+    margin-top: 120px;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 90vh;
+    min-height: calc(100vh - 80px);
 }
 /* CARD */
 

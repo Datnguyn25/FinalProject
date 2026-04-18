@@ -17,26 +17,26 @@ namespace FinalProject.Migrations
                 name: "tb_Brand",
                 columns: table => new
                 {
-                    BrandID = table.Column<int>(type: "int", nullable: false)
+                    BrandId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BrandName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_Brand", x => x.BrandID);
+                    table.PrimaryKey("PK_tb_Brand", x => x.BrandId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "tb_ProductCategory",
                 columns: table => new
                 {
-                    CateID = table.Column<int>(type: "int", nullable: false)
+                    CateId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CateName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     SeoTitle = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Statuss = table.Column<bool>(type: "bit", nullable: false),
                     Sort = table.Column<int>(type: "int", nullable: true),
-                    ParentID = table.Column<int>(type: "int", nullable: true),
+                    ParentId = table.Column<int>(type: "int", nullable: true),
                     MetaKeywords = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     MetaDescription = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
@@ -46,20 +46,21 @@ namespace FinalProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_ProductCategory", x => x.CateID);
+                    table.PrimaryKey("PK_tb_ProductCategory", x => x.CateId);
                     table.ForeignKey(
-                        name: "FK_tb_ProductCategory_tb_ProductCategory_ParentID",
-                        column: x => x.ParentID,
+                        name: "FK_tb_ProductCategory_tb_ProductCategory_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "tb_ProductCategory",
-                        principalColumn: "CateID");
+                        principalColumn: "CateId");
                 });
 
             migrationBuilder.CreateTable(
                 name: "tb_Promotion",
                 columns: table => new
                 {
-                    PromotionID = table.Column<int>(type: "int", nullable: false)
+                    PromotionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    PromotionCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DiscountPercent = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -68,7 +69,7 @@ namespace FinalProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_Promotion", x => x.PromotionID);
+                    table.PrimaryKey("PK_tb_Promotion", x => x.PromotionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -90,7 +91,7 @@ namespace FinalProject.Migrations
                 name: "tb_SystemSetting",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SiteName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -99,7 +100,7 @@ namespace FinalProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_SystemSetting", x => x.ID);
+                    table.PrimaryKey("PK_tb_SystemSetting", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,24 +188,34 @@ namespace FinalProject.Migrations
                 name: "tb_Order",
                 columns: table => new
                 {
-                    OrderID = table.Column<int>(type: "int", nullable: false)
+                    OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     OrderStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PaymentStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ReceiverPhone = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Delivered = table.Column<bool>(type: "bit", nullable: false),
                     DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CustomerID = table.Column<int>(type: "int", nullable: false),
+                    ShippingAddress = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PromotionId = table.Column<int>(type: "int", nullable: true),
+                    DiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_Order", x => x.OrderID);
+                    table.PrimaryKey("PK_tb_Order", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_tb_Order_tb_Users_CustomerID",
-                        column: x => x.CustomerID,
+                        name: "FK_tb_Order_tb_Promotion_PromotionId",
+                        column: x => x.PromotionId,
+                        principalTable: "tb_Promotion",
+                        principalColumn: "PromotionId");
+                    table.ForeignKey(
+                        name: "FK_tb_Order_tb_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "tb_Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -214,7 +225,7 @@ namespace FinalProject.Migrations
                 name: "tb_Shop",
                 columns: table => new
                 {
-                    ShopID = table.Column<int>(type: "int", nullable: false)
+                    ShopId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ShopName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LogoUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
@@ -240,7 +251,7 @@ namespace FinalProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_Shop", x => x.ShopID);
+                    table.PrimaryKey("PK_tb_Shop", x => x.ShopId);
                     table.ForeignKey(
                         name: "FK_tb_Shop_tb_Roles_RoleId",
                         column: x => x.RoleId,
@@ -362,7 +373,7 @@ namespace FinalProject.Migrations
                 name: "tb_Product",
                 columns: table => new
                 {
-                    ProductID = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     SeoTitle = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
@@ -370,7 +381,6 @@ namespace FinalProject.Migrations
                     Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     ListImages = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PromotionPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     VAT = table.Column<bool>(type: "bit", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Hot = table.Column<bool>(type: "bit", nullable: false),
@@ -379,9 +389,9 @@ namespace FinalProject.Migrations
                     ViewCount = table.Column<int>(type: "int", nullable: false),
                     MetaKeywords = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     MetaDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    CateID = table.Column<int>(type: "int", nullable: true),
-                    BrandID = table.Column<int>(type: "int", nullable: true),
-                    ShopID = table.Column<int>(type: "int", nullable: false),
+                    CateId = table.Column<int>(type: "int", nullable: true),
+                    BrandId = table.Column<int>(type: "int", nullable: true),
+                    ShopId = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -390,27 +400,27 @@ namespace FinalProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_Product", x => x.ProductID);
+                    table.PrimaryKey("PK_tb_Product", x => x.ProductId);
                     table.ForeignKey(
-                        name: "FK_tb_Product_tb_Brand_BrandID",
-                        column: x => x.BrandID,
+                        name: "FK_tb_Product_tb_Brand_BrandId",
+                        column: x => x.BrandId,
                         principalTable: "tb_Brand",
-                        principalColumn: "BrandID");
+                        principalColumn: "BrandId");
                     table.ForeignKey(
-                        name: "FK_tb_Product_tb_ProductCategory_CateID",
-                        column: x => x.CateID,
+                        name: "FK_tb_Product_tb_ProductCategory_CateId",
+                        column: x => x.CateId,
                         principalTable: "tb_ProductCategory",
-                        principalColumn: "CateID");
+                        principalColumn: "CateId");
                     table.ForeignKey(
                         name: "FK_tb_Product_tb_Promotion_PromotionId",
                         column: x => x.PromotionId,
                         principalTable: "tb_Promotion",
-                        principalColumn: "PromotionID");
+                        principalColumn: "PromotionId");
                     table.ForeignKey(
-                        name: "FK_tb_Product_tb_Shop_ShopID",
-                        column: x => x.ShopID,
+                        name: "FK_tb_Product_tb_Shop_ShopId",
+                        column: x => x.ShopId,
                         principalTable: "tb_Shop",
-                        principalColumn: "ShopID",
+                        principalColumn: "ShopId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -421,6 +431,7 @@ namespace FinalProject.Migrations
                     ReviewId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ShopId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ReviewerName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
@@ -434,7 +445,13 @@ namespace FinalProject.Migrations
                         name: "FK_tb_ShopReview_tb_Shop_ShopId",
                         column: x => x.ShopId,
                         principalTable: "tb_Shop",
-                        principalColumn: "ShopID",
+                        principalColumn: "ShopId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tb_ShopReview_tb_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "tb_Users",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -445,8 +462,9 @@ namespace FinalProject.Migrations
                     CartItemId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CartId = table.Column<int>(type: "int", nullable: false),
-                    ProductID = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
@@ -461,10 +479,10 @@ namespace FinalProject.Migrations
                         principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tb_CartItems_tb_Product_ProductID",
-                        column: x => x.ProductID,
+                        name: "FK_tb_CartItems_tb_Product_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "tb_Product",
-                        principalColumn: "ProductID",
+                        principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -487,22 +505,22 @@ namespace FinalProject.Migrations
                         name: "FK_tb_OrderDetails_tb_Order_OrderId",
                         column: x => x.OrderId,
                         principalTable: "tb_Order",
-                        principalColumn: "OrderID");
+                        principalColumn: "OrderId");
                     table.ForeignKey(
                         name: "FK_tb_OrderDetails_tb_Product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "tb_Product",
-                        principalColumn: "ProductID");
+                        principalColumn: "ProductId");
                     table.ForeignKey(
                         name: "FK_tb_OrderDetails_tb_Shop_ShopId",
                         column: x => x.ShopId,
                         principalTable: "tb_Shop",
-                        principalColumn: "ShopID");
+                        principalColumn: "ShopId");
                 });
 
             migrationBuilder.InsertData(
                 table: "tb_Brand",
-                columns: new[] { "BrandID", "BrandName" },
+                columns: new[] { "BrandId", "BrandName" },
                 values: new object[,]
                 {
                     { 1, "Nike" },
@@ -514,7 +532,7 @@ namespace FinalProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "tb_ProductCategory",
-                columns: new[] { "CateID", "CateName", "CreatedBy", "CreatedDate", "MetaDescription", "MetaKeywords", "ParentID", "SeoTitle", "Sort", "Statuss", "UpdatedBy", "UpdatedDate" },
+                columns: new[] { "CateId", "CateName", "CreatedBy", "CreatedDate", "MetaDescription", "MetaKeywords", "ParentId", "SeoTitle", "Sort", "Statuss", "UpdatedBy", "UpdatedDate" },
                 values: new object[,]
                 {
                     { 1, "Men's Fashion", null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "High quality clothing for men", "men clothing, fashion", null, "mens-fashion", 1, true, null, null },
@@ -527,33 +545,33 @@ namespace FinalProject.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "ef13c806-04c4-49cf-bc8c-db22786294d4", "Admin", "ADMIN" },
-                    { 2, "05dfec67-bfca-4f86-afb4-768728a5d7b7", "User", "USER" },
-                    { 3, "4845c675-36ee-46c8-8fe3-091fb3126fa2", "Shop", "SHOP" }
+                    { 1, "4f37cf67-1e22-46fb-a399-167d6e891d2a", "Admin", "ADMIN" },
+                    { 2, "75504955-655b-4bd2-813c-4310d5f868b5", "User", "USER" },
+                    { 3, "d5c28c67-c3e5-4db4-95b9-a998d53d6cf7", "Shop", "SHOP" }
                 });
 
             migrationBuilder.InsertData(
                 table: "tb_Users",
                 columns: new[] { "Id", "AccessFailedCount", "Address", "AvatarUrl", "City", "ConcurrencyStamp", "Country", "CreatedAt", "DateOfBirth", "Email", "EmailConfirmed", "EmailVerified", "FullName", "Gender", "IsActive", "IsBanned", "LastLogin", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PhoneVerified", "SecurityStamp", "TwoFactorEnabled", "UpdatedAt", "UserName" },
-                values: new object[] { 1, 0, null, null, null, "881370c9-277a-49c8-914c-8ad53940efa7", null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "admin@fashionstore.com", true, false, "System Administrator", null, true, false, null, false, null, "ADMIN@FASHIONSTORE.COM", "ADMIN@FASHIONSTORE.COM", "AQAAAAIAAYagAAAAEH25h7ZQvQE8hOwTaBbjOB32HV7wnHtkWSfxmcVzInrNEyS3y96uH2cNkm9/UPRG1A==", null, false, false, "23e669af-337e-4e6a-910b-8f6801457c72", false, null, "admin@fashionstore.com" });
+                values: new object[] { 1, 0, null, null, null, "29b34cef-c20b-4e8f-9448-3f6a525cf531", null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "admin@fashionstore.com", true, false, "System Administrator", null, true, false, null, false, null, "ADMIN@FASHIONSTORE.COM", "ADMIN@FASHIONSTORE.COM", "AQAAAAIAAYagAAAAEP87ntRbG8o7NNgoZW8QbTLdKoEa59ZfRHTJZzC43cj4LRZEB+Gn6IBhp0r8kiyLsw==", null, false, false, "92a8db8e-202c-4661-81a4-63ae7329fec2", false, null, "admin@fashionstore.com" });
 
             migrationBuilder.InsertData(
                 table: "tb_Order",
-                columns: new[] { "OrderID", "CreatedDate", "CustomerID", "Delivered", "DeliveryDate", "Discount", "OrderDate", "OrderStatus", "PaymentStatus", "TotalPrice" },
+                columns: new[] { "OrderId", "CreatedDate", "Delivered", "DeliveryDate", "Discount", "DiscountAmount", "OrderDate", "OrderStatus", "PaymentDate", "PaymentStatus", "PromotionId", "ReceiverPhone", "ShippingAddress", "TotalPrice", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(486), 1, true, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Paid", 1250000m },
-                    { 2, new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(495), 1, true, new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Paid", 850000m },
-                    { 3, new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(498), 1, true, new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Paid", 2100000m },
-                    { 4, new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(500), 1, true, new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Paid", 1500000m },
-                    { 5, new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(503), 1, true, new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Paid", 3200000m },
-                    { 6, new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(505), 1, true, new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Paid", 950000m },
-                    { 7, new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(507), 1, true, new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Paid", 1800000m }
+                    { 1, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4716), true, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0912345678", "123 Cau Giay Street, Dich Vong Ward, Cau Giay District, Hanoi", 1250000m, 1 },
+                    { 2, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4730), true, new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0988776655", "88 Sukhumvit Road, Watthana, Bangkok 10110, Thailand", 850000m, 1 },
+                    { 3, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4732), true, new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0901234567", "No. 45, Lane 10, Hoang Dieu St, Ba Dinh Dist, Hanoi, Vietnam", 2100000m, 1 },
+                    { 4, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4736), true, new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0944332211", "Apt 4B, 22nd Street, District 1, Ho Chi Minh City, Vietnam", 1500000m, 1 },
+                    { 5, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4738), true, new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0355667788", "71-75 Shelton Street, Covent Garden, London WC2H 9JQ, UK", 3200000m, 1 },
+                    { 6, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4741), true, new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0322114455", "Block C, FPT University Campus, Hoa Lac Hi-Tech Park, Hanoi", 950000m, 1 },
+                    { 7, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4743), true, new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0977889900", "202 Jervois Road, Herne Bay, Auckland 1011, New Zealand", 1800000m, 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "tb_ProductCategory",
-                columns: new[] { "CateID", "CateName", "CreatedBy", "CreatedDate", "MetaDescription", "MetaKeywords", "ParentID", "SeoTitle", "Sort", "Statuss", "UpdatedBy", "UpdatedDate" },
+                columns: new[] { "CateId", "CateName", "CreatedBy", "CreatedDate", "MetaDescription", "MetaKeywords", "ParentId", "SeoTitle", "Sort", "Statuss", "UpdatedBy", "UpdatedDate" },
                 values: new object[,]
                 {
                     { 4, "Men's Torso", null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "Stylish shirts for men", "t-shirts, polo", 1, "mens-torso", 1, true, null, null },
@@ -566,7 +584,7 @@ namespace FinalProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "tb_Shop",
-                columns: new[] { "ShopID", "City", "ContactEmail", "ContactPhone", "Country", "CoverImageUrl", "CreatedAt", "IsActive", "IsBanned", "IsVerified", "LogoUrl", "OwnerId", "RatingAverage", "RoleId", "ShopAddress", "ShopDescription", "ShopName", "TotalFollowers", "TotalProducts", "TotalReviews", "TotalSold", "UpdatedAt" },
+                columns: new[] { "ShopId", "City", "ContactEmail", "ContactPhone", "Country", "CoverImageUrl", "CreatedAt", "IsActive", "IsBanned", "IsVerified", "LogoUrl", "OwnerId", "RatingAverage", "RoleId", "ShopAddress", "ShopDescription", "ShopName", "TotalFollowers", "TotalProducts", "TotalReviews", "TotalSold", "UpdatedAt" },
                 values: new object[] { 1, "Ho Chi Minh City", "support@urbanchic.com", "+84987654321", "Vietnam", "cover-urban.jpg", new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), true, false, true, "logo-urban.png", null, 4.80m, 2, "123 ABC Street, District 1", "Premium streetwear and modern fashion trends for the young generation.", "Urban Chic Fashion", 1200, 50, 450, 2500, null });
 
             migrationBuilder.InsertData(
@@ -576,34 +594,34 @@ namespace FinalProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "tb_Product",
-                columns: new[] { "ProductID", "BrandID", "CateID", "CreatedBy", "CreatedDate", "Detail", "Hot", "Image", "ListImages", "MetaDescription", "MetaKeywords", "Price", "ProductDescription", "ProductName", "PromotionId", "PromotionPrice", "Quantity", "SeoTitle", "ShopID", "Status", "UpdatedBy", "UpdatedDate", "VAT", "ViewCount" },
+                columns: new[] { "ProductId", "BrandId", "CateId", "CreatedBy", "CreatedDate", "Detail", "Hot", "Image", "ListImages", "MetaDescription", "MetaKeywords", "Price", "ProductDescription", "ProductName", "PromotionId", "Quantity", "SeoTitle", "ShopId", "Status", "UpdatedBy", "UpdatedDate", "VAT", "ViewCount" },
                 values: new object[,]
                 {
-                    { 1, 3, 4, null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "100% Cotton", true, "white-shirt.jpg", "img1.jpg,img2.jpg", "shirt", "shirt", 450000m, "Classic fit white oxford shirt", "Premium White Oxford Shirt", null, 399000m, 100, "premium-white-oxford-shirt", 1, true, null, null, true, 0 },
-                    { 2, 4, 6, null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "Chiffon material", false, "floral-dress.jpg", "img3.jpg,img4.jpg", "dress", "dress", 550000m, "Elegant floral print dress", "Floral Summer Maxi Dress", null, 490000m, 50, "floral-summer-maxi-dress", 1, true, null, null, true, 0 },
-                    { 3, 2, 5, null, new DateTime(2026, 3, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Stretchy fabric", true, "anh1sanpham.jpg", "img5.jpg", "pants", "chinos", 600000m, "High-quality khaki pants", "Slim Fit Navy Chinos", null, 550000m, 80, "slim-fit-navy-chinos", 1, true, null, null, true, 0 },
-                    { 4, 5, 7, null, new DateTime(2026, 3, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), "Handmade", false, "anh2sanpham.jpg", "img6.jpg", "bag", "bag", 1200000m, "Genuine leather bag", "Leather Crossbody Bag", null, 990000m, 30, "leather-crossbody-bag", 1, true, null, null, true, 0 },
-                    { 5, 1, 9, null, new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), "Waterproof 50m", true, "anh3sanpham.jpg", "img7.jpg", "watch", "watch", 3500000m, "Elegant gold-plated watch", "Classic Gold Watch", null, 3200000m, 15, "classic-gold-watch", 1, true, null, null, true, 0 },
-                    { 6, 1, 8, null, new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Breathable mesh upper", true, "anh4sanpham.jpg", "nike1.jpg,nike2.jpg", "nike air max", "nike, shoes", 3500000m, "Advanced cushioning for daily comfort.", "Nike Air Max 270", null, 3200000m, 40, "nike-air-max-270", 1, true, null, null, true, 0 },
-                    { 7, 2, 8, null, new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Primeknit upper", true, "anh5sanpham.jpg", "adi1.jpg,adi2.jpg", "adidas ultraboost", "adidas, running", 4200000m, "Ultimate energy return for runners.", "Adidas Ultraboost 22", null, 3800000m, 35, "adidas-ultraboost-22", 1, true, null, null, true, 0 },
-                    { 8, 3, 4, null, new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Airism technology", false, "anh6sanpham.jpg", "uni1.jpg", "airism shirt", "uniqlo, t-shirt", 350000m, "Smooth and quick-drying fabric.", "Uniqlo Airism T-Shirt", null, 299000m, 200, "uniqlo-airism-tshirt", 1, true, null, null, true, 0 },
-                    { 9, 4, 4, null, new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Premium wool blend", true, "anh7sanpham.jpg", "zara1.jpg", "slim fit suit", "zara, suit", 2500000m, "Modern slim fit for formal events.", "Zara Slim Fit Suit", null, 2100000m, 20, "zara-slim-suit", 1, true, null, null, true, 0 },
-                    { 10, 5, 4, null, new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "100% Cotton denim", false, "anh8sanpham.jpg", "hm1.jpg", "denim jacket", "hm, denim", 900000m, "Classic denim jacket with a modern twist.", "H&M Denim Jacket", null, 750000m, 60, "hm-denim-jacket", 1, true, null, null, true, 0 },
-                    { 11, 1, 5, null, new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Tech fleece fabric", true, "anh9sanpham.jpg", "nike3.jpg", "nike tech fleece", "nike, fleece", 2200000m, "Lightweight warmth for cold days.", "Nike Tech Fleece", null, 1900000m, 45, "nike-tech-fleece", 1, true, null, null, true, 0 },
-                    { 12, 2, 4, null, new DateTime(2026, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "French terry cotton", false, "anh10sanpham.jpg", "adi3.jpg", "adidas originals", "adidas, hoodie", 1500000m, "Iconic style with cozy comfort.", "Adidas Originals Hoodie", null, 1200000m, 70, "adidas-hoodie", 1, true, null, null, true, 0 },
-                    { 13, 3, 5, null, new DateTime(2026, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Slim straight cut", true, "anh11sanpham.jpg", "uni2.jpg", "selvedge denim", "uniqlo, jeans", 1200000m, "Authentic selvedge denim.", "Uniqlo Selvedge Jeans", null, 999000m, 90, "uniqlo-jeans", 1, true, null, null, true, 0 },
-                    { 14, 4, 6, null, new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lightweight fabric", false, "anh12sanpham.jpg", "zara2.jpg", "floral skirt", "zara, skirt", 800000m, "Beautiful floral pattern for spring.", "Zara Floral Skirt", null, 650000m, 55, "zara-floral-skirt", 1, true, null, null, true, 0 },
-                    { 15, 5, 4, null, new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Soft brushed inside", false, "anh13sanpham.jpg", "hm2.jpg", "oversized top", "hm, sweatshirt", 500000m, "Relaxed fit for everyday wear.", "H&M Oversized Sweatshirt", null, 400000m, 120, "hm-sweatshirt", 1, true, null, null, true, 0 },
-                    { 16, 1, 3, null, new DateTime(2026, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Padded shoulder straps", false, "anh14sanpham.jpg", "nike4.jpg", "nike backpack", "nike, bag", 850000m, "Classic design with ample storage.", "Nike Heritage Backpack", null, 700000m, 40, "nike-backpack", 1, true, null, null, true, 0 },
-                    { 17, 2, 8, null, new DateTime(2026, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Synthetic leather upper", true, "anh15sanpham.jpg", "adi4.jpg", "stan smith shoes", "adidas, sneakers", 2300000m, "Timeless tennis-inspired sneakers.", "Adidas Stan Smith", null, 1950000m, 50, "adidas-stan-smith", 1, true, null, null, true, 0 },
-                    { 18, 3, 5, null, new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Heattech technology", false, "anh16sanpham.jpg", "uni3.jpg", "thermal wear", "uniqlo, leggings", 450000m, "Thermal leggings for winter warmth.", "Uniqlo Heattech Leggings", null, 350000m, 150, "uniqlo-heattech", 1, true, null, null, true, 0 },
-                    { 19, 4, 3, null, new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Metallic buckle", false, "anh17sanpham.jpg", "zara3.jpg", "leather belt", "zara, belt", 600000m, "100% genuine leather belt.", "Zara Leather Belt", null, 450000m, 100, "zara-belt", 1, true, null, null, true, 0 },
-                    { 20, 5, 4, null, new DateTime(2026, 4, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cotton and elastane", false, "anh18sanpham.jpg", "hm3.jpg", "tank top", "hm, top", 250000m, "Simple and stylish ribbed top.", "H&M Ribbed Tank Top", null, 180000m, 180, "hm-tank-top", 1, true, null, null, true, 0 },
-                    { 21, 1, 5, null, new DateTime(2026, 4, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sweat-wicking fabric", true, "anh19sanpham.jpg", "nike5.jpg", "sport shorts", "nike, shorts", 750000m, "Stay dry during your workout.", "Nike Dri-FIT Shorts", null, 600000m, 85, "nike-shorts", 1, true, null, null, true, 0 },
-                    { 22, 2, 3, null, new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "Adjustable strap", false, "anh20sanpham.jpg", "adi5.jpg", "baseball cap", "adidas, cap", 450000m, "Classic 6-panel cap.", "Adidas Baseball Cap", null, 350000m, 110, "adidas-cap", 1, true, null, null, true, 0 },
-                    { 23, 3, 4, null, new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "Linen cotton blend", true, "anh21sanpham.jpg", "uni4.jpg", "linen shirt", "uniqlo, shirt", 750000m, "Cool and breathable linen shirt.", "Uniqlo Linen Shirt", null, 599000m, 65, "uniqlo-linen-shirt", 1, true, null, null, true, 0 },
-                    { 24, 4, 5, null, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Flowy material", true, "anh22sanpham.jpg", "zara4.jpg", "wide leg", "zara, trousers", 1300000m, "High-waisted wide leg pants.", "Zara Wide Leg Trousers", null, 1100000m, 45, "zara-trousers", 1, true, null, null, true, 0 },
-                    { 25, 5, 4, null, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Soft wool blend", true, "anh23sanpham.jpg", "hm4.jpg", "winter coat", "hm, coat", 2800000m, "Stay warm and stylish in winter.", "H&M Wool Blend Coat", null, 2400000m, 15, "hm-wool-coat", 1, true, null, null, true, 0 }
+                    { 1, 3, 4, null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "100% Cotton", true, "white-shirt.jpg", "img1.jpg,img2.jpg", "shirt", "shirt", 450000m, "Classic fit white oxford shirt", "Premium White Oxford Shirt", null, 100, "premium-white-oxford-shirt", 1, true, null, null, true, 0 },
+                    { 2, 4, 6, null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "Chiffon material", false, "floral-dress.jpg", "img3.jpg,img4.jpg", "dress", "dress", 550000m, "Elegant floral print dress", "Floral Summer Maxi Dress", null, 50, "floral-summer-maxi-dress", 1, true, null, null, true, 0 },
+                    { 3, 2, 5, null, new DateTime(2026, 3, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Stretchy fabric", true, "anh1sanpham.jpg", "img5.jpg", "pants", "chinos", 600000m, "High-quality khaki pants", "Slim Fit Navy Chinos", null, 80, "slim-fit-navy-chinos", 1, true, null, null, true, 0 },
+                    { 4, 5, 7, null, new DateTime(2026, 3, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), "Handmade", false, "anh2sanpham.jpg", "img6.jpg", "bag", "bag", 1200000m, "Genuine leather bag", "Leather Crossbody Bag", null, 30, "leather-crossbody-bag", 1, true, null, null, true, 0 },
+                    { 5, 1, 9, null, new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), "Waterproof 50m", true, "anh3sanpham.jpg", "img7.jpg", "watch", "watch", 3500000m, "Elegant gold-plated watch", "Classic Gold Watch", null, 15, "classic-gold-watch", 1, true, null, null, true, 0 },
+                    { 6, 1, 8, null, new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Breathable mesh upper", true, "anh4sanpham.jpg", "nike1.jpg,nike2.jpg", "nike air max", "nike, shoes", 3500000m, "Advanced cushioning for daily comfort.", "Nike Air Max 270", null, 40, "nike-air-max-270", 1, true, null, null, true, 0 },
+                    { 7, 2, 8, null, new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Primeknit upper", true, "anh5sanpham.jpg", "adi1.jpg,adi2.jpg", "adidas ultraboost", "adidas, running", 4200000m, "Ultimate energy return for runners.", "Adidas Ultraboost 22", null, 35, "adidas-ultraboost-22", 1, true, null, null, true, 0 },
+                    { 8, 3, 4, null, new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Airism technology", false, "anh6sanpham.jpg", "uni1.jpg", "airism shirt", "uniqlo, t-shirt", 350000m, "Smooth and quick-drying fabric.", "Uniqlo Airism T-Shirt", null, 200, "uniqlo-airism-tshirt", 1, true, null, null, true, 0 },
+                    { 9, 4, 4, null, new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Premium wool blend", true, "anh7sanpham.jpg", "zara1.jpg", "slim fit suit", "zara, suit", 2500000m, "Modern slim fit for formal events.", "Zara Slim Fit Suit", null, 20, "zara-slim-suit", 1, true, null, null, true, 0 },
+                    { 10, 5, 4, null, new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "100% Cotton denim", false, "anh8sanpham.jpg", "hm1.jpg", "denim jacket", "hm, denim", 900000m, "Classic denim jacket with a modern twist.", "H&M Denim Jacket", null, 60, "hm-denim-jacket", 1, true, null, null, true, 0 },
+                    { 11, 1, 5, null, new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Tech fleece fabric", true, "anh9sanpham.jpg", "nike3.jpg", "nike tech fleece", "nike, fleece", 2200000m, "Lightweight warmth for cold days.", "Nike Tech Fleece", null, 45, "nike-tech-fleece", 1, true, null, null, true, 0 },
+                    { 12, 2, 4, null, new DateTime(2026, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "French terry cotton", false, "anh10sanpham.jpg", "adi3.jpg", "adidas originals", "adidas, hoodie", 1500000m, "Iconic style with cozy comfort.", "Adidas Originals Hoodie", null, 70, "adidas-hoodie", 1, true, null, null, true, 0 },
+                    { 13, 3, 5, null, new DateTime(2026, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Slim straight cut", true, "anh11sanpham.jpg", "uni2.jpg", "selvedge denim", "uniqlo, jeans", 1200000m, "Authentic selvedge denim.", "Uniqlo Selvedge Jeans", null, 90, "uniqlo-jeans", 1, true, null, null, true, 0 },
+                    { 14, 4, 6, null, new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lightweight fabric", false, "anh12sanpham.jpg", "zara2.jpg", "floral skirt", "zara, skirt", 800000m, "Beautiful floral pattern for spring.", "Zara Floral Skirt", null, 55, "zara-floral-skirt", 1, true, null, null, true, 0 },
+                    { 15, 5, 4, null, new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Soft brushed inside", false, "anh13sanpham.jpg", "hm2.jpg", "oversized top", "hm, sweatshirt", 500000m, "Relaxed fit for everyday wear.", "H&M Oversized Sweatshirt", null, 120, "hm-sweatshirt", 1, true, null, null, true, 0 },
+                    { 16, 1, 3, null, new DateTime(2026, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Padded shoulder straps", false, "anh14sanpham.jpg", "nike4.jpg", "nike backpack", "nike, bag", 850000m, "Classic design with ample storage.", "Nike Heritage Backpack", null, 40, "nike-backpack", 1, true, null, null, true, 0 },
+                    { 17, 2, 8, null, new DateTime(2026, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Synthetic leather upper", true, "anh15sanpham.jpg", "adi4.jpg", "stan smith shoes", "adidas, sneakers", 2300000m, "Timeless tennis-inspired sneakers.", "Adidas Stan Smith", null, 50, "adidas-stan-smith", 1, true, null, null, true, 0 },
+                    { 18, 3, 5, null, new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Heattech technology", false, "anh16sanpham.jpg", "uni3.jpg", "thermal wear", "uniqlo, leggings", 450000m, "Thermal leggings for winter warmth.", "Uniqlo Heattech Leggings", null, 150, "uniqlo-heattech", 1, true, null, null, true, 0 },
+                    { 19, 4, 3, null, new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Metallic buckle", false, "anh17sanpham.jpg", "zara3.jpg", "leather belt", "zara, belt", 600000m, "100% genuine leather belt.", "Zara Leather Belt", null, 100, "zara-belt", 1, true, null, null, true, 0 },
+                    { 20, 5, 4, null, new DateTime(2026, 4, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cotton and elastane", false, "anh18sanpham.jpg", "hm3.jpg", "tank top", "hm, top", 250000m, "Simple and stylish ribbed top.", "H&M Ribbed Tank Top", null, 180, "hm-tank-top", 1, true, null, null, true, 0 },
+                    { 21, 1, 5, null, new DateTime(2026, 4, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sweat-wicking fabric", true, "anh19sanpham.jpg", "nike5.jpg", "sport shorts", "nike, shorts", 750000m, "Stay dry during your workout.", "Nike Dri-FIT Shorts", null, 85, "nike-shorts", 1, true, null, null, true, 0 },
+                    { 22, 2, 3, null, new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "Adjustable strap", false, "anh20sanpham.jpg", "adi5.jpg", "baseball cap", "adidas, cap", 450000m, "Classic 6-panel cap.", "Adidas Baseball Cap", null, 110, "adidas-cap", 1, true, null, null, true, 0 },
+                    { 23, 3, 4, null, new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "Linen cotton blend", true, "anh21sanpham.jpg", "uni4.jpg", "linen shirt", "uniqlo, shirt", 750000m, "Cool and breathable linen shirt.", "Uniqlo Linen Shirt", null, 65, "uniqlo-linen-shirt", 1, true, null, null, true, 0 },
+                    { 24, 4, 5, null, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Flowy material", true, "anh22sanpham.jpg", "zara4.jpg", "wide leg", "zara, trousers", 1300000m, "High-waisted wide leg pants.", "Zara Wide Leg Trousers", null, 45, "zara-trousers", 1, true, null, null, true, 0 },
+                    { 25, 5, 4, null, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Soft wool blend", true, "anh23sanpham.jpg", "hm4.jpg", "winter coat", "hm, coat", 2800000m, "Stay warm and stylish in winter.", "H&M Wool Blend Coat", null, 15, "hm-wool-coat", 1, true, null, null, true, 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -626,9 +644,9 @@ namespace FinalProject.Migrations
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_CartItems_ProductID",
+                name: "IX_tb_CartItems_ProductId",
                 table: "tb_CartItems",
-                column: "ProductID");
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_Carts_CustomerId",
@@ -636,9 +654,14 @@ namespace FinalProject.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_Order_CustomerID",
+                name: "IX_tb_Order_PromotionId",
                 table: "tb_Order",
-                column: "CustomerID");
+                column: "PromotionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tb_Order_UserId",
+                table: "tb_Order",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_OrderDetails_OrderId",
@@ -656,14 +679,14 @@ namespace FinalProject.Migrations
                 column: "ShopId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_Product_BrandID",
+                name: "IX_tb_Product_BrandId",
                 table: "tb_Product",
-                column: "BrandID");
+                column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_Product_CateID",
+                name: "IX_tb_Product_CateId",
                 table: "tb_Product",
-                column: "CateID");
+                column: "CateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_Product_PromotionId",
@@ -671,14 +694,14 @@ namespace FinalProject.Migrations
                 column: "PromotionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_Product_ShopID",
+                name: "IX_tb_Product_ShopId",
                 table: "tb_Product",
-                column: "ShopID");
+                column: "ShopId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_ProductCategory_ParentID",
+                name: "IX_tb_ProductCategory_ParentId",
                 table: "tb_ProductCategory",
-                column: "ParentID");
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_RoleClaims_RoleId",
@@ -708,6 +731,11 @@ namespace FinalProject.Migrations
                 name: "IX_tb_ShopReview_ShopId",
                 table: "tb_ShopReview",
                 column: "ShopId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tb_ShopReview_UserId",
+                table: "tb_ShopReview",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_SystemLog_UserId",

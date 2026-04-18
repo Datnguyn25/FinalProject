@@ -24,45 +24,45 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.Brand", b =>
                 {
-                    b.Property<int>("BrandID")
+                    b.Property<int>("BrandId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BrandID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BrandId"));
 
                     b.Property<string>("BrandName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("BrandID");
+                    b.HasKey("BrandId");
 
                     b.ToTable("tb_Brand");
 
                     b.HasData(
                         new
                         {
-                            BrandID = 1,
+                            BrandId = 1,
                             BrandName = "Nike"
                         },
                         new
                         {
-                            BrandID = 2,
+                            BrandId = 2,
                             BrandName = "Adidas"
                         },
                         new
                         {
-                            BrandID = 3,
+                            BrandId = 3,
                             BrandName = "Uniqlo"
                         },
                         new
                         {
-                            BrandID = 4,
+                            BrandId = 4,
                             BrandName = "Zara"
                         },
                         new
                         {
-                            BrandID = 5,
+                            BrandId = 5,
                             BrandName = "H&M"
                         });
                 });
@@ -86,7 +86,7 @@ namespace FinalProject.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductID")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductName")
@@ -96,11 +96,15 @@ namespace FinalProject.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("CartItemId");
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("ProductID");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("tb_CartItems");
                 });
@@ -128,17 +132,14 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.Order", b =>
                 {
-                    b.Property<int>("OrderID")
+                    b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("CustomerID")
-                        .HasColumnType("int");
 
                     b.Property<bool>("Delivered")
                         .HasColumnType("bit");
@@ -149,6 +150,9 @@ namespace FinalProject.Migrations
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
@@ -157,111 +161,153 @@ namespace FinalProject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("PromotionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReceiverPhone")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("ShippingAddress")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("OrderID");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("CustomerID");
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("PromotionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("tb_Order");
 
                     b.HasData(
                         new
                         {
-                            OrderID = 1,
-                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(486),
-                            CustomerID = 1,
+                            OrderId = 1,
+                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4716),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
+                            DiscountAmount = 0m,
                             OrderDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             OrderStatus = "Completed",
                             PaymentStatus = "Paid",
-                            TotalPrice = 1250000m
+                            ReceiverPhone = "0912345678",
+                            ShippingAddress = "123 Cau Giay Street, Dich Vong Ward, Cau Giay District, Hanoi",
+                            TotalPrice = 1250000m,
+                            UserId = 1
                         },
                         new
                         {
-                            OrderID = 2,
-                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(495),
-                            CustomerID = 1,
+                            OrderId = 2,
+                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4730),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
+                            DiscountAmount = 0m,
                             OrderDate = new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             OrderStatus = "Completed",
                             PaymentStatus = "Paid",
-                            TotalPrice = 850000m
+                            ReceiverPhone = "0988776655",
+                            ShippingAddress = "88 Sukhumvit Road, Watthana, Bangkok 10110, Thailand",
+                            TotalPrice = 850000m,
+                            UserId = 1
                         },
                         new
                         {
-                            OrderID = 3,
-                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(498),
-                            CustomerID = 1,
+                            OrderId = 3,
+                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4732),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
+                            DiscountAmount = 0m,
                             OrderDate = new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             OrderStatus = "Completed",
                             PaymentStatus = "Paid",
-                            TotalPrice = 2100000m
+                            ReceiverPhone = "0901234567",
+                            ShippingAddress = "No. 45, Lane 10, Hoang Dieu St, Ba Dinh Dist, Hanoi, Vietnam",
+                            TotalPrice = 2100000m,
+                            UserId = 1
                         },
                         new
                         {
-                            OrderID = 4,
-                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(500),
-                            CustomerID = 1,
+                            OrderId = 4,
+                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4736),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
+                            DiscountAmount = 0m,
                             OrderDate = new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             OrderStatus = "Completed",
                             PaymentStatus = "Paid",
-                            TotalPrice = 1500000m
+                            ReceiverPhone = "0944332211",
+                            ShippingAddress = "Apt 4B, 22nd Street, District 1, Ho Chi Minh City, Vietnam",
+                            TotalPrice = 1500000m,
+                            UserId = 1
                         },
                         new
                         {
-                            OrderID = 5,
-                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(503),
-                            CustomerID = 1,
+                            OrderId = 5,
+                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4738),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
+                            DiscountAmount = 0m,
                             OrderDate = new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             OrderStatus = "Completed",
                             PaymentStatus = "Paid",
-                            TotalPrice = 3200000m
+                            ReceiverPhone = "0355667788",
+                            ShippingAddress = "71-75 Shelton Street, Covent Garden, London WC2H 9JQ, UK",
+                            TotalPrice = 3200000m,
+                            UserId = 1
                         },
                         new
                         {
-                            OrderID = 6,
-                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(505),
-                            CustomerID = 1,
+                            OrderId = 6,
+                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4741),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
+                            DiscountAmount = 0m,
                             OrderDate = new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             OrderStatus = "Completed",
                             PaymentStatus = "Paid",
-                            TotalPrice = 950000m
+                            ReceiverPhone = "0322114455",
+                            ShippingAddress = "Block C, FPT University Campus, Hoa Lac Hi-Tech Park, Hanoi",
+                            TotalPrice = 950000m,
+                            UserId = 1
                         },
                         new
                         {
-                            OrderID = 7,
-                            CreatedDate = new DateTime(2026, 4, 17, 0, 46, 35, 686, DateTimeKind.Local).AddTicks(507),
-                            CustomerID = 1,
+                            OrderId = 7,
+                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4743),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
+                            DiscountAmount = 0m,
                             OrderDate = new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             OrderStatus = "Completed",
                             PaymentStatus = "Paid",
-                            TotalPrice = 1800000m
+                            ReceiverPhone = "0977889900",
+                            ShippingAddress = "202 Jervois Road, Herne Bay, Auckland 1011, New Zealand",
+                            TotalPrice = 1800000m,
+                            UserId = 1
                         });
                 });
 
@@ -359,16 +405,16 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.Product", b =>
                 {
-                    b.Property<int>("ProductID")
+                    b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<int?>("BrandID")
+                    b.Property<int?>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CateID")
+                    b.Property<int?>("CateId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CreatedBy")
@@ -419,9 +465,6 @@ namespace FinalProject.Migrations
                     b.Property<int?>("PromotionId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PromotionPrice")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -430,7 +473,7 @@ namespace FinalProject.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("ShopID")
+                    b.Property<int>("ShopId")
                         .HasColumnType("int");
 
                     b.Property<bool>("Status")
@@ -448,24 +491,24 @@ namespace FinalProject.Migrations
                     b.Property<int>("ViewCount")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductID");
+                    b.HasKey("ProductId");
 
-                    b.HasIndex("BrandID");
+                    b.HasIndex("BrandId");
 
-                    b.HasIndex("CateID");
+                    b.HasIndex("CateId");
 
                     b.HasIndex("PromotionId");
 
-                    b.HasIndex("ShopID");
+                    b.HasIndex("ShopId");
 
                     b.ToTable("tb_Product");
 
                     b.HasData(
                         new
                         {
-                            ProductID = 1,
-                            BrandID = 3,
-                            CateID = 4,
+                            ProductId = 1,
+                            BrandId = 3,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "100% Cotton",
                             Hot = true,
@@ -476,19 +519,18 @@ namespace FinalProject.Migrations
                             Price = 450000m,
                             ProductDescription = "Classic fit white oxford shirt",
                             ProductName = "Premium White Oxford Shirt",
-                            PromotionPrice = 399000m,
                             Quantity = 100,
                             SeoTitle = "premium-white-oxford-shirt",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 2,
-                            BrandID = 4,
-                            CateID = 6,
+                            ProductId = 2,
+                            BrandId = 4,
+                            CateId = 6,
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Chiffon material",
                             Hot = false,
@@ -499,19 +541,18 @@ namespace FinalProject.Migrations
                             Price = 550000m,
                             ProductDescription = "Elegant floral print dress",
                             ProductName = "Floral Summer Maxi Dress",
-                            PromotionPrice = 490000m,
                             Quantity = 50,
                             SeoTitle = "floral-summer-maxi-dress",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 3,
-                            BrandID = 2,
-                            CateID = 5,
+                            ProductId = 3,
+                            BrandId = 2,
+                            CateId = 5,
                             CreatedDate = new DateTime(2026, 3, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Stretchy fabric",
                             Hot = true,
@@ -522,19 +563,18 @@ namespace FinalProject.Migrations
                             Price = 600000m,
                             ProductDescription = "High-quality khaki pants",
                             ProductName = "Slim Fit Navy Chinos",
-                            PromotionPrice = 550000m,
                             Quantity = 80,
                             SeoTitle = "slim-fit-navy-chinos",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 4,
-                            BrandID = 5,
-                            CateID = 7,
+                            ProductId = 4,
+                            BrandId = 5,
+                            CateId = 7,
                             CreatedDate = new DateTime(2026, 3, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Handmade",
                             Hot = false,
@@ -545,19 +585,18 @@ namespace FinalProject.Migrations
                             Price = 1200000m,
                             ProductDescription = "Genuine leather bag",
                             ProductName = "Leather Crossbody Bag",
-                            PromotionPrice = 990000m,
                             Quantity = 30,
                             SeoTitle = "leather-crossbody-bag",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 5,
-                            BrandID = 1,
-                            CateID = 9,
+                            ProductId = 5,
+                            BrandId = 1,
+                            CateId = 9,
                             CreatedDate = new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Waterproof 50m",
                             Hot = true,
@@ -568,19 +607,18 @@ namespace FinalProject.Migrations
                             Price = 3500000m,
                             ProductDescription = "Elegant gold-plated watch",
                             ProductName = "Classic Gold Watch",
-                            PromotionPrice = 3200000m,
                             Quantity = 15,
                             SeoTitle = "classic-gold-watch",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 6,
-                            BrandID = 1,
-                            CateID = 8,
+                            ProductId = 6,
+                            BrandId = 1,
+                            CateId = 8,
                             CreatedDate = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Breathable mesh upper",
                             Hot = true,
@@ -591,19 +629,18 @@ namespace FinalProject.Migrations
                             Price = 3500000m,
                             ProductDescription = "Advanced cushioning for daily comfort.",
                             ProductName = "Nike Air Max 270",
-                            PromotionPrice = 3200000m,
                             Quantity = 40,
                             SeoTitle = "nike-air-max-270",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 7,
-                            BrandID = 2,
-                            CateID = 8,
+                            ProductId = 7,
+                            BrandId = 2,
+                            CateId = 8,
                             CreatedDate = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Primeknit upper",
                             Hot = true,
@@ -614,19 +651,18 @@ namespace FinalProject.Migrations
                             Price = 4200000m,
                             ProductDescription = "Ultimate energy return for runners.",
                             ProductName = "Adidas Ultraboost 22",
-                            PromotionPrice = 3800000m,
                             Quantity = 35,
                             SeoTitle = "adidas-ultraboost-22",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 8,
-                            BrandID = 3,
-                            CateID = 4,
+                            ProductId = 8,
+                            BrandId = 3,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Airism technology",
                             Hot = false,
@@ -637,19 +673,18 @@ namespace FinalProject.Migrations
                             Price = 350000m,
                             ProductDescription = "Smooth and quick-drying fabric.",
                             ProductName = "Uniqlo Airism T-Shirt",
-                            PromotionPrice = 299000m,
                             Quantity = 200,
                             SeoTitle = "uniqlo-airism-tshirt",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 9,
-                            BrandID = 4,
-                            CateID = 4,
+                            ProductId = 9,
+                            BrandId = 4,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Premium wool blend",
                             Hot = true,
@@ -660,19 +695,18 @@ namespace FinalProject.Migrations
                             Price = 2500000m,
                             ProductDescription = "Modern slim fit for formal events.",
                             ProductName = "Zara Slim Fit Suit",
-                            PromotionPrice = 2100000m,
                             Quantity = 20,
                             SeoTitle = "zara-slim-suit",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 10,
-                            BrandID = 5,
-                            CateID = 4,
+                            ProductId = 10,
+                            BrandId = 5,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "100% Cotton denim",
                             Hot = false,
@@ -683,19 +717,18 @@ namespace FinalProject.Migrations
                             Price = 900000m,
                             ProductDescription = "Classic denim jacket with a modern twist.",
                             ProductName = "H&M Denim Jacket",
-                            PromotionPrice = 750000m,
                             Quantity = 60,
                             SeoTitle = "hm-denim-jacket",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 11,
-                            BrandID = 1,
-                            CateID = 5,
+                            ProductId = 11,
+                            BrandId = 1,
+                            CateId = 5,
                             CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Tech fleece fabric",
                             Hot = true,
@@ -706,19 +739,18 @@ namespace FinalProject.Migrations
                             Price = 2200000m,
                             ProductDescription = "Lightweight warmth for cold days.",
                             ProductName = "Nike Tech Fleece",
-                            PromotionPrice = 1900000m,
                             Quantity = 45,
                             SeoTitle = "nike-tech-fleece",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 12,
-                            BrandID = 2,
-                            CateID = 4,
+                            ProductId = 12,
+                            BrandId = 2,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "French terry cotton",
                             Hot = false,
@@ -729,19 +761,18 @@ namespace FinalProject.Migrations
                             Price = 1500000m,
                             ProductDescription = "Iconic style with cozy comfort.",
                             ProductName = "Adidas Originals Hoodie",
-                            PromotionPrice = 1200000m,
                             Quantity = 70,
                             SeoTitle = "adidas-hoodie",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 13,
-                            BrandID = 3,
-                            CateID = 5,
+                            ProductId = 13,
+                            BrandId = 3,
+                            CateId = 5,
                             CreatedDate = new DateTime(2026, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Slim straight cut",
                             Hot = true,
@@ -752,19 +783,18 @@ namespace FinalProject.Migrations
                             Price = 1200000m,
                             ProductDescription = "Authentic selvedge denim.",
                             ProductName = "Uniqlo Selvedge Jeans",
-                            PromotionPrice = 999000m,
                             Quantity = 90,
                             SeoTitle = "uniqlo-jeans",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 14,
-                            BrandID = 4,
-                            CateID = 6,
+                            ProductId = 14,
+                            BrandId = 4,
+                            CateId = 6,
                             CreatedDate = new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Lightweight fabric",
                             Hot = false,
@@ -775,19 +805,18 @@ namespace FinalProject.Migrations
                             Price = 800000m,
                             ProductDescription = "Beautiful floral pattern for spring.",
                             ProductName = "Zara Floral Skirt",
-                            PromotionPrice = 650000m,
                             Quantity = 55,
                             SeoTitle = "zara-floral-skirt",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 15,
-                            BrandID = 5,
-                            CateID = 4,
+                            ProductId = 15,
+                            BrandId = 5,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Soft brushed inside",
                             Hot = false,
@@ -798,19 +827,18 @@ namespace FinalProject.Migrations
                             Price = 500000m,
                             ProductDescription = "Relaxed fit for everyday wear.",
                             ProductName = "H&M Oversized Sweatshirt",
-                            PromotionPrice = 400000m,
                             Quantity = 120,
                             SeoTitle = "hm-sweatshirt",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 16,
-                            BrandID = 1,
-                            CateID = 3,
+                            ProductId = 16,
+                            BrandId = 1,
+                            CateId = 3,
                             CreatedDate = new DateTime(2026, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Padded shoulder straps",
                             Hot = false,
@@ -821,19 +849,18 @@ namespace FinalProject.Migrations
                             Price = 850000m,
                             ProductDescription = "Classic design with ample storage.",
                             ProductName = "Nike Heritage Backpack",
-                            PromotionPrice = 700000m,
                             Quantity = 40,
                             SeoTitle = "nike-backpack",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 17,
-                            BrandID = 2,
-                            CateID = 8,
+                            ProductId = 17,
+                            BrandId = 2,
+                            CateId = 8,
                             CreatedDate = new DateTime(2026, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Synthetic leather upper",
                             Hot = true,
@@ -844,19 +871,18 @@ namespace FinalProject.Migrations
                             Price = 2300000m,
                             ProductDescription = "Timeless tennis-inspired sneakers.",
                             ProductName = "Adidas Stan Smith",
-                            PromotionPrice = 1950000m,
                             Quantity = 50,
                             SeoTitle = "adidas-stan-smith",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 18,
-                            BrandID = 3,
-                            CateID = 5,
+                            ProductId = 18,
+                            BrandId = 3,
+                            CateId = 5,
                             CreatedDate = new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Heattech technology",
                             Hot = false,
@@ -867,19 +893,18 @@ namespace FinalProject.Migrations
                             Price = 450000m,
                             ProductDescription = "Thermal leggings for winter warmth.",
                             ProductName = "Uniqlo Heattech Leggings",
-                            PromotionPrice = 350000m,
                             Quantity = 150,
                             SeoTitle = "uniqlo-heattech",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 19,
-                            BrandID = 4,
-                            CateID = 3,
+                            ProductId = 19,
+                            BrandId = 4,
+                            CateId = 3,
                             CreatedDate = new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Metallic buckle",
                             Hot = false,
@@ -890,19 +915,18 @@ namespace FinalProject.Migrations
                             Price = 600000m,
                             ProductDescription = "100% genuine leather belt.",
                             ProductName = "Zara Leather Belt",
-                            PromotionPrice = 450000m,
                             Quantity = 100,
                             SeoTitle = "zara-belt",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 20,
-                            BrandID = 5,
-                            CateID = 4,
+                            ProductId = 20,
+                            BrandId = 5,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 4, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Cotton and elastane",
                             Hot = false,
@@ -913,19 +937,18 @@ namespace FinalProject.Migrations
                             Price = 250000m,
                             ProductDescription = "Simple and stylish ribbed top.",
                             ProductName = "H&M Ribbed Tank Top",
-                            PromotionPrice = 180000m,
                             Quantity = 180,
                             SeoTitle = "hm-tank-top",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 21,
-                            BrandID = 1,
-                            CateID = 5,
+                            ProductId = 21,
+                            BrandId = 1,
+                            CateId = 5,
                             CreatedDate = new DateTime(2026, 4, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Sweat-wicking fabric",
                             Hot = true,
@@ -936,19 +959,18 @@ namespace FinalProject.Migrations
                             Price = 750000m,
                             ProductDescription = "Stay dry during your workout.",
                             ProductName = "Nike Dri-FIT Shorts",
-                            PromotionPrice = 600000m,
                             Quantity = 85,
                             SeoTitle = "nike-shorts",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 22,
-                            BrandID = 2,
-                            CateID = 3,
+                            ProductId = 22,
+                            BrandId = 2,
+                            CateId = 3,
                             CreatedDate = new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Adjustable strap",
                             Hot = false,
@@ -959,19 +981,18 @@ namespace FinalProject.Migrations
                             Price = 450000m,
                             ProductDescription = "Classic 6-panel cap.",
                             ProductName = "Adidas Baseball Cap",
-                            PromotionPrice = 350000m,
                             Quantity = 110,
                             SeoTitle = "adidas-cap",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 23,
-                            BrandID = 3,
-                            CateID = 4,
+                            ProductId = 23,
+                            BrandId = 3,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Linen cotton blend",
                             Hot = true,
@@ -982,19 +1003,18 @@ namespace FinalProject.Migrations
                             Price = 750000m,
                             ProductDescription = "Cool and breathable linen shirt.",
                             ProductName = "Uniqlo Linen Shirt",
-                            PromotionPrice = 599000m,
                             Quantity = 65,
                             SeoTitle = "uniqlo-linen-shirt",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 24,
-                            BrandID = 4,
-                            CateID = 5,
+                            ProductId = 24,
+                            BrandId = 4,
+                            CateId = 5,
                             CreatedDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Flowy material",
                             Hot = true,
@@ -1005,19 +1025,18 @@ namespace FinalProject.Migrations
                             Price = 1300000m,
                             ProductDescription = "High-waisted wide leg pants.",
                             ProductName = "Zara Wide Leg Trousers",
-                            PromotionPrice = 1100000m,
                             Quantity = 45,
                             SeoTitle = "zara-trousers",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
                         },
                         new
                         {
-                            ProductID = 25,
-                            BrandID = 5,
-                            CateID = 4,
+                            ProductId = 25,
+                            BrandId = 5,
+                            CateId = 4,
                             CreatedDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Detail = "Soft wool blend",
                             Hot = true,
@@ -1028,10 +1047,9 @@ namespace FinalProject.Migrations
                             Price = 2800000m,
                             ProductDescription = "Stay warm and stylish in winter.",
                             ProductName = "H&M Wool Blend Coat",
-                            PromotionPrice = 2400000m,
                             Quantity = 15,
                             SeoTitle = "hm-wool-coat",
-                            ShopID = 1,
+                            ShopId = 1,
                             Status = true,
                             VAT = true,
                             ViewCount = 0
@@ -1040,11 +1058,11 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.ProductCategory", b =>
                 {
-                    b.Property<int>("CateID")
+                    b.Property<int>("CateId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CateID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CateId"));
 
                     b.Property<string>("CateName")
                         .IsRequired()
@@ -1067,7 +1085,7 @@ namespace FinalProject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("ParentID")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
                     b.Property<string>("SeoTitle")
@@ -1087,16 +1105,16 @@ namespace FinalProject.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("CateID");
+                    b.HasKey("CateId");
 
-                    b.HasIndex("ParentID");
+                    b.HasIndex("ParentId");
 
                     b.ToTable("tb_ProductCategory");
 
                     b.HasData(
                         new
                         {
-                            CateID = 1,
+                            CateId = 1,
                             CateName = "Men's Fashion",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "High quality clothing for men",
@@ -1107,7 +1125,7 @@ namespace FinalProject.Migrations
                         },
                         new
                         {
-                            CateID = 2,
+                            CateId = 2,
                             CateName = "Women's Fashion",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "Latest fashion trends for women",
@@ -1118,7 +1136,7 @@ namespace FinalProject.Migrations
                         },
                         new
                         {
-                            CateID = 3,
+                            CateId = 3,
                             CateName = "Accessories",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "Fashion accessories for everyone",
@@ -1129,72 +1147,72 @@ namespace FinalProject.Migrations
                         },
                         new
                         {
-                            CateID = 4,
+                            CateId = 4,
                             CateName = "Men's Torso",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "Stylish shirts for men",
                             MetaKeywords = "t-shirts, polo",
-                            ParentID = 1,
+                            ParentId = 1,
                             SeoTitle = "mens-torso",
                             Sort = 1,
                             Statuss = true
                         },
                         new
                         {
-                            CateID = 5,
+                            CateId = 5,
                             CateName = "Men's Leggings",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "Comfortable pants for men",
                             MetaKeywords = "jeans, trousers",
-                            ParentID = 1,
+                            ParentId = 1,
                             SeoTitle = "mens-leggings",
                             Sort = 2,
                             Statuss = true
                         },
                         new
                         {
-                            CateID = 6,
+                            CateId = 6,
                             CateName = "Dresses & Skirts",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "Beautiful dresses for ladies",
                             MetaKeywords = "maxi dress, skirts",
-                            ParentID = 2,
+                            ParentId = 2,
                             SeoTitle = "dresses-skirts",
                             Sort = 1,
                             Statuss = true
                         },
                         new
                         {
-                            CateID = 7,
+                            CateId = 7,
                             CateName = "Women's Handbags",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "Luxury handbags for women",
                             MetaKeywords = "purses, totes",
-                            ParentID = 2,
+                            ParentId = 2,
                             SeoTitle = "womens-handbags",
                             Sort = 2,
                             Statuss = true
                         },
                         new
                         {
-                            CateID = 8,
+                            CateId = 8,
                             CateName = "Footwear",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "Quality footwear for all ages",
                             MetaKeywords = "shoes, sneakers",
-                            ParentID = 3,
+                            ParentId = 3,
                             SeoTitle = "footwear",
                             Sort = 1,
                             Statuss = true
                         },
                         new
                         {
-                            CateID = 9,
+                            CateId = 9,
                             CateName = "Watches & Jewelry",
                             CreatedDate = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MetaDescription = "Premium timepieces and jewelry",
                             MetaKeywords = "gold, luxury watches",
-                            ParentID = 3,
+                            ParentId = 3,
                             SeoTitle = "watches-jewelry",
                             Sort = 2,
                             Statuss = true
@@ -1203,11 +1221,11 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.Promotion", b =>
                 {
-                    b.Property<int>("PromotionID")
+                    b.Property<int>("PromotionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PromotionID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PromotionId"));
 
                     b.Property<int>("DiscountPercent")
                         .HasColumnType("int");
@@ -1220,24 +1238,29 @@ namespace FinalProject.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("PromotionCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.HasKey("PromotionID");
+                    b.HasKey("PromotionId");
 
                     b.ToTable("tb_Promotion");
                 });
 
             modelBuilder.Entity("FinalProject.Models.Shop", b =>
                 {
-                    b.Property<int>("ShopID")
+                    b.Property<int>("ShopId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShopID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShopId"));
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -1317,7 +1340,7 @@ namespace FinalProject.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ShopID");
+                    b.HasKey("ShopId");
 
                     b.HasIndex("OwnerId")
                         .IsUnique()
@@ -1330,7 +1353,7 @@ namespace FinalProject.Migrations
                     b.HasData(
                         new
                         {
-                            ShopID = 1,
+                            ShopId = 1,
                             City = "Ho Chi Minh City",
                             ContactEmail = "support@urbanchic.com",
                             ContactPhone = "+84987654321",
@@ -1383,9 +1406,14 @@ namespace FinalProject.Migrations
                     b.Property<int>("ShopId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("ReviewId");
 
                     b.HasIndex("ShopId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("tb_ShopReview");
                 });
@@ -1421,11 +1449,11 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.SystemSetting", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -1441,7 +1469,7 @@ namespace FinalProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("tb_SystemSetting");
                 });
@@ -1566,7 +1594,7 @@ namespace FinalProject.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "881370c9-277a-49c8-914c-8ad53940efa7",
+                            ConcurrencyStamp = "29b34cef-c20b-4e8f-9448-3f6a525cf531",
                             CreatedAt = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@fashionstore.com",
                             EmailConfirmed = true,
@@ -1577,10 +1605,10 @@ namespace FinalProject.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@FASHIONSTORE.COM",
                             NormalizedUserName = "ADMIN@FASHIONSTORE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEH25h7ZQvQE8hOwTaBbjOB32HV7wnHtkWSfxmcVzInrNEyS3y96uH2cNkm9/UPRG1A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEP87ntRbG8o7NNgoZW8QbTLdKoEa59ZfRHTJZzC43cj4LRZEB+Gn6IBhp0r8kiyLsw==",
                             PhoneNumberConfirmed = false,
                             PhoneVerified = false,
-                            SecurityStamp = "23e669af-337e-4e6a-910b-8f6801457c72",
+                            SecurityStamp = "92a8db8e-202c-4661-81a4-63ae7329fec2",
                             TwoFactorEnabled = false,
                             UserName = "admin@fashionstore.com"
                         });
@@ -1619,21 +1647,21 @@ namespace FinalProject.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "ef13c806-04c4-49cf-bc8c-db22786294d4",
+                            ConcurrencyStamp = "4f37cf67-1e22-46fb-a399-167d6e891d2a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "05dfec67-bfca-4f86-afb4-768728a5d7b7",
+                            ConcurrencyStamp = "75504955-655b-4bd2-813c-4310d5f868b5",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "4845c675-36ee-46c8-8fe3-091fb3126fa2",
+                            ConcurrencyStamp = "d5c28c67-c3e5-4db4-95b9-a998d53d6cf7",
                             Name = "Shop",
                             NormalizedName = "SHOP"
                         });
@@ -1763,7 +1791,7 @@ namespace FinalProject.Migrations
 
                     b.HasOne("FinalProject.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductID")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1785,13 +1813,19 @@ namespace FinalProject.Migrations
 
             modelBuilder.Entity("FinalProject.Models.Order", b =>
                 {
-                    b.HasOne("FinalProject.Models.User", "Customer")
+                    b.HasOne("FinalProject.Models.Promotion", "Promotion")
                         .WithMany()
-                        .HasForeignKey("CustomerID")
+                        .HasForeignKey("PromotionId");
+
+                    b.HasOne("FinalProject.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("Promotion");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FinalProject.Models.OrderDetails", b =>
@@ -1819,11 +1853,11 @@ namespace FinalProject.Migrations
                 {
                     b.HasOne("FinalProject.Models.Brand", "Brand")
                         .WithMany("Products")
-                        .HasForeignKey("BrandID");
+                        .HasForeignKey("BrandId");
 
                     b.HasOne("FinalProject.Models.ProductCategory", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CateID");
+                        .HasForeignKey("CateId");
 
                     b.HasOne("FinalProject.Models.Promotion", "Promotion")
                         .WithMany()
@@ -1831,7 +1865,7 @@ namespace FinalProject.Migrations
 
                     b.HasOne("FinalProject.Models.Shop", "Shop")
                         .WithMany()
-                        .HasForeignKey("ShopID")
+                        .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1848,7 +1882,7 @@ namespace FinalProject.Migrations
                 {
                     b.HasOne("FinalProject.Models.ProductCategory", "ParentCategory")
                         .WithMany("ChildCategories")
-                        .HasForeignKey("ParentID");
+                        .HasForeignKey("ParentId");
 
                     b.Navigation("ParentCategory");
                 });
@@ -1877,7 +1911,15 @@ namespace FinalProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FinalProject.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Shop");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FinalProject.Models.SystemLog", b =>

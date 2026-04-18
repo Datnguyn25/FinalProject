@@ -67,9 +67,7 @@
             <div class="row">
                 @foreach (var product in Model.MensProducts)
                 {
-                    var discountPercent = (int)Math.Round(
-                        (product.Price - product.PromotionPrice) / product.Price * 100);
-
+                   
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 text-center shadow-sm">
                             <img src="~/assets/white-shirt.jpg"
@@ -77,16 +75,22 @@
                                  alt="@product.ProductName">
                                 <div class="card-body">
                                     <h5 class="card-title">@product.ProductName</h5>
-                                    <p class="text-muted text-decoration-line-through">
-                                        @product.Price.ToString("N0") đ
-                                    </p>
-                                    <h6 class="text-danger fw-bold">
-                                        @product.PromotionPrice.ToString("N0") đ (-@discountPercent%)
-                                    </h6>
-                                    <a asp-controller="Product"
-                                           asp-action="Details"
-                                           asp-route-id="@product.ProductID"
-                                           class="btn btn-outline-dark btn-sm">
+                                    @{
+                                        // Lấy % giảm từ bảng Promotion, tính giá sau giảm
+                                        int discount = product.Promotion?.DiscountPercent ?? 0;
+                                        decimal finalPrice = product.Price * (100 - discount) / 100;
+                                    }
+                                <p class="text-muted text-decoration-line-through">
+                                    @product.Price.ToString("N0") đ
+                                </p>
+                                <h6 class="text-danger fw-bold">
+                                    @finalPrice.ToString("N0") đ (-@discount%)
+                                </h6>
+
+                                <a asp-controller="Product" 
+                                       asp-action="Details" 
+                                       asp-route-id="@product.ProductId " @* Đảm bảo chữ ID viết hoa theo Model *@
+                                       class="btn btn-outline-dark btn-sm">
                                         View Details
                                     </a>
                                 </div>
@@ -101,8 +105,7 @@
                 <div class="row">
                     @foreach (var product in Model.WomensProducts)
                     {
-                        var discountPercent = (int)Math.Round(
-                            (product.Price - product.PromotionPrice) / product.Price * 100);
+                        
 
                         <div class="col-md-4 mb-4">
                             <div class="card h-100 text-center shadow-sm">
@@ -111,12 +114,20 @@
                                      alt="@product.ProductName">
                                     <div class="card-body">
                                         <h5 class="card-title">@product.ProductName</h5>
+                                        @{
+                                            // Lấy % giảm từ bảng Promotion, tính giá sau giảm
+                                            int discount = product.Promotion?.DiscountPercent ?? 0;
+                                            decimal finalPrice = product.Price * (100 - discount) / 100;
+                                        }
                                         <p class="text-muted text-decoration-line-through">
                                             @product.Price.ToString("N0") đ
                                         </p>
                                         <h6 class="text-danger fw-bold">
-                                            @product.PromotionPrice.ToString("N0") đ (-@discountPercent%)
+                                            @finalPrice.ToString("N0") đ (-@discount%)
                                         </h6>
+                                        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-outline-dark btn-sm">
+                                    View Details
+                                </a>
                                     </div>
                                 </div>
                             </div>

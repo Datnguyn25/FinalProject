@@ -1,4 +1,4 @@
-using FinalProject.Data;
+﻿using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -47,7 +47,7 @@ namespace FinalProject.Controllers.SellerController
             var products = _context.tb_Product
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
-                .Where(p => p.ShopID == shop.ShopID)
+                .Where(p => p.ShopId == shop.ShopId)
                 .ToList();
 
             ViewBag.Shop = shop;
@@ -61,7 +61,7 @@ namespace FinalProject.Controllers.SellerController
             var product = _context.tb_Product
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
-                .FirstOrDefault(p => p.ProductID == id && p.ShopID == shop.ShopID);
+                .FirstOrDefault(p => p.ProductId == id && p.ShopId == shop.ShopId);
 
             if (product == null) return NotFound();
             return View(product);
@@ -88,16 +88,16 @@ namespace FinalProject.Controllers.SellerController
                 // handle image upload (optional)
                 if (imageFile != null && imageFile.Length > 0)
                 {
-                    var uploads = Path.Combine(_env.WebRootPath, "uploads", "shops", shop.ShopID.ToString());
+                    var uploads = Path.Combine(_env.WebRootPath, "uploads", "shops", shop.ShopId.ToString());
                     Directory.CreateDirectory(uploads);
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
                     var filePath = Path.Combine(uploads, fileName);
                     using var fs = new FileStream(filePath, FileMode.Create);
                     imageFile.CopyTo(fs);
-                    model.Image = Path.Combine("uploads", "shops", shop.ShopID.ToString(), fileName).Replace('\\', '/');
+                    model.Image = Path.Combine("uploads", "shops", shop.ShopId.ToString(), fileName).Replace('\\', '/');
                 }
 
-                model.ShopID = shop.ShopID;
+                model.ShopId = shop.ShopId;
                 model.CreatedBy = GetCurrentUserId();
                 model.CreatedDate = DateTime.Now;
 
@@ -105,7 +105,7 @@ namespace FinalProject.Controllers.SellerController
                 _context.SaveChanges();
 
                 // update shop product count
-                shop.TotalProducts = _context.tb_Product.Count(p => p.ShopID == shop.ShopID);
+                shop.TotalProducts = _context.tb_Product.Count(p => p.ShopId == shop.ShopId);
                 _context.tb_Shop.Update(shop);
                 _context.SaveChanges();
 
@@ -121,7 +121,7 @@ namespace FinalProject.Controllers.SellerController
         public IActionResult Edit(int id)
         {
             var shop = GetSellerShop();
-            var product = _context.tb_Product.FirstOrDefault(p => p.ProductID == id && p.ShopID == shop.ShopID);
+            var product = _context.tb_Product.FirstOrDefault(p => p.ProductId == id && p.ShopId == shop.ShopId);
             if (product == null) return NotFound();
 
             ViewBag.Categories = _context.tb_ProductCategory.ToList();
@@ -137,7 +137,7 @@ namespace FinalProject.Controllers.SellerController
             var shop = GetSellerShop();
             if (shop == null) return Forbid();
 
-            var existing = _context.tb_Product.FirstOrDefault(p => p.ProductID == model.ProductID && p.ShopID == shop.ShopID);
+            var existing = _context.tb_Product.FirstOrDefault(p => p.ProductId == model.ProductId && p.ShopId == shop.ShopId);
             if (existing == null) return NotFound();
 
             if (ModelState.IsValid)
@@ -145,13 +145,13 @@ namespace FinalProject.Controllers.SellerController
                 // update image if provided
                 if (imageFile != null && imageFile.Length > 0)
                 {
-                    var uploads = Path.Combine(_env.WebRootPath, "uploads", "shops", shop.ShopID.ToString());
+                    var uploads = Path.Combine(_env.WebRootPath, "uploads", "shops", shop.ShopId.ToString());
                     Directory.CreateDirectory(uploads);
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
                     var filePath = Path.Combine(uploads, fileName);
                     using var fs = new FileStream(filePath, FileMode.Create);
                     imageFile.CopyTo(fs);
-                    existing.Image = Path.Combine("uploads", "shops", shop.ShopID.ToString(), fileName).Replace('\\', '/');
+                    existing.Image = Path.Combine("uploads", "shops", shop.ShopId.ToString(), fileName).Replace('\\', '/');
                 }
 
                 // update allowed fields (name, desc, detail, seo, brand, category, status)
@@ -161,8 +161,8 @@ namespace FinalProject.Controllers.SellerController
                 existing.Detail = model.Detail;
                 existing.MetaKeywords = model.MetaKeywords;
                 existing.MetaDescription = model.MetaDescription;
-                existing.BrandID = model.BrandID;
-                existing.CateID = model.CateID;
+                existing.BrandId = model.BrandId;
+                existing.CateId = model.CateId;
                 existing.Status = model.Status;
                 existing.Hot = model.Hot;
                 existing.UpdatedBy = GetCurrentUserId();
@@ -185,14 +185,14 @@ namespace FinalProject.Controllers.SellerController
         public IActionResult Delete(int id)
         {
             var shop = GetSellerShop();
-            var product = _context.tb_Product.FirstOrDefault(p => p.ProductID == id && p.ShopID == shop.ShopID);
+            var product = _context.tb_Product.FirstOrDefault(p => p.ProductId == id && p.ShopId == shop.ShopId);
             if (product == null) return NotFound();
 
             _context.tb_Product.Remove(product);
             _context.SaveChanges();
 
             // update shop product count
-            shop.TotalProducts = _context.tb_Product.Count(p => p.ShopID == shop.ShopID);
+            shop.TotalProducts = _context.tb_Product.Count(p => p.ShopId == shop.ShopId);
             _context.tb_Shop.Update(shop);
             _context.SaveChanges();
 
@@ -202,14 +202,20 @@ namespace FinalProject.Controllers.SellerController
         // UPDATE PRICE (POST) - model binding with price fields
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdatePrice(int id, decimal price, decimal promotionPrice)
+        public IActionResult UpdatePrice(int id, decimal price, int? promotionId)
         {
             var shop = GetSellerShop();
-            var product = _context.tb_Product.FirstOrDefault(p => p.ProductID == id && p.ShopID == shop.ShopID);
+            var product = _context.tb_Product.FirstOrDefault(p => p.ProductId == id && p.ShopId == shop.ShopId);
+
             if (product == null) return NotFound();
 
+            // 1. Cập nhật giá gốc
             product.Price = price;
-            product.PromotionPrice = promotionPrice;
+
+            // 2. Cập nhật mã khuyến mãi (PromotionId thay cho PromotionPrice)
+            product.PromotionId = promotionId;
+
+            // 3. Cập nhật thông tin vết (Audit)
             product.UpdatedBy = GetCurrentUserId();
             product.UpdatedDate = DateTime.Now;
 
@@ -225,7 +231,7 @@ namespace FinalProject.Controllers.SellerController
         public IActionResult UpdateInventory(int id, int quantity)
         {
             var shop = GetSellerShop();
-            var product = _context.tb_Product.FirstOrDefault(p => p.ProductID == id && p.ShopID == shop.ShopID);
+            var product = _context.tb_Product.FirstOrDefault(p => p.ProductId == id && p.ShopId == shop.ShopId);
             if (product == null) return NotFound();
 
             product.Quantity = quantity;
@@ -244,7 +250,7 @@ namespace FinalProject.Controllers.SellerController
         public IActionResult UpdateListImages(int id, string listImages)
         {
             var shop = GetSellerShop();
-            var product = _context.tb_Product.FirstOrDefault(p => p.ProductID == id && p.ShopID == shop.ShopID);
+            var product = _context.tb_Product.FirstOrDefault(p => p.ProductId == id && p.ShopId == shop.ShopId);
             if (product == null) return NotFound();
 
             product.ListImages = listImages; // expects "img1.jpg,img2.jpg"

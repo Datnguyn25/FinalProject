@@ -22,13 +22,13 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.CateID</td>
+            <td>@item.CateId</td>
             <td>@item.CateName</td>
 
             <td>
-                <a asp-action="Edit" asp-route-id="@item.CateID">Edit</a> |
+                <a asp-action="Edit" asp-route-id="@item.CateId">Edit</a> |
                 <a asp-action="Delete"
-                   asp-route-id="@item.CateID"
+                   asp-route-id="@item.CateId"
                    onclick="return confirm('Delete?')">
                     Delete
                 </a>

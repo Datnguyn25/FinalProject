@@ -15,6 +15,11 @@ namespace FinalProject.Models
         [ForeignKey("ShopId")]
         public Shop Shop { get; set; }
 
+        public int UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public User User { get; set; }
+
         [StringLength(100)]
         public string ReviewerName { get; set; }
 

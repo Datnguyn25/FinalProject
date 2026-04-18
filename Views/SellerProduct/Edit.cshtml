@@ -11,7 +11,7 @@
         <div class="col-md-8">
             <form asp-action="Edit" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
-                <input type="hidden" asp-for="ProductID" />
+                <input type="hidden" asp-for="ProductId" />
 
                 <div class="card p-3 mb-3">
                     <div class="mb-3">
@@ -54,14 +54,10 @@
                 <h5>Price Management</h5>
                 <form asp-action="UpdatePrice" method="post">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@Model.ProductID" />
+                    <input type="hidden" name="id" value="@Model.ProductId" />
                     <div class="mb-2">
                         <label class="small">Price</label>
                         <input type="number" step="0.01" name="price" value="@Model.Price" class="form-control" />
-                    </div>
-                    <div class="mb-2">
-                        <label class="small">Promotion Price</label>
-                        <input type="number" step="0.01" name="promotionPrice" value="@Model.PromotionPrice" class="form-control" />
                     </div>
                     <button type="submit" class="btn btn-sm btn-outline-primary w-100">Update Price Only</button>
                 </form>
@@ -71,7 +67,7 @@
                 <h5>Inventory</h5>
                 <form asp-action="UpdateInventory" method="post">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@Model.ProductID" />
+                    <input type="hidden" name="id" value="@Model.ProductId" />
                     <div class="input-group">
                         <input type="number" name="quantity" value="@Model.Quantity" class="form-control" />
                         <button type="submit" class="btn btn-outline-primary">Update</button>

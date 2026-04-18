@@ -21,10 +21,12 @@
 
                 if (selectedCategory != null && categories != null)
                 {
-                    var current = categories.FirstOrDefault(x => x.CateID == selectedCategory);
+                    var current = categories
+                        .FirstOrDefault(x => x.CateId == selectedCategory);
+
                     if (current != null)
                     {
-                        currentParent = current.ParentID ?? current.CateID;
+                        currentParent = current.ParentId ?? current.CateId;
                     }
                 }
             }
@@ -35,7 +37,7 @@
 
                 foreach (var c in ViewBag.Categories)
                 {
-                    if (c.ParentID == currentParent)
+                    if (c.ParentId == currentParent)
                     {
                         hasChild = true;
                         break;
@@ -50,11 +52,11 @@
                     <div class="shop-subcategory">
                         @foreach (var sub in ViewBag.Categories)
                         {
-                            if (sub.ParentID == currentParent)
+                            if (sub.ParentId == currentParent)
                             {
                                 <div>
-                                    <a href="/Product?cateId=@sub.CateID"
-                                           class="shop-cate @(selectedCategory == sub.CateID ? "active" : "")">
+                                    <a href="/Product?cateId=@sub.CateId"
+                                           class="shop-cate @(selectedCategory == sub.CateId ? "active" : "")">
                                         └ @sub.CateName
                                     </a>
                                 </div>
@@ -96,36 +98,63 @@
 
             <hr />
 
+            <!-- ✅ CATEGORY CHA ONLY -->
+            <div class="shop-category">
+
+                <a href="/Product"
+                       class="@(selectedCategory == null ? "shop-cate active" : "shop-cate")">
+                    All
+                </a>
+
+                @foreach (var c in ViewBag.Categories)
+                {
+                    if (c.ParentId == null) // 👉 chỉ lấy cha
+                    {
+                        <a href="/Product?cateId=@c.CateId"
+                               class="@(selectedCategory == c.CateId ? "shop-cate active" : "shop-cate")">
+                            @c.CateName
+                        </a>
+                    }
+                }
+
+            </div>
+
+            <hr />
+
+            <!-- PRODUCT LIST -->
             <div class="shop-grid">
                 @foreach (var item in Model)
                 {
                     <div class="shop-card">
 
-                        <a href="/Product/Details/@item.ProductID">
-                            <img src="@(string.IsNullOrEmpty(item.Image)
-                                                                                             ? Url.Content("~/assets/product-1.jpg")
-                                                                                             : Url.Content("~/assets/" + item.Image))" />
-                        </a>
+                            <a href="/Product/Details/@item.ProductId" class="shop-link">
+
+                                <img src="@(string.IsNullOrEmpty(item.Image)
+                                                                                                         ? Url.Content("~/assets/product-1.jpg")
+                                                                                                         : Url.Content("~/assets/" + item.Image))" />
 
                         <h4>@item.ProductName</h4>
                         <p>@item.Price.ToString("N0") VNĐ</p>
 
                         <div class="shop-actions-group">
 
-                            <!-- BUY NOW -->
-                            <form class="buyForm" asp-controller="Cart" asp-action="AddToCart" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="productId" value="@item.ProductID" />
-                                <input type="hidden" name="actionType" value="buyNow" />
-                                <button type="button" class="shop-buy-btn">⚡ Buy Now</button>
-                            </form>
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                    <input type="hidden" name="actionType" value="buyNow" />
+                                  
+  
 
-                            <!-- ADD TO CART -->
-                            <form class="cartForm">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="productId" value="@item.ProductID" />
-                                <button type="button" class="shop-cart-btn">🛒 Add to Cart</button>
-                            </form>
+                                    <button type="submit" class="shop-buy-btn">⚡ Buy Now</button>
+                                </form>
+
+                                <form onsubmit="addToCart(event, @item.ProductId, '@(string.IsNullOrEmpty(item.Image) ? Url.Content("~/assets/product-1.jpg") : Url.Content("~/assets/" + item.Image))', this)">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                    <button type="submit" class="shop-cart-btn">
+                                        🛒 Add to Cart
+                                    </button>
+                                </form>
 
                         </div>
                     </div>

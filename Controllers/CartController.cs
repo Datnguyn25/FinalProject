@@ -44,7 +44,7 @@ public class CartController : Controller
             return RedirectToAction("Login", "Account");
         }
 
-        var product = _context.tb_Product.FirstOrDefault(p => p.ProductID == productId);
+        var product = _context.tb_Product.FirstOrDefault(p => p.ProductId == productId);
         if (product == null) return NotFound();
 
         var cart = GetCart();
@@ -55,7 +55,7 @@ public class CartController : Controller
         {
             cart.Add(new CartItems
             {
-                ProductID = product.ProductID,
+                ProductId = product.ProductId,
                 ProductName = product.ProductName,
                 Image = product.Image,
                 Price = product.Price,
@@ -89,7 +89,7 @@ public class CartController : Controller
     public IActionResult Remove(int id)
     {
         var cart = GetCart();
-        var item = cart.FirstOrDefault(x => x.ProductID == id);
+        var item = cart.FirstOrDefault(x => x.ProductId == id);
 
         if (item != null)
         {
