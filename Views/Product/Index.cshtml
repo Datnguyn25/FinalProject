@@ -15,10 +15,8 @@
         <div class="shop-sidebar">
             <h5 class="filter-title">Filter by price</h5>
 
-            <!-- ✅ SUB CATEGORY -->
             @{
                 var categories = ViewBag.Categories as List<ProductCategory>;
-
                 int? currentParent = null;
 
                 if (selectedCategory != null && categories != null)
@@ -75,52 +73,27 @@
                 <input type="hidden" name="searchType" value="@searchType" />
 
                 <div class="price-filter">
-                    <label>Price from: <b id="minPriceValue">@minPrice</b> VNĐ</label>
-                    <input type="range"
-                           name="minPrice"
-                           min="0"
-                           max="1000000"
-                           value="@minPrice"
-                           oninput="updatePriceValues()" />
+                    <label>Price from: <b>@minPrice</b> VNĐ</label>
+                    <input type="range" name="minPrice" min="0" max="1000000" value="@minPrice" />
 
-                    <label>To: <b id="maxPriceValue">@maxPrice</b> VNĐ</label>
-                    <input type="range"
-                           name="maxPrice"
-                           min="0"
-                           max="1000000"
-                           value="@maxPrice"
-                           oninput="updatePriceValues()" />
+                    <label>To: <b>@maxPrice</b> VNĐ</label>
+                    <input type="range" name="maxPrice" min="0" max="1000000" value="@maxPrice" />
                 </div>
 
-                <button type="submit" class="shop-filter-btn">
-                    Search
-                </button>
+                <button type="submit" class="shop-filter-btn">Search</button>
             </form>
-
         </div>
 
         <!-- ===== MAIN ===== -->
         <div class="shop-main">
 
-            <!-- SEARCH -->
             <form method="get" asp-action="Index" class="shop-search">
-
                 <select name="searchType" class="shop-input">
-                    <option value="name" selected="@(searchType == "name")">🔍 Product Name</option>
-                    <option value="seo" selected="@(searchType == "seo")">📌 SEO Title</option>
-                    <option value="keyword" selected="@(searchType == "keyword")">🏷 Meta Keywords</option>
-                    <option value="desc" selected="@(searchType == "desc")">📝 Description</option>
+                    <option value="name">Product Name</option>
                 </select>
 
-                <input type="text" name="keyword"
-                       value="@ViewBag.Keyword"
-                       placeholder="Search product..."
-                       class="shop-input" />
-
-                <button type="submit" class="shop-btn">
-                    Search
-                </button>
-
+                <input type="text" name="keyword" value="@ViewBag.Keyword" class="shop-input" />
+                <button type="submit" class="shop-btn">Search</button>
             </form>
 
             <hr />
@@ -150,20 +123,9 @@
 
             <!-- PRODUCT LIST -->
             <div class="shop-grid">
-
-                @if (Model.Count == 0)
+                @foreach (var item in Model)
                 {
-                    <p class="shop-empty">❌ No products found!</p>
-                }
-                else
-                {
-                    @foreach (var item in Model)
-                    {
-
-                       
-   
-
-                        <div class="shop-card">
+                    <div class="shop-card">
 
                             <a href="/Product/Details/@item.ProductId" class="shop-link">
 
@@ -171,57 +133,10 @@
                                                                                                          ? Url.Content("~/assets/product-1.jpg")
                                                                                                          : Url.Content("~/assets/" + item.Image))" />
 
-                                <div class="shop-body">
-                                    <h4>@item.ProductName</h4>
+                        <h4>@item.ProductName</h4>
+                        <p>@item.Price.ToString("N0") VNĐ</p>
 
-                                    @{
-                                        var now = DateTime.Now;
-
-                                        var isSale = item.Promotion != null
-                                            && item.Promotion.Status
-                                            && item.Promotion.StartDate <= now
-                                            && item.Promotion.EndDate >= now;
-
-                                        var finalPrice = isSale
-                                            ? item.Price * (100 - item.Promotion.DiscountPercent) / 100
-                                            : item.Price;
-                                    }
-
-                                    <p class="shop-price">
-
-                                        @if (isSale)
-                                        {
-                                            <span class="badge bg-danger">
-                                                -@item.Promotion.DiscountPercent%
-                                            </span>
-
-                                            <br />
-
-                                            <span style="text-decoration:line-through;color:gray">
-                                                @item.Price.ToString("N0") VNĐ
-                                            </span>
-
-                                            <br />
-
-                                            <span style="color:red;font-weight:bold">
-                                                @finalPrice.ToString("N0") VNĐ
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span>@item.Price.ToString("N0") VNĐ</span>
-                                        }
-
-                                    </p>
-
-                                    <p class="shop-cate-name">
-                                        @item.Category?.CateName
-                                    </p>
-                                </div>
-
-                            </a>
-
-                            <div class="shop-actions-group">
+                        <div class="shop-actions-group">
 
                                 <form asp-controller="Cart" asp-action="AddToCart" method="post">
                                     @Html.AntiForgeryToken()
@@ -241,210 +156,128 @@
                                     </button>
                                 </form>
 
-                            </div>
-
                         </div>
-
-                    }
-
+                    </div>
                 }
-
             </div>
-
         </div>
     </div>
 </div>
 
+<!-- MODAL SIZE -->
+<div id="sizeModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;">
+    <div style="background:white;padding:20px;width:300px;margin:10% auto;border-radius:10px;text-align:center;">
+        <h4>Chọn Size</h4>
+
+        <select id="sizeSelect">
+            <option value="S">S</option>
+            <option value="M" selected>M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+        </select>
+
+        <br><br>
+
+        <button onclick="confirmSize()">OK</button>
+        <button onclick="closeSize()">Cancel</button>
+    </div>
+</div>
+
 <script>
-      function animateCart(count, imgSrc, startElement) {
+    let currentForm = null;
+    let currentType = ""; // cart hoặc buy
 
-        // 🛒 update số
+    document.querySelectorAll(".shop-buy-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            currentForm = this.closest("form");
+            currentType = "buy";
+            document.getElementById("sizeModal").style.display = "block";
+        });
+    });
+
+    document.querySelectorAll(".shop-cart-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            currentForm = this.closest("form");
+            currentType = "cart";
+            document.getElementById("sizeModal").style.display = "block";
+        });
+    });
+
+    function confirmSize() {
+        let size = document.getElementById("sizeSelect").value;
+
+        if (currentType === "buy") {
+            let input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "size";
+            input.value = size;
+            currentForm.appendChild(input);
+            currentForm.submit();
+        }
+
+        if (currentType === "cart") {
+            let form = currentForm;
+            let productId = form.querySelector("input[name='productId']").value;
+            let token = form.querySelector("input[name='__RequestVerificationToken']").value;
+
+            fetch('/Cart/AddToCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: 'productId=' + productId +
+                      '&quantity=1' +
+                      '&size=' + size +
+                      '&__RequestVerificationToken=' + token
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                animateCart(data.count, '/assets/product-1.jpg', form);
+            });
+        }
+
+        closeSize();
+    }
+
+    function closeSize() {
+        document.getElementById("sizeModal").style.display = "none";
+    }
+
+    function animateCart(count, imgSrc, startElement) {
         const badge = document.getElementById("cart-count");
-        badge.innerText = count;
+        if (badge) badge.innerText = count;
 
-        // 🛒 rung badge
-        badge.classList.add("animate");
-        setTimeout(() => badge.classList.remove("animate"), 400);
-
-        // 🛍️ hiệu ứng bay
         const cart = document.querySelector(".floating-cart");
         if (!cart) return;
-        const img = document.createElement("img");
 
+        const img = document.createElement("img");
         img.src = imgSrc;
-        img.classList.add("fly-img");
+        img.style.position = "fixed";
+        img.style.zIndex = 999;
 
         document.body.appendChild(img);
 
-        // vị trí bắt đầu
-        const rectStart = startElement.getBoundingClientRect();
-        img.style.left = rectStart.left + "px";
-        img.style.top = rectStart.top + "px";
+        const start = startElement.getBoundingClientRect();
+        const end = cart.getBoundingClientRect();
 
-        // vị trí kết thúc (cart)
-        const rectEnd = cart.getBoundingClientRect();
+        img.style.left = start.left + "px";
+        img.style.top = start.top + "px";
+        img.style.width = "80px";
 
         setTimeout(() => {
-            img.style.left = rectEnd.left + "px";
-            img.style.top = rectEnd.top + "px";
+            img.style.left = end.left + "px";
+            img.style.top = end.top + "px";
             img.style.width = "20px";
-            img.style.height = "20px";
             img.style.opacity = "0.5";
         }, 10);
 
-        // xóa sau khi bay xong
-        setTimeout(() => {
-            img.remove();
-        }, 800);
-    }
-           function addToCart(event, productId, imgSrc, form) {
-        event.preventDefault();
-
-        fetch('/Cart/AddToCart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: 'productId=' + productId +
-                  '&quantity=1' +
-                  '&__RequestVerificationToken=' + form.querySelector('input[name="__RequestVerificationToken"]').value
-        })
-        .then(res => res.json())
-        .then(data => {
-
-            // 🔥 nếu chưa login → chuyển sang login
-            if (data.redirect) {
-                window.location.href = data.redirect;
-                return;
-            }
-
-            // 👉 đã login thì animate
-            if (document.querySelector(".floating-cart")) {
-                animateCart(data.count, imgSrc, form);
-            }
-
-        });
-    }
-
-</script>
-<div id="sizeModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;">
-    <div style="background:white;padding:20px;width:300px;margin:10% auto;border-radius:10px;text-align:center;">
-        <h4> size</h4>
-
-        <select id="sizeSelect">
-            <option value="S">S</option>
-            <option value="M" selected>M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-        </select>
-
-        <br><br>
-
-        <button onclick="confirmSize()">OK</button>
-        <button onclick="closeSize()">Cancel</button>
-    </div>
-</div>
-<script>
-    let currentForm = null;
-
-    // bắt click tất cả button
-    document.querySelectorAll(".shop-buy-btn, .shop-cart-btn").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-
-            let form = this.closest("form");
-
-            // 👉 kiểm tra có phải quần áo/giày không
-            let productName = form.closest(".shop-card").innerText.toLowerCase();
-
-            let needSize =
-                productName.includes("shirt") ||
-                productName.includes("dress") ||
-                productName.includes("nike") ||
-                productName.includes("adidas") ||
-                productName.includes("jeans");
-
-            if (!needSize) return; // 👉 không cần size thì chạy bình thường
-
-            e.preventDefault();
-            currentForm = form;
-            document.getElementById("sizeModal").style.display = "block";
-        });
-    });
-
-    function confirmSize() {
-        let size = document.getElementById("sizeSelect").value;
-
-        let input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "size";
-        input.value = size;
-
-        currentForm.appendChild(input);
-
-        document.getElementById("sizeModal").style.display = "none";
-
-        currentForm.submit();
-    }
-
-    function closeSize() {
-        document.getElementById("sizeModal").style.display = "none";
-    }
-</script>
-<div id="sizeModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;">
-    <div style="background:white;padding:20px;width:300px;margin:10% auto;border-radius:10px;text-align:center;">
-        <h4> size</h4>
-
-        <select id="sizeSelect">
-            <option value="S">S</option>
-            <option value="M" selected>M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-        </select>
-
-        <br><br>
-
-        <button onclick="confirmSize()">OK</button>
-        <button onclick="closeSize()">Cancel</button>
-    </div>
-</div>
-<script>
-    let currentForm = null;
-    let currentProductId = 0;
-    let currentImg = '';
-
-    document.querySelectorAll(".shop-cart-btn, .shop-buy-btn").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-
-            let form = this.closest("form");
-
-            e.preventDefault();
-
-            currentForm = form;
-            currentProductId = form.querySelector('input[name="productId"]').value;
-
-            currentImg = form.closest(".shop-card").querySelector("img").src;
-
-            document.getElementById("sizeModal").style.display = "block";
-        });
-    });
-
-    function confirmSize() {
-        let size = document.getElementById("sizeSelect").value;
-
-        let input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "size";
-        input.value = size;
-
-        currentForm.appendChild(input);
-
-        document.getElementById("sizeModal").style.display = "none";
-
-        currentForm.submit();
-    }
-
-    function closeSize() {
-        document.getElementById("sizeModal").style.display = "none";
+        setTimeout(() => img.remove(), 800);
     }
 </script>
