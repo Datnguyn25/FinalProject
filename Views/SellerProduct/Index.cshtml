@@ -39,18 +39,17 @@
             </td>
             <td>@item.ProductName</td>
             <td>@item.Price.ToString("C")</td>
-            <td>@item.PromotionPrice.ToString("C")</td>
             <td>@item.Quantity</td>
             <td>@(item.Status ? "Active" : "Inactive")</td>
             <td>@item.Category?.CateName</td>
             <td>@item.Brand?.BrandName</td>
             <td>
-                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.ProductID">Details</a>
-                <a class="btn btn-sm btn-secondary" asp-action="Edit" asp-route-id="@item.ProductID">Edit</a>
+                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.ProductId">Details</a>
+                <a class="btn btn-sm btn-secondary" asp-action="Edit" asp-route-id="@item.ProductId">Edit</a>
 
                 <form asp-action="Delete" method="post" style="display:inline;">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@item.ProductID" />
+                    <input type="hidden" name="id" value="@item.ProductId" />
                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this product?');">Delete</button>
                 </form>
             </td>

@@ -27,20 +27,20 @@ public class ProductController : Controller
         {
             // L?y category con
             var childIds = _context.tb_ProductCategory
-                .Where(c => c.ParentID == cateId)
-                .Select(c => c.CateID)
+                .Where(c => c.ParentId == cateId)
+                .Select(c => c.CateId)
                 .ToList();
 
             // N?u là category cha ? l?y luôn con
             if (childIds.Any())
             {
                 products = products.Where(p =>
-                   p.CateID == cateId || (p.CateID.HasValue && childIds.Contains(p.CateID.Value)));
+                   p.CateId == cateId || (p.CateId.HasValue && childIds.Contains(p.CateId.Value)));
             }
             else
             {
                 // N?u là category con ? l?c bình th??ng
-                products = products.Where(p => p.CateID == cateId);
+                products = products.Where(p => p.CateId == cateId);
             }
         }
 
@@ -107,7 +107,7 @@ public class ProductController : Controller
             .Include(p => p.Category)
             .Include(p => p.Brand)
             .Include(p => p.Shop)
-            .FirstOrDefault(p => p.ProductID == id);
+            .FirstOrDefault(p => p.ProductId == id);
 
         if (product == null)
             return NotFound();
@@ -143,7 +143,7 @@ public class ProductController : Controller
     // ===== EDIT =====
     public IActionResult Edit(int id)
     {
-        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == id);
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductId == id);
 
         if (product == null)
             return NotFound();
@@ -157,18 +157,17 @@ public class ProductController : Controller
     [HttpPost]
     public IActionResult Edit(Product model)
     {
-        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == model.ProductID);
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductId == model.ProductId);
 
         if (product == null)
             return NotFound();
 
         product.ProductName = model.ProductName;
         product.Price = model.Price;
-        product.PromotionPrice = model.PromotionPrice;
         product.Quantity = model.Quantity;
-        product.CateID = model.CateID;
-        product.BrandID = model.BrandID;
-        product.ShopID = model.ShopID;
+        product.CateId = model.CateId;
+        product.BrandId = model.BrandId;
+        product.ShopId = model.ShopId;
         product.ProductDescription = model.ProductDescription;
         product.Image = model.Image;
         product.SeoTitle = model.SeoTitle;
@@ -184,7 +183,7 @@ public class ProductController : Controller
     // ===== DELETE =====
     public IActionResult Delete(int id)
     {
-        var product = _context.tb_Product.FirstOrDefault(x => x.ProductID == id);
+        var product = _context.tb_Product.FirstOrDefault(x => x.ProductId == id);
 
         if (product != null)
         {

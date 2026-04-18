@@ -9,7 +9,7 @@ namespace FinalProject.Models
     public class Product
     {
         [Key]
-        public int ProductID { get; set; }
+        public int ProductId { get; set; }
 
         [Required]
         [StringLength(250)]
@@ -28,9 +28,6 @@ namespace FinalProject.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; } = 0;
-
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal PromotionPrice { get; set; } = 0;
 
         public bool VAT { get; set; }
 
@@ -55,19 +52,19 @@ namespace FinalProject.Models
 
         // ===== FOREIGN KEYS =====
 
-        public int? CateID { get; set; }
+        public int? CateId { get; set; }
 
-        [ForeignKey("CateID")]
+        [ForeignKey("CateId")]
         public virtual ProductCategory Category { get; set; }
 
-        public int? BrandID { get; set; }
+        public int? BrandId { get; set; }
 
-        [ForeignKey("BrandID")]
+        [ForeignKey("BrandId")]
         public virtual Brand Brand { get; set; }
 
-        public int ShopID { get; set; }
+        public int ShopId { get; set; }
 
-        [ForeignKey("ShopID")]
+        [ForeignKey("ShopId")]
         public virtual Shop Shop { get; set; }
 
         // ===== AUDIT =====

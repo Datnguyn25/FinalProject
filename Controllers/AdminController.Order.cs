@@ -8,7 +8,7 @@ namespace FinalProject.Controllers
     {
         public IActionResult Orders()
         {
-            return View(_context.tb_Order.Include(o => o.Customer).Include(o => o.OrderDetails).ToList());
+            return View(_context.tb_Order.Include(o => o.User).Include(o => o.OrderDetails).ToList());
         }
 
         public IActionResult UpdateOrder(int id, string status)

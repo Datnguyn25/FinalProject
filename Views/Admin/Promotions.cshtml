@@ -3,57 +3,72 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 @model List<FinalProject.Models.Promotion>
+
 <a href="/Admin/CreatePromotion" class="admin-btn">+ Add Promotion</a>
 
 <h2 class="admin-title">🎯 Promotions</h2>
 
 <div class="table-responsive">
     <table class="admin-table">
-        <tr>
-            <th>Name</th>
-            <th>Discount</th>
-            <th>Status</th>
-            <th>Time</th>
-        </tr>
-
-        @foreach (var p in Model)
-        {
-            
-                var now = DateTime.Now;
-                var isActive = now >= p.StartDate && now <= p.EndDate;
-                var isUpcoming = now < p.StartDate;
-                var isExpired = now > p.EndDate;
-            
-
+        <thead>
             <tr>
-                <td>@p.Name</td>
-                <td>@p.DiscountPercent %</td>
-                <td>
-                    @if (isActive)
-                    {
-                        <span class="badge bg-success">Active</span>
-                    }
-                    else if (isUpcoming)
-                    {
-                        <span class="badge bg-warning">Upcoming</span>
-                    }
-                    else if (isExpired)
-                    {
-                        <span class="badge bg-danger">Expired</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Inactive</span>
-                    }
-                </td>
-
-                <td>
-                    <div style="font-size:13px">
-                        <div>Start: @p.StartDate.ToString("dd/MM/yyyy")</div>
-                        <div>End: @p.EndDate.ToString("dd/MM/yyyy")</div>
-                    </div>
-                </td>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Discount</th>
+                <th>System Status</th>
+                <th>Live Status</th>
+                <th>Time Range</th>
             </tr>
-        }
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                var now = DateTime.Now;
+                // A promotion is truly Active only if the Date is valid AND Status is true
+                var isActive = p.Status && now >= p.StartDate && now <= p.EndDate;
+                var isUpcoming = p.Status && now < p.StartDate;
+                var isExpired = now > p.EndDate;
+
+                <tr>
+                    <td class="fw-bold text-primary">@p.PromotionCode</td>
+                    <td>@p.Name</td>
+                    <td><span class="badge bg-info text-dark">@p.DiscountPercent %</span></td>
+                    <td>
+                        @if (p.Status)
+                        {
+                            <span class="text-success">● Enabled</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">○ Disabled</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!p.Status)
+                        {
+                            <span class="badge bg-secondary">Inactive</span>
+                        }
+                        else if (isActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else if (isUpcoming)
+                        {
+                            <span class="badge bg-warning text-dark">Upcoming</span>
+                        }
+                        else if (isExpired)
+                        {
+                            <span class="badge bg-danger">Expired</span>
+                        }
+                    </td>
+                    <td>
+                        <div style="font-size:12px; line-height: 1.2;">
+                            <div class="text-muted">From: @p.StartDate.ToString("dd/MM/yyyy")</div>
+                            <div class="text-muted">To: @p.EndDate.ToString("dd/MM/yyyy")</div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 </div>

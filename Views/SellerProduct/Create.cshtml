@@ -52,15 +52,15 @@
 
         <div class="col-md-4">
             <div class="mb-3">
-                <label asp-for="CateID" class="form-label">Category</label>
-                <select asp-for="CateID" asp-items="@(new SelectList(ViewBag.Categories, "CateID", "CateName"))" class="form-select">
+                <label asp-for="CateId" class="form-label">Category</label>
+                <select asp-for="CateId" asp-items="@(new SelectList(ViewBag.Categories, "CateId", "CateName"))" class="form-select">
                     <option value="">-- Select --</option>
                 </select>
             </div>
 
             <div class="mb-3">
-                <label asp-for="BrandID" class="form-label">Brand</label>
-                <select asp-for="BrandID" asp-items="@(new SelectList(ViewBag.Brands, "BrandID", "BrandName"))" class="form-select">
+                <label asp-for="BrandId" class="form-label">Brand</label>
+                <select asp-for="BrandId" asp-items="@(new SelectList(ViewBag.Brands, "BrandId", "BrandName"))" class="form-select">
                     <option value="">-- Select --</option>
                 </select>
             </div>
@@ -68,11 +68,6 @@
             <div class="mb-3">
                 <label asp-for="Price" class="form-label"></label>
                 <input asp-for="Price" class="form-control" />
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="PromotionPrice" class="form-label"></label>
-                <input asp-for="PromotionPrice" class="form-control" />
             </div>
 
             <div class="mb-3">

@@ -5,9 +5,6 @@ namespace FinalProject.Controllers
 {
     public partial class AdminController
     {
-        public IActionResult Promotions() => View(_context.tb_Promotion.ToList());
-
-       
 
         public IActionResult Settings()
         {

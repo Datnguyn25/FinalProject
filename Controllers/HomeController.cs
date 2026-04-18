@@ -21,30 +21,33 @@ namespace FinalProject.Controllers
 
         public IActionResult Index()
         {
-            // Lấy các sản phẩm đang giảm giá
-            var saleProducts = _context.tb_Product
+            var now = DateTime.Now;
+
+            // Lấy các sản phẩm có chương trình khuyến mãi đang hoạt động
+            var productsWithPromotion = _context.tb_Product
                 .Include(p => p.Category)
+                .Include(p => p.Promotion) // Phải Include mới lấy được data từ bảng Promotion
                 .Where(p => p.Status &&
-                            p.PromotionPrice > 0 &&
-                            p.PromotionPrice < p.Price)
+                            p.PromotionId != null && // Có gắn mã giảm giá
+                            p.Promotion.Status &&     // Mã giảm giá còn hoạt động
+                            p.Promotion.StartDate <= now && // Đã bắt đầu
+                            p.Promotion.EndDate >= now)     // Chưa kết thúc
                 .ToList();
 
             // Gán dữ liệu vào ViewModel
             var model = new HomeViewModel
             {
-                // Thời trang nam
-                MensProducts = saleProducts
-                    .Where(p => p.CateID == 1)
+                // Thời trang nam (CateID == 1)
+                MensProducts = productsWithPromotion
+                    .Where(p => p.CateId == 1)
                     .Take(6)
                     .ToList(),
 
-                // Thời trang nữ
-                WomensProducts = saleProducts
-                    .Where(p => p.CateID == 2)
+                // Thời trang nữ (CateID == 2)
+                WomensProducts = productsWithPromotion
+                    .Where(p => p.CateId == 2)
                     .Take(6)
                     .ToList(),
-
-                
             };
 
             return View(model);

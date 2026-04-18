@@ -7,7 +7,11 @@ namespace FinalProject.Models
     public class Promotion
     {
         [Key]
-        public int PromotionID { get; set; }
+        public int PromotionId { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string PromotionCode { get; set; }
 
         [StringLength(100)]
         public string Name { get; set; }

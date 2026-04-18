@@ -2,39 +2,66 @@
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Create Promotion";
 }
 
-<h2>Create Promotion</h2>
+<h2 class="admin-title">Create New Promotion</h2>
 
-<form method="post">
+<div class="admin-card p-4 shadow-sm">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="CreatePromotion" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <div class="form-group">
-        <label>Name</label>
-        <input asp-for="Name" class="form-control" />
-    </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Promotion Code</label>
+                <input asp-for="PromotionCode" class="form-control" placeholder="e.g., SUMMER2026" required />
+                <span asp-validation-for="PromotionCode" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
-        <label>Discount (%)</label>
-        <input asp-for="DiscountPercent" type="number" class="form-control" />
-    </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Promotion Name</label>
+                <input asp-for="Name" class="form-control" placeholder="e.g., Summer Sale" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label>Start Date</label>
-        <input asp-for="StartDate" type="datetime-local" class="form-control" />
-    </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Discount Percent (%)</label>
+                <input asp-for="DiscountPercent" type="number" class="form-control" min="1" max="100" />
+                <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
-        <label>End Date</label>
-        <input asp-for="EndDate" type="datetime-local" class="form-control" />
-    </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">System Status</label>
+                <select asp-for="Status" class="form-select">
+                    <option value="true">Enabled</option>
+                    <option value="false">Disabled</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label>Status</label>
-        <select asp-for="Status" class="form-control">
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-        </select>
-    </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Start Date</label>
+                <input asp-for="StartDate" type="datetime-local" class="form-control" required />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
 
-    <button type="submit" class="btn btn-success">Save</button>
-</form>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">End Date</label>
+                <input asp-for="EndDate" type="datetime-local" class="form-control" required />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success px-4">Create Promotion</button>
+            <a href="/Admin/Promotion" class="btn btn-outline-secondary px-4">Back to List</a>
+        </div>
+    </form>
+</div>

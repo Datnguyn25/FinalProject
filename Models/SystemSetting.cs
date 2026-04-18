@@ -7,7 +7,7 @@ namespace FinalProject.Models
     public class SystemSetting
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         public string SiteName { get; set; }
 

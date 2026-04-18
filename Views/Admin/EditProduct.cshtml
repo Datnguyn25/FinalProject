@@ -9,7 +9,7 @@
 
 <form asp-action="EditProduct" method="post">
 
-    <input type="hidden" asp-for="ProductID" />
+    <input type="hidden" asp-for="ProductId" />
 
 
     <div>
@@ -29,11 +29,11 @@
 
     <div>
         <label>Category</label>
-        <select asp-for="CateID">
+        <select asp-for="CateId">
 
             @foreach (var c in ViewBag.Categories)
             {
-                <option value="@c.CateID">
+                <option value="@c.CateId">
                     @c.CateName
                 </option>
             }

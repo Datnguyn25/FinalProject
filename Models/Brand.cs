@@ -7,7 +7,7 @@ namespace FinalProject.Models
     public class Brand
     {
         [Key]
-        public int BrandID { get; set; }
+        public int BrandId { get; set; }
 
         [Required]
         [StringLength(100)]

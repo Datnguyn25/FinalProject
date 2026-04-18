@@ -8,7 +8,7 @@ namespace FinalProject.Models
     public class Shop
     {
         [Key]
-        public int ShopID { get; set; }
+        public int ShopId { get; set; }
 
         [StringLength(50)]
         public string ShopName { get; set; }

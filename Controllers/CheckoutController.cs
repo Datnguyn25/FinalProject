@@ -23,7 +23,7 @@ public class CheckoutController : Controller
         // 1. Tạo đơn hàng
         var order = new Order
         {
-            CustomerID = 1,
+            UserId = 1,
             OrderStatus = "Pending",
             PaymentStatus = "Unpaid",
             OrderDate = DateTime.Now
@@ -39,7 +39,7 @@ public class CheckoutController : Controller
             order.PaymentStatus = "Paid";
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Result", new { id = order.OrderID });
+            return RedirectToAction("Result", new { id = order.OrderId });
         }
 
         // 3. MOMO
@@ -49,7 +49,7 @@ public class CheckoutController : Controller
             Amount = 55000,
 
             // 🔥 FIX Ở ĐÂY
-            OrderInfo = "Thanh toan don hang " + order.OrderID
+            OrderInfo = "Thanh toan don hang " + order.OrderId
         };
         var response = await _momoService.CreatePaymentMomo(momoModel);
 
@@ -72,7 +72,7 @@ public class CheckoutController : Controller
 
             // 🔥 FIX: không parse bừa nữa
             var order = _context.tb_Order
-                .OrderByDescending(o => o.OrderID)
+                .OrderByDescending(o => o.OrderId)
                 .FirstOrDefault();
 
             if (order != null)
@@ -99,7 +99,7 @@ public class CheckoutController : Controller
     }
     public IActionResult Result(int id)
     {
-        var order = _context.tb_Order.FirstOrDefault(o => o.OrderID == id);
+        var order = _context.tb_Order.FirstOrDefault(o => o.OrderId == id);
         return View(order);
     }
 }

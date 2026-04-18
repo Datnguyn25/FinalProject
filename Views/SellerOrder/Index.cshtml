@@ -27,19 +27,19 @@
     <tbody>
     @foreach (var order in Model)
     {
-        var shopItems = order.OrderDetails.Where(od => od.ShopId == (ViewBag.Shop as FinalProject.Models.Shop)?.ShopID);
+        var shopItems = order.OrderDetails.Where(od => od.ShopId == (ViewBag.Shop as FinalProject.Models.Shop)?.ShopId);
         <tr>
-            <td>@order.OrderID</td>
+            <td>@order.OrderId</td>
             <td>@order.OrderDate.ToString("g")</td>
-            <td>@order.Customer?.FullName ?? "Customer #" + order.CustomerID</td>
+            <td>@order.User?.FullName ?? "Customer #" + order.UserId</td>
             <td>@shopItems.Sum(i => i.Quantity)</td>
             <td>@shopItems.Sum(i => i.Price * i.Quantity).ToString("C")</td>
             <td>@order.OrderStatus</td>
             <td>
-                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@order.OrderID">Details</a>
+                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@order.OrderId">Details</a>
                 <form asp-action="ConfirmOrder" method="post" style="display:inline;">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@order.OrderID" />
+                    <input type="hidden" name="id" value="@order.OrderId" />
                     <button type="submit" class="btn btn-sm btn-success">Confirm</button>
                 </form>
             </td>

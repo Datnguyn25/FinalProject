@@ -48,33 +48,6 @@ namespace FinalProject.Controllers
             var logs = _context.tb_SystemLog.OrderByDescending(l => l.Timestamp).ToList();
             return View(logs);
         }
-        
-
-        public IActionResult CreatePromotion()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult CreatePromotion(Promotion model)
-        {
-            _context.tb_Promotion.Add(model);
-            _context.SaveChanges();
-            return RedirectToAction("Promotions");
-        }
-        public void AutoUpdatePromotion()
-        {
-            var now = DateTime.Now;
-            var list = _context.tb_Promotion.ToList();
-
-            foreach (var p in list)
-            {
-                if (p.EndDate < now)
-                    p.Status = false;
-            }
-
-            _context.SaveChanges();
-        }
 
 
     }
