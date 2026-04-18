@@ -49,7 +49,9 @@ public class CartController : Controller
 
         var cart = GetCart();
 
-        var existingItem = cart.FirstOrDefault(x => x.ProductID == productId && x.Size == size);
+
+        var existingItem = cart.FirstOrDefault(x => x.ProductId == productId && x.Size == size);
+
 
         if (existingItem == null)
         {
@@ -238,7 +240,7 @@ public class CartController : Controller
 
             var order = new Order
             {
-                CustomerID = userId,
+                UserId = userId,
                 OrderDate = DateTime.Now,
                 CreatedDate = DateTime.Now,
                 OrderStatus = "Completed",
@@ -253,8 +255,8 @@ public class CartController : Controller
             {
                 _context.tb_OrderDetails.Add(new OrderDetails
                 {
-                    OrderId = order.OrderID,
-                    ProductId = item.ProductID,
+                    OrderId = order.OrderId,
+                    ProductId = item.ProductId,
                     Quantity = item.Quantity,
                     Price = item.Price,
                     Size = item.Size
@@ -267,7 +269,7 @@ public class CartController : Controller
             HttpContext.Session.Remove("CartBackup");
             HttpContext.Session.Remove("TempCart");
 
-            return RedirectToAction("Invoice", new { id = order.OrderID });
+            return RedirectToAction("Invoice", new { id = order.OrderId });
         }
 
         return Content("Thanh toán thất bại");
@@ -278,7 +280,7 @@ public class CartController : Controller
         var order = _context.tb_Order
             .Include(o => o.OrderDetails)
             .ThenInclude(d => d.Product)
-            .FirstOrDefault(o => o.OrderID == id);
+            .FirstOrDefault(o => o.OrderId == id);
 
         if (order == null) return NotFound();
 
