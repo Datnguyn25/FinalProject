@@ -1,52 +1,119 @@
-@{
-    Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Admin Dashboard";
-}
-
 @model List<FinalProject.Models.Order>
 
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Order Management";
+}
 
-<h2 class="admin-title">Orders</h2>
+<div class="admin-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="admin-title">Order Management</h2>
+        <div class="stats-summary">
+            <span class="badge bg-primary">Total Orders: @Model.Count</span>
+        </div>
+    </div>
 
-<table class="admin-table">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Customer Details</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                <tr>
+                    <td><strong>#@o.OrderId</strong></td>
+                    <td>
+                        <i class="far fa-calendar-alt"></i> @o.OrderDate.ToString("MMM dd, yyyy") <br />
+                        <small class="text-muted">@o.OrderDate.ToString("HH:mm")</small>
+                    </td>
+                    <td>
+                        <div class="customer-info">
+                            <strong>@o.User?.FullName</strong> <br />
+                            <small><i class="fas fa-phone"></i> @o.ReceiverPhone</small> <br />
+                            <small class="text-truncate" style="max-width: 200px; display: block;">
+                                <i class="fas fa-map-marker-alt"></i> @o.ShippingAddress
+                            </small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="order-price">$@o.TotalPrice.ToString("N2")</span>
+                    </td>
+                    <td>
+                        @{
+                            var statusClass = o.OrderStatus switch
+                            {
+                                "Pending" => "bg-warning",
+                                "Processing" => "bg-info",
+                                "Shipping" => "bg-primary",
+                                "Completed" => "bg-success",
+                                _ => "bg-secondary"
+                            };
+                        }
+                        <span class="badge @statusClass">@o.OrderStatus</span>
+                    </td>
+                    <td>
+                        <div class="btn-group-vertical">
+                            <button class="btn btn-sm btn-outline-dark mb-1" onclick="loadOrderDetail(@o.OrderId)">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
 
-    <tr>
-        <th>ID</th>
-        <th>Customer</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-dark dropdown-toggle w-100" data-bs-toggle="dropdown">
+                                    Update Status
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/Admin/UpdateOrder/@o.OrderId?status=Processing">Processing</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/UpdateOrder/@o.OrderId?status=Shipping">Shipping</a></li>
+                                    <li><a class="dropdown-item" href="/Admin/UpdateOrder/@o.OrderId?status=Completed">Completed</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-    @foreach (var o in Model)
-    {
-        <tr>
+<div class="modal fade" id="orderDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Invoice Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="orderDetailContent">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            <td>@o.OrderId</td>
+@section Scripts {
+    <script>
+        function loadOrderDetail(id) {
+            var myModal = new bootstrap.Modal(document.getElementById('orderDetailModal'));
+            myModal.show();
 
-            <td>@o.User?.FullName</td>
-
-            <td>@o.OrderStatus</td>
-
-            <td>
-
-                <a href="/Admin/UpdateOrder/@o.OrderId?status=Processing"
-                   class="admin-btn">
-                    Processing
-                </a>
-
-                <a href="/Admin/UpdateOrder/@o.OrderId?status=Shipping"
-                   class="admin-btn">
-                    Shipping
-                </a>
-
-                <a href="/Admin/UpdateOrder/@o.OrderId?status=Completed"
-                   class="admin-btn">
-                    Done
-                </a>
-
-            </td>
-
-        </tr>
-    }
-
-</table>
+            fetch('/Admin/OrderDetail/' + id)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('orderDetailContent').innerHTML = data;
+                })
+                .catch(err => {
+                    document.getElementById('orderDetailContent').innerHTML = '<p class="text-danger">Error loading details.</p>';
+                });
+        }
+    </script>
+}

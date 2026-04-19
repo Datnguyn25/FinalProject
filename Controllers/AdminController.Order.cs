@@ -8,7 +8,7 @@ namespace FinalProject.Controllers
     {
         public IActionResult Orders()
         {
-            return View(_context.tb_Order.Include(o => o.User).Include(o => o.OrderDetails).ToList());
+            return View(_context.tb_Order.Include(o => o.User).ToList());
         }
 
         public IActionResult UpdateOrder(int id, string status)
@@ -26,6 +26,17 @@ namespace FinalProject.Controllers
             return RedirectToAction("Orders");
         }
 
-      
+        public IActionResult OrderDetail(int id)
+        {
+            var order = _context.tb_Order
+                .Include(o => o.User)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(d => d.Product)
+                .FirstOrDefault(o => o.OrderId == id);
+
+            if (order == null) return NotFound();
+            return PartialView("_OrderDetailPartial", order);
+        }
+
     }
 }

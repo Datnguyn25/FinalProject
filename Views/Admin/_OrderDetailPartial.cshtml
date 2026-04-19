@@ -1,0 +1,59 @@
+﻿@model FinalProject.Models.Order
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-6">
+            <h6>Customer Info:</h6>
+            <p>
+                <strong>Name:</strong> @Model.User?.FullName <br />
+                <strong>Phone:</strong> @Model.ReceiverPhone <br />
+                <strong>Address:</strong> @Model.ShippingAddress
+            </p>
+        </div>
+        <div class="col-6 text-end">
+            <h6>Order Info:</h6>
+            <p>
+                <strong>Status:</strong> @Model.OrderStatus <br />
+                <strong>Payment:</strong> @Model.PaymentStatus <br />
+                <strong>Order Date:</strong> @Model.OrderDate.ToString("f")
+            </p>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Product Name</th>
+                <th>Size</th>
+                <th class="text-center">Qty</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@item.Product?.ProductName</td>
+                    <td><span class="badge border text-dark">@item.Size</span></td>
+                    <td class="text-center">@item.Quantity</td>
+                    <td class="text-end">$@item.Price.ToString("N2")</td>
+                    <td class="text-end">$@((item.Price * item.Quantity).ToString("N2"))</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            @if (Model.DiscountAmount > 0)
+            {
+                <tr>
+                    <th colspan="4" class="text-end">Discount:</th>
+                    <td class="text-end text-danger">-$@Model.DiscountAmount.ToString("N2")</td>
+                </tr>
+            }
+            <tr>
+                <th colspan="4" class="text-end">Grand Total:</th>
+                <th class="text-end text-primary" style="font-size: 1.2rem;">$@Model.TotalPrice.ToString("N2")</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>

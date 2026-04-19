@@ -20,7 +20,7 @@ namespace FinalProject.Models
         public decimal Price { get; set; }
 
         // Added to match CartController usage
-        public string ?Size { get; set; } 
+        public string? Size { get; set; } 
 
         // Navigation
         [ForeignKey("OrderId")]
