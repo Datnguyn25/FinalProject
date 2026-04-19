@@ -8,21 +8,24 @@ namespace FinalProject.Controllers
     {
         public IActionResult Products()
         {
-            return View(_context.tb_Product.Include(p => p.Category).Include(p => p.Shop).ToList());
+            return View(_context.tb_Product
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Include(p => p.Shop)
+                .ToList());
         }
 
-        public IActionResult CreateProduct()
+        public IActionResult ProductDetail(int id)
         {
-            ViewBag.Categories = _context.tb_ProductCategory.ToList();
-            return View();
-        }
+            var product = _context.tb_Product
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Include(p => p.Shop)
+                .FirstOrDefault(p => p.ProductId == id);
 
-        [HttpPost]
-        public IActionResult CreateProduct(Product model)
-        {
-            _context.tb_Product.Add(model);
-            _context.SaveChanges();
-            return RedirectToAction("Products");
+            if (product == null) return NotFound();
+
+            return PartialView("_ProductDetailPartial", product);
         }
 
         public IActionResult EditProduct(int id)
@@ -43,10 +46,28 @@ namespace FinalProject.Controllers
 
         public IActionResult Categories() => View(_context.tb_ProductCategory.ToList());
 
+        public IActionResult CreateCategory() => View();
+
+        [HttpPost]
+        public IActionResult CreateCategory(ProductCategory model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.tb_ProductCategory.Add(model);
+                _context.SaveChanges();
+                return RedirectToAction("Categories");
+            }
+            return View(model);
+        }
+
         public IActionResult DeleteCategory(int id)
         {
             var cate = _context.tb_ProductCategory.Find(id);
-            if (cate != null) { _context.tb_ProductCategory.Remove(cate); _context.SaveChanges(); }
+            if (cate != null)
+            {
+                _context.tb_ProductCategory.Remove(cate);
+                _context.SaveChanges();
+            }
             return RedirectToAction("Categories");
         }
     }

@@ -1,52 +1,152 @@
-@{
-    Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Admin Dashboard";
-}
 @model List<FinalProject.Models.Product>
 
-<h2 class="admin-title">📦 Product Management</h2>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Product Management";
+}
 
-<div class="admin-grid">
-    <div class="admin-card">
-        <h3>Total Products</h3>
-        <h2>@Model.Count</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="admin-title">Product Management</h2>
+</div>
+
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product Details</th>
+            <th>Gallery</th>
+            <th>Vendor (Shop)</th>
+            <th>Category & Brand</th>
+            <th>Price & Stock</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>#@p.ProductId</td>
+                <td>
+                    <a href="javascript:void(0)" onclick="openProductModal(@p.ProductId)" style="text-decoration:none; color:inherit;">
+                        <strong style="font-size: 1.1rem; color: #007bff;">@p.ProductName</strong><br />
+                        <small class="text-muted">SKU: @p.SeoTitle</small>
+                    </a>
+                </td>
+                <td>
+                    <div class="product-gallery" style="display: flex; gap: 5px; flex-wrap: wrap; max-width: 120px;">
+                        @if (!string.IsNullOrEmpty(p.ListImages))
+                        {
+                            var images = p.ListImages.Split(',');
+                            foreach (var img in images.Take(2))
+                            {
+                                <img src="~/assets/@img.Trim()"
+                                     style="width: 45px; height: 45px; object-fit: cover; border-radius: 5px; border: 1px solid #eee;"
+                                     alt="product-img" />
+                            }
+                            if (images.Length > 2)
+                            {
+                                <div style="width: 45px; height: 45px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 12px; border-radius: 5px; border: 1px solid #eee;">
+                                    +@(images.Length - 2)
+                                </div>
+                            }
+                        }
+                    </div>
+                </td>
+                <td>
+                    @if (p.Shop != null)
+                    {
+                        <div class="shop-info">
+                            <i class="fas fa-store text-primary"></i> <strong>@p.Shop.ShopName</strong><br />
+                            <small class="text-muted">ID: #@p.Shop.ShopId</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="text-danger small italic">No Shop Assigned</span>
+                    }
+                </td>
+                <td>
+                    <span class="badge border text-dark bg-light">@p.Category?.CateName</span><br />
+                    <small class="text-muted">Brand: @p.Brand?.BrandName</small>
+                </td>
+                <td>
+                    <span style="color: #d9534f; font-weight: bold; font-size: 1.1rem;">$@p.Price.ToString("N0")</span><br />
+                    <small class="text-muted">In Stock: <strong>@p.Quantity</strong></small>
+                </td>
+                <td>
+                    <div class="status-labels">
+                        @if (p.Status)
+                        {
+                            <span class="badge bg-success" style="width: 60px;">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary" style="width: 60px;">Hidden</span>
+                        }
+                        @if (p.Hot)
+                        {
+                            <br />
+                    
+                            <span class="badge bg-warning text-dark mt-1" style="width: 60px;">HOT</span>
+                        }
+                    </div>
+                </td>
+                <td>
+                    <div class="btn-group-vertical" style="gap: 5px;">
+                        <button class="admin-btn" onclick="openProductModal(@p.ProductId)" style="background-color: #5bc0de; border: none; font-size: 12px; color: white; padding: 5px;">View</button>
+                        <a href="/Admin/DeleteProduct/@p.ProductId" class="admin-btn"
+                           style="background-color: #d9534f; text-align: center; border: none; font-size: 12px; color: white; padding: 5px;"
+                           onclick="return confirm('Delete this product?')">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="productModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); overflow:auto;">
+    <div style="background:#fff; margin:5% auto; padding:20px; width:75%; border-radius:10px; position:relative; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+        <span onclick="closeProductModal()" style="position:absolute; right:20px; top:10px; font-size:28px; cursor:pointer; font-weight:bold;">&times;</span>
+        <div id="productDetailContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p>Loading product details...</p>
+            </div>
+        </div>
     </div>
 </div>
 
-<a asp-action="CreateProduct" class="admin-btn">➕ Add Product</a>
+@section Scripts {
+    <script>
+        function openProductModal(id) {
+            // Hiển thị khung Modal trước
+            document.getElementById('productModal').style.display = 'block';
 
-<hr />
+            // Gọi AJAX lấy dữ liệu Partial View
+            fetch('/Admin/ProductDetail/' + id)
+                .then(res => {
+                    if (!res.ok) throw new Error('Product not found');
+                    return res.text();
+                })
+                .then(html => {
+                    document.getElementById('productDetailContent').innerHTML = html;
+                })
+                .catch(err => {
+                    document.getElementById('productDetailContent').innerHTML = '<p class="text-danger p-5">Error: ' + err.message + '</p>';
+                });
+        }
 
-<div class="shop-grid">
-    @foreach (var item in Model)
-    {
-        <div class="shop-card">
+        function closeProductModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
 
-            <img src="@(string.IsNullOrEmpty(item.Image)
-                                             ? Url.Content("~/assets/product-1.jpg")
-                                             : Url.Content("~/assets/" + item.Image))" />
-
-            <div class="shop-body">
-
-                <h4>@item.ProductName</h4>
-                <p class="shop-price">@item.Price VNĐ</p>
-
-                <span class="admin-badge badge-warning">
-                    @item.Category?.CateName
-                </span>
-
-                <div class="shop-actions-group">
-                    <a href="/Admin/EditProduct/@item.ProductId"
-                       class="shop-cart-btn">Edit</a>
-
-                    <a href="/Admin/DeleteProduct/@item.ProductId"
-                           class="shop-buy-btn"
-                           onclick="return confirm('Delete product?')">
-                        Delete
-                    </a>
-                </div>
-
-            </div>
-        </div>
-    }
-</div>
+        // Đóng modal khi click ra ngoài vùng trắng
+        window.onclick = function(event) {
+            var modal = document.getElementById('productModal');
+            if (event.target == modal) {
+                closeProductModal();
+            }
+        }
+    </script>
+}
