@@ -169,18 +169,13 @@ public class CartController : Controller
 
             var response = await _momoService.CreatePaymentMomo(orderInfo);
 
-            if (response == null)
+            if (response == null || string.IsNullOrEmpty(response.PayUrl))
             {
-                ModelState.AddModelError("", "MoMo không trả về dữ liệu");
-                return View(model);
+                // 🔥 KHÔNG HIỆN JSON NỮA
+                return RedirectToAction("Index"); // hoặc trang lỗi riêng
             }
 
-            if (string.IsNullOrEmpty(response.PayUrl))
-            {
-                ModelState.AddModelError("", "MoMo lỗi: " + response.Message);
-                return View(model);
-            }
-
+            // ✅ LUÔN redirect sang MoMo
             return Redirect(response.PayUrl);
         }
 

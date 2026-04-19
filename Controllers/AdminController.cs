@@ -3,6 +3,7 @@ using FinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinalProject.Controllers
 {
@@ -26,6 +27,30 @@ namespace FinalProject.Controllers
             return View();
         }
 
+        // ================== DANH SÁCH ĐƠN ==================
+        public IActionResult Order()
+        {
+            var orders = _context.tb_Order
+                .OrderByDescending(o => o.CreatedDate)
+                .ToList();
+
+            return View(orders);
+        }
+
+        // ================== CHI TIẾT ĐƠN ==================
+        public IActionResult OrderDetails(int id)
+        {
+            var order = _context.tb_Order
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(d => d.Product)
+                .FirstOrDefault(o => o.OrderId == id);
+
+            if (order == null) return NotFound();
+
+            return View(order);
+        }
+
+        // ================== LOG ==================
         private void WriteLog(string action, string details)
         {
             var userIdString = _userManager.GetUserId(User);
@@ -38,19 +63,17 @@ namespace FinalProject.Controllers
                 Details = details,
                 Timestamp = DateTime.Now
             };
+
             _context.tb_SystemLog.Add(log);
-            // Lưu ý: Không nên gọi SaveChanges ở đây nếu hàm gọi nó cũng gọi SaveChanges
         }
 
-        // Tạo view để xem lịch sử Log
         public IActionResult Logs()
         {
-            var logs = _context.tb_SystemLog.OrderByDescending(l => l.Timestamp).ToList();
+            var logs = _context.tb_SystemLog
+                .OrderByDescending(l => l.Timestamp)
+                .ToList();
+
             return View(logs);
         }
-
-
     }
-
-
 }

@@ -8,6 +8,9 @@ namespace FinalProject.Models
     {
         [Key]
         public int OrderId { get; set; }
+        [Required]
+        [StringLength(50)]
+      
 
         // 🔥 Ngày tạo đơn (dùng cho thống kê)
         public DateTime CreatedDate { get; set; } = DateTime.Now;
@@ -33,8 +36,10 @@ namespace FinalProject.Models
         [Required]
         [StringLength(250)]
         public string ShippingAddress { get; set; }
+        [StringLength(250)]
+        public string? CustomerName { get; set; }
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         public int Discount { get; set; } = 0;
 

@@ -4,6 +4,7 @@ using FinalProject.Models;
 using FinalProject.Models.Momo;
 using FinalProject.Services.Momo;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.X9;
 
 public class CheckoutController : Controller
 {
@@ -76,11 +77,13 @@ public class CheckoutController : Controller
         };
         var response = await _momoService.CreatePaymentMomo(momoModel);
 
-        // 👉 in ra để xem lỗi thật
-        return Content(
-            "Message: " + response.Message +
-            "\nPayUrl: " + response.PayUrl
-        );
+        // 🔥 CHECK LỖI MOMO
+        if (response == null || string.IsNullOrEmpty(response.PayUrl))
+        {
+            return Content("MoMo chưa tạo được QR - lỗi format request");
+        }
+
+        return Redirect(response.PayUrl);
     }
 
     // 👉 MOMO TRẢ VỀ

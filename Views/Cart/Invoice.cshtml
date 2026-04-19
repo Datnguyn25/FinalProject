@@ -12,11 +12,16 @@
 
         <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 0 10px #ddd;">
 
-            <p><b>Order ID:</b> @Model.OrderID</p>
+            <p><b>Customer:</b> @Model.CustomerName</p>
+            <p><b>Phone:</b> @Model.ReceiverPhone</p>
+            <p><b>Address:</b> @Model.ShippingAddress</p>
+
+            <hr />
+
+            <p><b>Order ID:</b> @Model.OrderId</p>
             <p><b>Date:</b> @Model.OrderDate</p>
             <p><b>Status:</b> @Model.OrderStatus</p>
             <p><b>Payment:</b> @Model.PaymentStatus</p>
-
             <hr />
 
             <table style="width:100%;text-align:center;border-collapse:collapse;">

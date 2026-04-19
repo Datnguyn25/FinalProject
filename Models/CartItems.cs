@@ -14,7 +14,7 @@ namespace FinalProject.Models
         public int ProductId { get; set; }
 
         public int Quantity { get; set; }
-        public string Size { get; set; }
+        public string? Size { get; set; }
 
         // Navigation Properties
         [ForeignKey("CartId")]

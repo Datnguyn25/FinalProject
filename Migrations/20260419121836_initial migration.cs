@@ -190,7 +190,7 @@ namespace FinalProject.Migrations
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     OrderStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -199,7 +199,8 @@ namespace FinalProject.Migrations
                     Delivered = table.Column<bool>(type: "bit", nullable: false),
                     DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ShippingAddress = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CustomerName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true),
                     Discount = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PromotionId = table.Column<int>(type: "int", nullable: true),
@@ -217,8 +218,7 @@ namespace FinalProject.Migrations
                         name: "FK_tb_Order_tb_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "tb_Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -464,7 +464,7 @@ namespace FinalProject.Migrations
                     CartId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
@@ -496,7 +496,8 @@ namespace FinalProject.Migrations
                     ProductId = table.Column<int>(type: "int", nullable: true),
                     ShopId = table.Column<int>(type: "int", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -545,28 +546,32 @@ namespace FinalProject.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "4f37cf67-1e22-46fb-a399-167d6e891d2a", "Admin", "ADMIN" },
-                    { 2, "75504955-655b-4bd2-813c-4310d5f868b5", "User", "USER" },
-                    { 3, "d5c28c67-c3e5-4db4-95b9-a998d53d6cf7", "Shop", "SHOP" }
+                    { 1, "7521dffc-8055-4840-bad9-80c4eddec893", "Admin", "ADMIN" },
+                    { 2, "d14aed8a-8102-4b64-b8af-fdafa1be90b1", "User", "USER" },
+                    { 3, "7470527c-b915-4962-988b-64c945135931", "Shop", "SHOP" }
                 });
 
             migrationBuilder.InsertData(
                 table: "tb_Users",
                 columns: new[] { "Id", "AccessFailedCount", "Address", "AvatarUrl", "City", "ConcurrencyStamp", "Country", "CreatedAt", "DateOfBirth", "Email", "EmailConfirmed", "EmailVerified", "FullName", "Gender", "IsActive", "IsBanned", "LastLogin", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PhoneVerified", "SecurityStamp", "TwoFactorEnabled", "UpdatedAt", "UserName" },
-                values: new object[] { 1, 0, null, null, null, "29b34cef-c20b-4e8f-9448-3f6a525cf531", null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "admin@fashionstore.com", true, false, "System Administrator", null, true, false, null, false, null, "ADMIN@FASHIONSTORE.COM", "ADMIN@FASHIONSTORE.COM", "AQAAAAIAAYagAAAAEP87ntRbG8o7NNgoZW8QbTLdKoEa59ZfRHTJZzC43cj4LRZEB+Gn6IBhp0r8kiyLsw==", null, false, false, "92a8db8e-202c-4661-81a4-63ae7329fec2", false, null, "admin@fashionstore.com" });
+                values: new object[,]
+                {
+                    { 1, 0, null, null, null, "ed2bb8e9-cbd7-4159-aac8-28ff98ca4a03", null, new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "admin@fashionstore.com", true, false, "System Administrator", null, true, false, null, false, null, "ADMIN@FASHIONSTORE.COM", "ADMIN@FASHIONSTORE.COM", "AQAAAAIAAYagAAAAEFLoc3Z+flbW+VELRaeAIMXeb9l17p7oTuWfQNUXZr9Ix133orcejiomyjC0OXlCbQ==", null, false, false, "97fedd8c-bf73-4c3d-8220-f4b9c75e9e8e", false, null, "admin@fashionstore.com" },
+                    { 2, 0, null, null, null, "ebf0ab10-02d1-441c-96f6-ac7bc755a8b3", null, new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "seller@urbanchic.com", true, false, "Nguyen Thanh Dat", null, true, false, null, false, null, "SELLER@URBANCHIC.COM", "SELLER@URBANCHIC.COM", "AQAAAAIAAYagAAAAEA+pXYnePnaj5xbBpMOH499saA/BD8eZS4NaMY8vU2HtlWvHD6ma23sYrEgEts/y8w==", null, false, false, "d89dc50f-fbe6-4230-ab32-83135a2bbbb9", false, null, "seller@urbanchic.com" }
+                });
 
             migrationBuilder.InsertData(
                 table: "tb_Order",
-                columns: new[] { "OrderId", "CreatedDate", "Delivered", "DeliveryDate", "Discount", "DiscountAmount", "OrderDate", "OrderStatus", "PaymentDate", "PaymentStatus", "PromotionId", "ReceiverPhone", "ShippingAddress", "TotalPrice", "UserId" },
+                columns: new[] { "OrderId", "CreatedDate", "CustomerName", "Delivered", "DeliveryDate", "Discount", "DiscountAmount", "OrderDate", "OrderStatus", "PaymentDate", "PaymentStatus", "PromotionId", "ReceiverPhone", "ShippingAddress", "TotalPrice", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4716), true, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0912345678", "123 Cau Giay Street, Dich Vong Ward, Cau Giay District, Hanoi", 1250000m, 1 },
-                    { 2, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4730), true, new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0988776655", "88 Sukhumvit Road, Watthana, Bangkok 10110, Thailand", 850000m, 1 },
-                    { 3, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4732), true, new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0901234567", "No. 45, Lane 10, Hoang Dieu St, Ba Dinh Dist, Hanoi, Vietnam", 2100000m, 1 },
-                    { 4, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4736), true, new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0944332211", "Apt 4B, 22nd Street, District 1, Ho Chi Minh City, Vietnam", 1500000m, 1 },
-                    { 5, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4738), true, new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0355667788", "71-75 Shelton Street, Covent Garden, London WC2H 9JQ, UK", 3200000m, 1 },
-                    { 6, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4741), true, new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0322114455", "Block C, FPT University Campus, Hoa Lac Hi-Tech Park, Hanoi", 950000m, 1 },
-                    { 7, new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4743), true, new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0977889900", "202 Jervois Road, Herne Bay, Auckland 1011, New Zealand", 1800000m, 1 }
+                    { 1, new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(472), null, true, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0912345678", "123 Cau Giay Street, Dich Vong Ward, Cau Giay District, Hanoi", 1250000m, 1 },
+                    { 2, new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(482), null, true, new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0988776655", "88 Sukhumvit Road, Watthana, Bangkok 10110, Thailand", 850000m, 1 },
+                    { 3, new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(485), null, true, new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0901234567", "No. 45, Lane 10, Hoang Dieu St, Ba Dinh Dist, Hanoi, Vietnam", 2100000m, 1 },
+                    { 4, new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(488), null, true, new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0944332211", "Apt 4B, 22nd Street, District 1, Ho Chi Minh City, Vietnam", 1500000m, 1 },
+                    { 5, new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(491), null, true, new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0355667788", "71-75 Shelton Street, Covent Garden, London WC2H 9JQ, UK", 3200000m, 1 },
+                    { 6, new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(494), null, true, new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0322114455", "Block C, FPT University Campus, Hoa Lac Hi-Tech Park, Hanoi", 950000m, 1 },
+                    { 7, new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(496), null, true, new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0m, new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", null, "Paid", null, "0977889900", "202 Jervois Road, Herne Bay, Auckland 1011, New Zealand", 1800000m, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -585,12 +590,16 @@ namespace FinalProject.Migrations
             migrationBuilder.InsertData(
                 table: "tb_Shop",
                 columns: new[] { "ShopId", "City", "ContactEmail", "ContactPhone", "Country", "CoverImageUrl", "CreatedAt", "IsActive", "IsBanned", "IsVerified", "LogoUrl", "OwnerId", "RatingAverage", "RoleId", "ShopAddress", "ShopDescription", "ShopName", "TotalFollowers", "TotalProducts", "TotalReviews", "TotalSold", "UpdatedAt" },
-                values: new object[] { 1, "Ho Chi Minh City", "support@urbanchic.com", "+84987654321", "Vietnam", "cover-urban.jpg", new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), true, false, true, "logo-urban.png", null, 4.80m, 2, "123 ABC Street, District 1", "Premium streetwear and modern fashion trends for the young generation.", "Urban Chic Fashion", 1200, 50, 450, 2500, null });
+                values: new object[] { 1, "Ho Chi Minh City", "support@urbanchic.com", "+84987654321", "Vietnam", "cover-urban.jpg", new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), true, false, true, "logo-urban.png", 2, 4.80m, null, "123 ABC Street, District 1", "Premium streetwear and modern fashion trends for the young generation.", "Urban Chic Fashion", 1200, 50, 450, 2500, null });
 
             migrationBuilder.InsertData(
                 table: "tb_UserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { 1, 1 });
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 3, 2 }
+                });
 
             migrationBuilder.InsertData(
                 table: "tb_Product",
@@ -626,16 +635,16 @@ namespace FinalProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "tb_OrderDetails",
-                columns: new[] { "OrderDetailId", "OrderId", "Price", "ProductId", "Quantity", "ShopId" },
+                columns: new[] { "OrderDetailId", "OrderId", "Price", "ProductId", "Quantity", "ShopId", "Size" },
                 values: new object[,]
                 {
-                    { 1, 1, 450000m, 1, 2, null },
-                    { 2, 2, 550000m, 2, 1, null },
-                    { 3, 3, 450000m, 1, 5, null },
-                    { 4, 4, 550000m, 2, 3, null },
-                    { 5, 5, 450000m, 1, 10, null },
-                    { 6, 6, 550000m, 2, 2, null },
-                    { 7, 7, 450000m, 1, 4, null }
+                    { 1, 1, 450000m, 1, 2, null, null },
+                    { 2, 2, 550000m, 2, 1, null, null },
+                    { 3, 3, 450000m, 1, 5, null, null },
+                    { 4, 4, 550000m, 2, 3, null, null },
+                    { 5, 5, 450000m, 1, 10, null, null },
+                    { 6, 6, 550000m, 2, 2, null, null },
+                    { 7, 7, 450000m, 1, 4, null, null }
                 });
 
             migrationBuilder.CreateIndex(

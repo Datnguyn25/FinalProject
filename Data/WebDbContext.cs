@@ -115,6 +115,7 @@ namespace FinalProject.Data
 
             // 5. Seed Orders (Dữ liệu doanh thu cho Dashboard)
             modelBuilder.Entity<Order>().HasData(
+
                 new Order { OrderId = 1, UserId = 1, OrderDate = new DateTime(2026, 4, 10), TotalPrice = 1250000, ShippingAddress = "123 Cau Giay Street, Dich Vong Ward, Cau Giay District, Hanoi", ReceiverPhone = "0912345678", OrderStatus = "Completed", PaymentStatus = "Paid", Delivered = true, DeliveryDate = new DateTime(2026, 4, 10) },
                 new Order { OrderId = 2, UserId = 1, OrderDate = new DateTime(2026, 4, 11), TotalPrice = 850000, ShippingAddress = "88 Sukhumvit Road, Watthana, Bangkok 10110, Thailand", ReceiverPhone = "0988776655", OrderStatus = "Completed", PaymentStatus = "Paid", Delivered = true, DeliveryDate = new DateTime(2026, 4, 11) },
                 new Order { OrderId = 3, UserId = 1, OrderDate = new DateTime(2026, 4, 12), TotalPrice = 2100000, ShippingAddress = "No. 45, Lane 10, Hoang Dieu St, Ba Dinh Dist, Hanoi, Vietnam", ReceiverPhone = "0901234567", OrderStatus = "Completed", PaymentStatus = "Paid", Delivered = true, DeliveryDate = new DateTime(2026, 4, 12) },
@@ -237,6 +238,7 @@ namespace FinalProject.Data
                 new Shop
                 {
                     ShopId = 1,
+                    
                     ShopName = "Urban Chic Fashion",
                     OwnerId = sellerUserId, // <--- Đổi từ 1 sang 2
                     LogoUrl = "logo-urban.png",
@@ -255,7 +257,8 @@ namespace FinalProject.Data
                     IsVerified = true,
                     IsActive = true,
                     IsBanned = false,
-                    CreatedAt = new DateTime(2026, 3, 27)
+                    CreatedAt = new DateTime(2026, 3, 27),
+                    
                 }
             );    
         }
