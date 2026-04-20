@@ -76,14 +76,16 @@ public class SellerDashboardController : Controller
 
     // ================= CHART API =================
     [HttpGet]
-    [HttpGet]
-    public IActionResult GetChartData()
+    public IActionResult GetChartData(int days = 7)
     {
         var shopId = GetShopId();
         if (shopId == null) return Json(new List<object>());
 
-        var data = _context.tb_Order
+        var rawData = _context.tb_Order
+            .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
             .Where(o => o.PaymentStatus == "Paid")
+            .Where(o => o.OrderDetails.Any(od => od.Product.ShopId == shopId))
             .SelectMany(o => o.OrderDetails
                 .Where(od => od.Product.ShopId == shopId)
                 .Select(od => new
@@ -92,17 +94,26 @@ public class SellerDashboardController : Controller
                     Revenue = od.Price * od.Quantity,
                     Profit = (od.Price * od.Quantity) * 0.2m
                 }))
-            .AsEnumerable() // 🔥 tránh lỗi SQL
-            .GroupBy(x => x.Date)
-            .Select(g => new
-            {
-                date = g.Key.ToString("dd/MM"),
-                revenue = g.Sum(x => x.Revenue),
-                profit = g.Sum(x => x.Profit)
-            })
-            .OrderBy(x => x.date)
             .ToList();
 
-        return Json(data);
+        var dateRange = Enumerable.Range(0, days)
+            .Select(i => DateTime.Today.AddDays(-i))
+            .OrderBy(d => d)
+            .ToList();
+
+        var result = dateRange.Select(day =>
+        {
+            var dayData = rawData.Where(x => x.Date == day);
+
+            return new
+            {
+                date = day.ToString("dd/MM"),
+                revenue = dayData.Sum(x => x.Revenue),
+                profit = dayData.Sum(x => x.Profit)
+            };
+        }).ToList();
+
+        return Json(result);
     }
 }
+

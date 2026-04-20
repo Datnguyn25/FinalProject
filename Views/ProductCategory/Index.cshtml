@@ -1,4 +1,10 @@
 ﻿@model List<FinalProject.Models.ProductCategory>
+@{
+    ViewData["Title"] = "My Products";
+    var shop = ViewBag.Shop as FinalProject.Models.Shop;
+
+    Layout = "_LayoutSeller";
+}
 
 <h2>📂 Category List</h2>
 
