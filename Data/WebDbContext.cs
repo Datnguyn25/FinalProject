@@ -243,6 +243,7 @@ namespace FinalProject.Data
                 new Shop
                 {
                     ShopId = 1,
+                    
                     ShopName = "Urban Chic Fashion",
                     OwnerId = sellerUserId, // <--- Đổi từ 1 sang 2
                     LogoUrl = "logo-urban.png",
@@ -261,7 +262,8 @@ namespace FinalProject.Data
                     IsVerified = true,
                     IsActive = true,
                     IsBanned = false,
-                    CreatedAt = new DateTime(2026, 3, 27)
+                    CreatedAt = new DateTime(2026, 3, 27),
+                    
                 }
             );
 

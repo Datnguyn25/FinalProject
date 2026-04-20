@@ -32,9 +32,9 @@
     {
         <tr>
             <td style="width:120px">
-                @if (!string.IsNullOrEmpty(item.Image))
+                @if (!string.IsNullOrEmpty(item.ListImages))
                 {
-                    <img src="~/@item.Image" alt="@item.ProductName" class="img-thumbnail" style="max-width:100px" />
+                    <img src="assets/@item.ListImages" alt="@item.ProductName" class="img-thumbnail" style="max-width:100px" />
                 }
             </td>
             <td>@item.ProductName</td>
