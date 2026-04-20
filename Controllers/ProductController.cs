@@ -1,4 +1,4 @@
-using FinalProject.Data;
+﻿using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +13,8 @@ public class ProductController : Controller
     }
 
     // ===== LIST + FILTER + SEARCH + PRICE FILTER =====
-    public IActionResult Index(int? cateId, string keyword, string searchType,
-                               decimal? minPrice, decimal? maxPrice)
+    public IActionResult Index(int? cateId, int? shopId, int? brandId, string keyword, string searchType,
+                                decimal? minPrice, decimal? maxPrice)
     {
         var products = _context.tb_Product
             .Include(p => p.Category)
@@ -31,7 +31,7 @@ public class ProductController : Controller
                 .Select(c => c.CateId)
                 .ToList();
 
-            // N?u l� category cha ? l?y lu�n con
+            // N?u là category cha ? l?y luôn con
             if (childIds.Any())
             {
                 products = products.Where(p =>
@@ -39,9 +39,21 @@ public class ProductController : Controller
             }
             else
             {
-                // N?u l� category con ? l?c b�nh th??ng
+                // N?u là category con ? l?c bình th??ng
                 products = products.Where(p => p.CateId == cateId);
             }
+        }
+
+        // 2. NEW: FILTER BY BRAND
+        if (brandId.HasValue)
+        {
+            products = products.Where(p => p.BrandId == brandId);
+        }
+
+        // 3. NEW: FILTER BY SHOP
+        if (shopId.HasValue)
+        {
+            products = products.Where(p => p.ShopId == shopId);
         }
 
         // ===== SEARCH =====
@@ -84,18 +96,24 @@ public class ProductController : Controller
             products = products.Where(p => p.Price >= minPrice.Value);
         }
 
-        if (maxPrice.HasValue)
+        if (maxPrice.HasValue && maxPrice > 0)
         {
             products = products.Where(p => p.Price <= maxPrice.Value);
         }
 
         // ===== VIEWBAG FOR UI =====
         ViewBag.Categories = _context.tb_ProductCategory.ToList();
+        ViewBag.Brands = _context.tb_Brand.ToList();
+        ViewBag.Shops = _context.tb_Shop.ToList();
+
+        ViewBag.Categories = _context.tb_ProductCategory.ToList();
         ViewBag.Keyword = keyword;
         ViewBag.SelectedCategory = cateId;
+        ViewBag.SelectedBrand = brandId; // Gửi lại ID đã chọn để đánh dấu active trên UI
+        ViewBag.SelectedShop = shopId;
         ViewBag.SearchType = searchType;
         ViewBag.MinPrice = minPrice ?? 0;
-        ViewBag.MaxPrice = maxPrice ?? 10000;
+        ViewBag.MaxPrice = (maxPrice.HasValue && maxPrice > 0) ? maxPrice : 10000000;
 
         return View(products.ToList());
     }

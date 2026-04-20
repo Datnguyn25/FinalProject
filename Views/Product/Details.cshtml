@@ -1,101 +1,227 @@
-﻿<hr style="margin-top:40px;" />
+﻿@model FinalProject.Models.Product
 
-<div class="review-section" style="margin-top:30px;">
-    <h3>💬 Customer Reviews</h3>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // Ép kiểu tường minh để tránh lỗi "dynamically dispatched operation"
+    var reviews = Model.ProductReviews as IEnumerable<FinalProject.Models.ProductReview>;
+}
 
-    <div style="background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:30px;">
-        <h4>Leave a review</h4>
+<div class="shop-container" style="margin-top: 20px;">
+    <h2>🛍 Product Detail</h2>
 
-        <div style="margin-bottom:15px;">
-            <label>Rating:</label>
-            <div class="star-rating" style="font-size: 25px; color: #ccc; cursor: pointer; display: flex; gap: 5px;">
-                <span class="star" data-value="1">★</span>
-                <span class="star" data-value="2">★</span>
-                <span class="star" data-value="3">★</span>
-                <span class="star" data-value="4">★</span>
-                <span class="star" data-value="5">★</span>
+    <div style="display:flex; gap:30px; margin-top:20px; flex-wrap: wrap;">
+
+        <div style="flex: 1; min-width: 300px;">
+            <img src="~/assets/@Model.Image"
+                 style="width:100%; max-width:400px; height:auto; object-fit:cover;" />
+        </div>
+
+        <div style="flex: 2; min-width: 300px;">
+            <h2 style="margin-top:0;">@Model.ProductName</h2>
+
+            @* Hiển thị số sao trung bình *@
+            <div style="color: #ffcc00; font-size: 18px; margin-bottom: 10px;">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <span>@(i <= (Model.Star ?? 0) ? "★" : "☆")</span>
+                }
+                <span style="color: #666; font-size: 14px;">(@(reviews?.Count() ?? 0) reviews)</span>
             </div>
-            <input type="hidden" id="ratingValue" value="5" />
-        </div>
 
-        <div style="margin-bottom:15px;">
-            <textarea id="commentText" placeholder="Share your experience..."
-                      style="width:100%; height:80px; padding:10px; border-radius:5px; border:1px solid #ddd;"></textarea>
-        </div>
+            <p style="color:red; font-size:24px; font-weight:bold; margin: 10px 0;">
+                @Model.Price.ToString("N0") VNĐ
+            </p>
 
-        <button type="button" onclick="submitReview(@Model.ProductId)"
-                style="background:#c7a17a; color:#fff; padding:10px 25px; border:none; border-radius:5px; cursor:pointer;">
-            Submit Review
-        </button>
+            <div style="line-height: 1.8;">
+                <p><b>Category:</b> @Model.Category?.CateName</p>
+                <p><b>Brand:</b> @Model.Brand?.BrandName</p>
+                <p><b>Shop:</b> @Model.Shop?.ShopName</p>
+                <p>
+                    <b>Quantity:</b>
+                    @if (Model.Quantity > 0)
+                    {
+                        <span style="font-weight: bold; color: #28a745;">@Model.Quantity products available</span>
+                    }
+                    else
+                    {
+                        <span style="font-weight: bold; color: #dc3545;">Out of stock</span>
+                    }
+                </p>
+                <p>
+                    <b>Description:</b><br />
+                    @Model.ProductDescription
+                </p>
+            </div>
+
+            <br />
+
+            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display: flex; gap: 15px; align-items: flex-end;">
+                <input type="hidden" name="productId" value="@Model.ProductId" />
+
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 12px; color: #666;">Quantity:</label>
+                    <input type="number" name="quantity" value="1" min="1" max="@Model.Quantity"
+                           style="width: 70px; padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                </div>
+
+                <button type="submit" name="actionType" value="add"
+                        style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    🛒 Add to Cart
+                </button>
+
+                <button type="submit" name="actionType" value="buyNow"
+                        style="background: #ff4757; color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    ⚡ Buy Now
+                </button>
+            </form>
+
+            <div style="margin-top: 20px;">
+                <a href="/Product" style="text-decoration: none; color: #007bff;">⬅ Back to List</a>
+            </div>
+        </div>
     </div>
 
-    <div id="reviewList">
-        @{
-            // Ép kiểu tường minh để tránh lỗi dynamic lambda
-            var reviewList = Model.ProductReviews as IEnumerable<FinalProject.Models.ProductReview>;
-        }
+    <hr style="margin-top:40px; border: 0; border-top: 1px solid #eee;" />
 
-        @if (reviewList != null && reviewList.Any())
-        {
-            foreach (var rev in reviewList.OrderByDescending(x => x.CreatedAt))
+    <div class="review-section" style="margin-top:30px;">
+        <h3>💬 Customer Reviews</h3>
+
+        <div style="background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:30px; border: 1px solid #eee;">
+            <h4 style="margin-top:0;">Leave a review</h4>
+
+            <div style="margin-bottom:15px;">
+                <label>Your Rating:</label>
+                <div class="star-rating-input" style="font-size: 30px; color: #ccc; cursor: pointer; display: flex; gap: 5px;">
+                    <span class="star-btn" data-value="1">★</span>
+                    <span class="star-btn" data-value="2">★</span>
+                    <span class="star-btn" data-value="3">★</span>
+                    <span class="star-btn" data-value="4">★</span>
+                    <span class="star-btn" data-value="5">★</span>
+                </div>
+                <input type="hidden" id="ratingValue" value="5" />
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <textarea id="commentText" placeholder="How do you feel about this product?"
+                          style="width:100%; height:80px; padding:10px; border-radius:5px; border:1px solid #ddd; resize: vertical;"></textarea>
+            </div>
+
+            <button type="button" onclick="submitReview(@Model.ProductId)"
+                    style="background:#c7a17a; color:#fff; padding:12px 30px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">
+                Submit Review
+            </button>
+        </div>
+
+        <div style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center; background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px dashed #ccc;">
+            <b style="color: #555;">Filter by:</b>
+            <div class="filter-stars" style="display: flex; gap: 8px;">
+                <button type="button" class="btn-filter active" data-filter="all" style="padding: 5px 12px; border-radius: 20px; border: 1px solid #c7a17a; cursor: pointer;">All</button>
+                <button type="button" class="btn-filter" data-filter="5" style="padding: 5px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer;">5 ★</button>
+                <button type="button" class="btn-filter" data-filter="4" style="padding: 5px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer;">4 ★</button>
+                <button type="button" class="btn-filter" data-filter="3" style="padding: 5px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer;">3 ★</button>
+                <button type="button" class="btn-filter" data-filter="2" style="padding: 5px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer;">2 ★</button>
+                <button type="button" class="btn-filter" data-filter="1" style="padding: 5px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer;">1 ★</button>
+            </div>
+        </div>
+
+        <div id="reviewList">
+            @if (reviews != null && reviews.Any())
             {
-                <div style="border-bottom:1px solid #eee; padding:15px 0;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <b>@rev.User?.UserName</b>
-                        <small style="color:#999;">@rev.CreatedAt.ToString("dd/MM/yyyy")</small>
+                foreach (var rev in reviews.OrderByDescending(x => x.CreatedAt))
+                {
+                    <div class="review-item" data-star="@rev.Rating" style="border-bottom:1px solid #eee; padding:20px 0;">
+                        <div style="display:flex; justify-content:space-between; align-items: center;">
+                            <span style="font-weight:bold; color: #333;">👤 @(rev.User?.UserName ?? "Anonymous")</span>
+                            <small style="color:#999;">@rev.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                        <div style="color:#ffcc00; margin: 5px 0;">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span>@(i <= rev.Rating ? "★" : "☆")</span>
+                            }
+                        </div>
+                        <p style="margin: 10px 0 0 0; color:#555; line-height: 1.5;">@rev.Comment</p>
                     </div>
-                    <div style="color:#ffcc00;">
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <span>@(i <= rev.Rating ? "★" : "☆")</span>
-                        }
-                    </div>
-                    <p style="margin-top:5px; color:#555;">@rev.Comment</p>
+                }
+            }
+            else
+            {
+                <div style="text-align: center; padding: 40px; color: #999; background: #fafafa; border-radius: 8px;">
+                    <p style="font-style:italic;">No reviews yet. Be the first to share your thoughts!</p>
                 </div>
             }
-        }
-        else
-        {
-            <p style="color:#999; font-style:italic;">No reviews yet. Be the first to review!</p>
-        }
+        </div>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // Xử lý chọn sao bằng UI
-    $('.star').click(function () {
-        var val = $(this).data('value');
-        $('#ratingValue').val(val);
-        $('.star').css('color', '#ccc');
-        $('.star').each(function () {
-            if ($(this).data('value') <= val) {
-                $(this).css('color', '#ffcc00');
-            }
+@section Scripts {
+    <script>
+        // Xử lý chọn sao trực quan
+        $('.star-btn').click(function () {
+            var val = $(this).data('value');
+            $('#ratingValue').val(val);
+            updateStars(val);
         });
-    });
 
-    // Mặc định cho 5 sao màu vàng khi load trang
-    $('.star').each(function () {
-        if ($(this).data('value') <= 5) $(this).css('color', '#ffcc00');
-    });
-
-    function submitReview(pId) {
-        var r = $('#ratingValue').val();
-        var c = $('#commentText').val();
-
-        if (!c) {
-            alert("Please enter a comment!");
-            return;
+        function updateStars(val) {
+            $('.star-btn').css('color', '#ccc');
+            $('.star-btn').each(function () {
+                if ($(this).data('value') <= val) {
+                    $(this).css('color', '#ffcc00');
+                }
+            });
         }
 
-        $.post('/Account/PostReview', { productId: pId, rating: r, comment: c }, function (res) {
-            if (res.success) {
-                alert(res.message);
-                location.reload(); // Load lại để hiện review mới và số sao mới
-            } else {
-                alert(res.message);
+        // Mặc định ban đầu 5 sao
+        updateStars(5);
+
+        function submitReview(pId) {
+            var r = $('#ratingValue').val();
+            var c = $('#commentText').val().trim();
+
+            if (!c) {
+                alert("Please enter your comment!");
+                return;
             }
+
+            $.post('/Account/PostReview', { productId: pId, rating: r, comment: c }, function (res) {
+                if (res.success) {
+                    alert(res.message);
+                    location.reload();
+                } else {
+                    alert(res.message);
+                }
+            }).fail(function() {
+                alert("An error occurred. Please make sure you are logged in.");
+            });
+        }
+
+                $(document).ready(function () {
+            // 1. Logic lọc mặc định: Hiện 5 sao nếu có, không thì hiện All
+            var hasFiveStars = $('.review-item[data-star="5"]').length > 0;
+            if (hasFiveStars) {
+                $('.review-item').hide();
+                $('.review-item[data-star="5"]').show();
+                $('.btn-filter').removeClass('active').css({'background': '#fff', 'color': '#333'});
+                $('.btn-filter[data-filter="5"]').addClass('active').css({'background': '#c7a17a', 'color': '#fff'});
+            }
+
+            // 2. Xử lý click nút lọc
+            $('.btn-filter').click(function () {
+                var filterValue = $(this).data('filter');
+
+                // Đổi màu nút
+                $('.btn-filter').css({'background': '#fff', 'color': '#333', 'border': '1px solid #ddd'});
+                $(this).css({'background': '#c7a17a', 'color': '#fff', 'border': '1px solid #c7a17a'});
+
+                // Lọc nội dung
+                if (filterValue === "all") {
+                    $('.review-item').fadeIn();
+                } else {
+                    $('.review-item').hide();
+                    $('.review-item[data-star="' + filterValue + '"]').fadeIn();
+                }
+            });
         });
-    }
-</script>
+    </script>
+}

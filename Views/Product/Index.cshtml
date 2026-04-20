@@ -13,74 +13,55 @@
 
         <!-- ===== SIDEBAR ===== -->
         <div class="shop-sidebar">
-            <h5 class="filter-title">Filter by price</h5>
-
-            @{
-                var categories = ViewBag.Categories as List<ProductCategory>;
-                int? currentParent = null;
-
-                if (selectedCategory != null && categories != null)
-                {
-                    var current = categories
-                        .FirstOrDefault(x => x.CateId == selectedCategory);
-
-                    if (current != null)
-                    {
-                        currentParent = current.ParentId ?? current.CateId;
-                    }
-                }
-            }
-
-            @if (currentParent != null)
-            {
-                var hasChild = false;
-
-                foreach (var c in ViewBag.Categories)
-                {
-                    if (c.ParentId == currentParent)
-                    {
-                        hasChild = true;
-                        break;
-                    }
-                }
-
-                if (hasChild)
-                {
-                    <hr />
-                    <h5 class="filter-title">Sub Categories</h5>
-
-                    <div class="shop-subcategory">
-                        @foreach (var sub in ViewBag.Categories)
-                        {
-                            if (sub.ParentId == currentParent)
-                            {
-                                <div>
-                                    <a href="/Product?cateId=@sub.CateId"
-                                           class="shop-cate @(selectedCategory == sub.CateId ? "active" : "")">
-                                        └ @sub.CateName
-                                    </a>
-                                </div>
-                            }
-                        }
-                    </div>
-                }
-            }
-
-            <!-- PRICE FILTER -->
-            <form method="get" asp-action="Index">
-                <input type="hidden" name="cateId" value="@selectedCategory" />
+            <form method="get" asp-action="Index" id="filterForm">
+                <input type="hidden" name="cateId" value="@ViewBag.SelectedCategory" />
                 <input type="hidden" name="keyword" value="@ViewBag.Keyword" />
-                <input type="hidden" name="searchType" value="@searchType" />
 
-                <div class="price-filter">
-                    <label>Price from: <b>@minPrice</b> VNĐ</label>
-                    <input type="range" name="minPrice" min="0" max="1000000" value="@minPrice" />
-
-                    <label>To: <b>@maxPrice</b> VNĐ</label>
-                    <input type="range" name="maxPrice" min="0" max="1000000" value="@maxPrice" />
+                <h5 class="filter-title">Select Brand</h5>
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <select name="brandId" class="select2-dropdown shop-input" onchange="this.form.submit()">
+                        <option value="">-- All Brands --</option>
+                        @foreach (var b in ViewBag.Brands as List<Brand>)
+                        {
+                            <option value="@b.BrandId" selected="@(ViewBag.SelectedBrand == b.BrandId ? "selected" : null)">
+                                @b.BrandName
+                            </option>
+                        }
+                    </select>
                 </div>
 
-                <button type="submit" class="shop-filter-btn">Search</button>
+                <hr />
+
+                <h5 class="filter-title">Select Shop</h5>
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <select name="shopId" class="select2-dropdown shop-input" onchange="this.form.submit()">
+                        <option value="">-- All Shops --</option>
+                        @foreach (var s in ViewBag.Shops as List<Shop>)
+                        {
+                            <option value="@s.ShopId" selected="@(ViewBag.SelectedShop == s.ShopId ? "selected" : null)">
+                                @s.ShopName
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <hr />
+
+                <h5 class="filter-title">Price Range</h5>
+                <div class="price-filter">
+                    @{
+                        // Đảm bảo maxPrice không bao giờ bằng 0 khi load trang
+                        var displayMax = ViewBag.MaxPrice > 0 ? ViewBag.MaxPrice : 10000000;
+                    }
+                    <label>From: <b id="minVal">@ViewBag.MinPrice</b></label>
+                    <input type="range" name="minPrice" min="0" max="10000000" step="50000" value="@ViewBag.MinPrice" oninput="minVal.innerText = this.value" />
+
+                    <label>To: <b id="maxVal">@displayMax</b></label>
+                    <input type="range" name="maxPrice" min="0" max="50000000" step="100000" value="@displayMax" oninput="maxVal.innerText = this.value" />
+                </div>
+
+                <button type="submit" class="shop-filter-btn" style="width:100%; margin-top:15px;">Apply Filters</button>
+                <a href="/Product" class="btn-clear" style="display:block; text-align:center; margin-top:10px; color:gray; font-size:12px;">Clear All</a>
             </form>
         </div>
 
@@ -280,4 +261,12 @@
 
         setTimeout(() => img.remove(), 800);
     }
+
+    $(document).ready(function() {
+        $('.select2-dropdown').select2({
+            placeholder: "Search or Select...",
+            allowClear: true,
+            width: '100%' // Đảm bảo dropdown rộng bằng sidebar
+        });
+    });
 </script>
