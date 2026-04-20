@@ -1,5 +1,6 @@
 using FinalProject.Data;
 using FinalProject.Filters;
+using FinalProject.Hubs;
 using FinalProject.Models;
 using FinalProject.Models.Momo;
 using FinalProject.Services.Email;
@@ -135,12 +136,16 @@ namespace FinalProject
             builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
             builder.Services.AddScoped<SystemLogFilter>();
 
+            builder.Services.AddSignalR();
+          
+
 
 
             var app = builder.Build();
+            app.MapHub<OrderHub>("/orderHub");
 
 
-            
+
 
             // Configure middleware
             if (!app.Environment.IsDevelopment())
