@@ -1,4 +1,5 @@
 using FinalProject.Data;
+using FinalProject.Hubs;
 using FinalProject.Models;
 using FinalProject.Services.Momo;
 using FinalProject.Services.Zalo;
@@ -6,9 +7,9 @@ using FinalProject.Services.ZaloPay;
 using FinalProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System;
 using System.Security.Claims;
 
 public class CartController : Controller
@@ -16,14 +17,21 @@ public class CartController : Controller
     private readonly WebDbContext _context;
     private readonly IMomoService _momoService;
     private readonly IZaloPayService _zaloPayService;
+    private readonly IHubContext<OrderHub> _hub;
 
-    public CartController(WebDbContext context, IMomoService momoService, IZaloPayService zaloPayService)
+    public CartController(
+        WebDbContext context,
+        IMomoService momoService,
+        IZaloPayService zaloPayService,
+        IHubContext<OrderHub> hub)
     {
         _context = context;
         _momoService = momoService;
         _zaloPayService = zaloPayService;
+        _hub = hub;
     }
 
+    // ================= CART =================
     public IActionResult Index()
     {
         var cart = GetCart();
@@ -36,11 +44,6 @@ public class CartController : Controller
     {
         if (!User.Identity.IsAuthenticated)
         {
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-            {
-                return Json(new { redirect = Url.Action("Login", "Account") });
-            }
-
             return RedirectToAction("Login", "Account");
         }
 
@@ -49,11 +52,9 @@ public class CartController : Controller
 
         var cart = GetCart();
 
+        var item = cart.FirstOrDefault(x => x.ProductId == productId && x.Size == size);
 
-        var existingItem = cart.FirstOrDefault(x => x.ProductId == productId && x.Size == size);
-
-
-        if (existingItem == null)
+        if (item == null)
         {
             cart.Add(new CartItems
             {
@@ -67,25 +68,17 @@ public class CartController : Controller
         }
         else
         {
-            existingItem.Quantity += quantity;
+            item.Quantity += quantity;
         }
 
         SaveCart(cart);
 
-        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-        {
-            return Json(new
-            {
-                count = cart.Sum(x => x.Quantity)
-            });
-        }
-
         if (actionType == "buyNow")
         {
-            return RedirectToAction("Checkout", "Cart");
+            return RedirectToAction("Checkout");
         }
 
-        return RedirectToAction("Index", "Cart");
+        return RedirectToAction("Index");
     }
 
     public IActionResult Remove(int id)
@@ -99,7 +92,6 @@ public class CartController : Controller
         }
 
         SaveCart(cart);
-
         return RedirectToAction("Index");
     }
 
@@ -115,14 +107,10 @@ public class CartController : Controller
         HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
     }
 
+    // ================= CHECKOUT =================
     [HttpGet]
     public IActionResult Checkout()
     {
-        if (!User.Identity.IsAuthenticated)
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
         var cart = GetCart();
         if (cart.Count == 0) return RedirectToAction("Index", "Product");
 
@@ -134,147 +122,119 @@ public class CartController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Checkout(CheckoutVM model, int? SingleProductId)
+    public async Task<IActionResult> Checkout(CheckoutVM model)
     {
-        if (!User.Identity.IsAuthenticated)
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
         var cart = GetCart();
 
-        ViewBag.Cart = cart;
-        ViewBag.Total = cart.Sum(x => x.Price * x.Quantity);
-
-        if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
+        if (cart.Count == 0)
+            return RedirectToAction("Index", "Product");
 
         double totalAmount = (double)cart.Sum(x => (double)x.Price * x.Quantity);
 
         // ================= MOMO =================
         if (model.PaymentMethod?.ToLower() == "momo")
         {
-            // 🔥 FIX SESSION MẤT
             HttpContext.Session.SetString("CartBackup", JsonConvert.SerializeObject(cart));
-            HttpContext.Session.SetString("TempCart", JsonConvert.SerializeObject(cart));
 
             var orderInfo = new OrderInfoModel
             {
                 FullName = model.FullName,
                 Amount = totalAmount,
-                OrderInfo = "Thanh toán đơn hàng"
+                OrderInfo = "Thanh toán đơn hàng",
+                OrderId = DateTime.Now.Ticks.ToString()
             };
 
             var response = await _momoService.CreatePaymentMomo(orderInfo);
 
-            if (response == null)
+            if (response == null || string.IsNullOrEmpty(response.PayUrl))
             {
-                ModelState.AddModelError("", "MoMo không trả về dữ liệu");
-                return View(model);
-            }
-
-            if (string.IsNullOrEmpty(response.PayUrl))
-            {
-                ModelState.AddModelError("", "MoMo lỗi: " + response.Message);
-                return View(model);
+                return Content("Lỗi MoMo: không lấy được link thanh toán");
             }
 
             return Redirect(response.PayUrl);
         }
 
-        // ================= ZALOPAY =================
-        if (model.PaymentMethod?.ToLower() == "zalopay")
-        {
-            var orderInfo = new OrderInfoModel
-            {
-                FullName = model.FullName,
-                Amount = totalAmount,
-                OrderInfo = "Thanh toán đơn hàng"
-            };
-
-            var payUrl = await _zaloPayService.CreatePaymentUrl(orderInfo);
-
-            if (!string.IsNullOrEmpty(payUrl))
-            {
-                return Redirect(payUrl);
-            }
-
-            ModelState.AddModelError("", "Lỗi ZaloPay");
-            return View(model);
-        }
-
         // ================= COD =================
-        HttpContext.Session.Remove("Cart");
-        return RedirectToAction("Success", new { method = "COD" });
+        return await SaveOrder(cart, "COD", "Unpaid");
     }
 
     // ================= MOMO CALLBACK =================
     [AllowAnonymous]
     [HttpGet]
-    [Route("Checkout/PaymentCallBack")] // 🔥 FIX 404
-    public IActionResult PaymentCallBack()
+    [Route("Checkout/PaymentCallBack")]
+    public async Task<IActionResult> PaymentCallBack()
     {
         var resultCode = HttpContext.Request.Query["resultCode"].ToString();
 
-        if (resultCode == "0")
+        if (resultCode != "0")
         {
-            // 🔥 FIX SESSION
-            var session = HttpContext.Session.GetString("CartBackup");
-
-            if (string.IsNullOrEmpty(session))
-            {
-                session = HttpContext.Session.GetString("TempCart");
-            }
-
-            if (string.IsNullOrEmpty(session))
-            {
-                return Content("Mất session → không có giỏ hàng");
-            }
-
-            var cart = JsonConvert.DeserializeObject<List<CartItems>>(session);
-
-            // 🔥 FIX USER ID
-            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            var order = new Order
-            {
-                UserId = userId,
-                OrderDate = DateTime.Now,
-                CreatedDate = DateTime.Now,
-                OrderStatus = "Completed",
-                PaymentStatus = "Paid",
-                TotalPrice = cart.Sum(x => x.Price * x.Quantity)
-            };
-
-            _context.tb_Order.Add(order);
-            _context.SaveChanges();
-
-            foreach (var item in cart)
-            {
-                _context.tb_OrderDetails.Add(new OrderDetails
-                {
-                    OrderId = order.OrderId,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    Price = item.Price,
-                    Size = item.Size
-                });
-            }
-
-            _context.SaveChanges();
-
-            HttpContext.Session.Remove("Cart");
-            HttpContext.Session.Remove("CartBackup");
-            HttpContext.Session.Remove("TempCart");
-
-            return RedirectToAction("Invoice", new { id = order.OrderId });
+            return Content("Thanh toán thất bại");
         }
 
-        return Content("Thanh toán thất bại");
+        var session = HttpContext.Session.GetString("CartBackup");
+
+        if (string.IsNullOrEmpty(session))
+        {
+            return Content("Mất session giỏ hàng");
+        }
+
+        var cart = JsonConvert.DeserializeObject<List<CartItems>>(session);
+
+        return await SaveOrder(cart, "MoMo", "Paid");
     }
 
+    // ================= SAVE ORDER (CHUNG) =================
+    private async Task<IActionResult> SaveOrder(List<CartItems> cart, string method, string paymentStatus)
+    {
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        var order = new Order
+        {
+            UserId = userId,
+            CreatedDate = DateTime.Now,
+            OrderDate = DateTime.Now,
+            OrderStatus = "Pending",
+            PaymentStatus = paymentStatus,
+            TotalPrice = cart.Sum(x => x.Price * x.Quantity),
+
+            // 🔥 FIX NULL ERROR
+            ReceiverPhone = "0123456789",
+            ShippingAddress = "Chưa cập nhật",
+            CustomerName = User.Identity.Name
+        };
+
+        _context.tb_Order.Add(order);
+        await _context.SaveChangesAsync();
+
+        foreach (var item in cart)
+        {
+            _context.tb_OrderDetails.Add(new OrderDetails
+            {
+                OrderId = order.OrderId,
+                ProductId = item.ProductId,
+                Quantity = item.Quantity,
+                Price = item.Price,
+                Size = item.Size
+            });
+        }
+
+        await _context.SaveChangesAsync();
+
+        // 🔥 REALTIME: ĐƠN MỚI
+        await _hub.Clients.All.SendAsync("NewOrder", new
+        {
+            orderId=order.OrderId,
+            total = order.TotalPrice,
+            order.OrderStatus
+        });
+
+        HttpContext.Session.Remove("Cart");
+        HttpContext.Session.Remove("CartBackup");
+
+        return RedirectToAction("Invoice", new { id = order.OrderId });
+    }
+
+    // ================= INVOICE =================
     public IActionResult Invoice(int id)
     {
         var order = _context.tb_Order

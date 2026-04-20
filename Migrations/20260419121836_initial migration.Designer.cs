@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProject.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20260418103506_initial migration")]
+    [Migration("20260419121836_initial migration")]
     partial class initialmigration
     {
         /// <inheritdoc />
@@ -100,7 +100,6 @@ namespace FinalProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Size")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CartItemId");
@@ -142,7 +141,12 @@ namespace FinalProject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
                     b.Property<DateTime>("CreatedDate")
+                        .HasMaxLength(50)
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerName")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<bool>("Delivered")
                         .HasColumnType("bit");
@@ -188,7 +192,7 @@ namespace FinalProject.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("OrderId");
@@ -203,7 +207,7 @@ namespace FinalProject.Migrations
                         new
                         {
                             OrderId = 1,
-                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4716),
+                            CreatedDate = new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(472),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
@@ -219,7 +223,7 @@ namespace FinalProject.Migrations
                         new
                         {
                             OrderId = 2,
-                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4730),
+                            CreatedDate = new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(482),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
@@ -235,7 +239,7 @@ namespace FinalProject.Migrations
                         new
                         {
                             OrderId = 3,
-                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4732),
+                            CreatedDate = new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(485),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
@@ -251,7 +255,7 @@ namespace FinalProject.Migrations
                         new
                         {
                             OrderId = 4,
-                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4736),
+                            CreatedDate = new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(488),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
@@ -267,7 +271,7 @@ namespace FinalProject.Migrations
                         new
                         {
                             OrderId = 5,
-                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4738),
+                            CreatedDate = new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(491),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
@@ -283,7 +287,7 @@ namespace FinalProject.Migrations
                         new
                         {
                             OrderId = 6,
-                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4741),
+                            CreatedDate = new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(494),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
@@ -299,7 +303,7 @@ namespace FinalProject.Migrations
                         new
                         {
                             OrderId = 7,
-                            CreatedDate = new DateTime(2026, 4, 18, 17, 35, 4, 700, DateTimeKind.Local).AddTicks(4743),
+                            CreatedDate = new DateTime(2026, 4, 19, 19, 18, 35, 491, DateTimeKind.Local).AddTicks(496),
                             Delivered = true,
                             DeliveryDate = new DateTime(2026, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Discount = 0,
@@ -336,6 +340,9 @@ namespace FinalProject.Migrations
 
                     b.Property<int?>("ShopId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderDetailId");
 
@@ -1367,8 +1374,8 @@ namespace FinalProject.Migrations
                             IsBanned = false,
                             IsVerified = true,
                             LogoUrl = "logo-urban.png",
+                            OwnerId = 2,
                             RatingAverage = 4.80m,
-                            RoleId = 2,
                             ShopAddress = "123 ABC Street, District 1",
                             ShopDescription = "Premium streetwear and modern fashion trends for the young generation.",
                             ShopName = "Urban Chic Fashion",
@@ -1597,7 +1604,7 @@ namespace FinalProject.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "29b34cef-c20b-4e8f-9448-3f6a525cf531",
+                            ConcurrencyStamp = "ed2bb8e9-cbd7-4159-aac8-28ff98ca4a03",
                             CreatedAt = new DateTime(2026, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@fashionstore.com",
                             EmailConfirmed = true,
@@ -1608,12 +1615,34 @@ namespace FinalProject.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@FASHIONSTORE.COM",
                             NormalizedUserName = "ADMIN@FASHIONSTORE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEP87ntRbG8o7NNgoZW8QbTLdKoEa59ZfRHTJZzC43cj4LRZEB+Gn6IBhp0r8kiyLsw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFLoc3Z+flbW+VELRaeAIMXeb9l17p7oTuWfQNUXZr9Ix133orcejiomyjC0OXlCbQ==",
                             PhoneNumberConfirmed = false,
                             PhoneVerified = false,
-                            SecurityStamp = "92a8db8e-202c-4661-81a4-63ae7329fec2",
+                            SecurityStamp = "97fedd8c-bf73-4c3d-8220-f4b9c75e9e8e",
                             TwoFactorEnabled = false,
                             UserName = "admin@fashionstore.com"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ebf0ab10-02d1-441c-96f6-ac7bc755a8b3",
+                            CreatedAt = new DateTime(2026, 3, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "seller@urbanchic.com",
+                            EmailConfirmed = true,
+                            EmailVerified = false,
+                            FullName = "Nguyen Thanh Dat",
+                            IsActive = true,
+                            IsBanned = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SELLER@URBANCHIC.COM",
+                            NormalizedUserName = "SELLER@URBANCHIC.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA+pXYnePnaj5xbBpMOH499saA/BD8eZS4NaMY8vU2HtlWvHD6ma23sYrEgEts/y8w==",
+                            PhoneNumberConfirmed = false,
+                            PhoneVerified = false,
+                            SecurityStamp = "d89dc50f-fbe6-4230-ab32-83135a2bbbb9",
+                            TwoFactorEnabled = false,
+                            UserName = "seller@urbanchic.com"
                         });
                 });
 
@@ -1650,21 +1679,21 @@ namespace FinalProject.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "4f37cf67-1e22-46fb-a399-167d6e891d2a",
+                            ConcurrencyStamp = "7521dffc-8055-4840-bad9-80c4eddec893",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "75504955-655b-4bd2-813c-4310d5f868b5",
+                            ConcurrencyStamp = "d14aed8a-8102-4b64-b8af-fdafa1be90b1",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "d5c28c67-c3e5-4db4-95b9-a998d53d6cf7",
+                            ConcurrencyStamp = "7470527c-b915-4962-988b-64c945135931",
                             Name = "Shop",
                             NormalizedName = "SHOP"
                         });
@@ -1760,6 +1789,11 @@ namespace FinalProject.Migrations
                         {
                             UserId = 1,
                             RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 3
                         });
                 });
 
@@ -1822,9 +1856,7 @@ namespace FinalProject.Migrations
 
                     b.HasOne("FinalProject.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Promotion");
 

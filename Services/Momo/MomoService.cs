@@ -20,8 +20,12 @@ namespace FinalProject.Services.Momo
         }
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentMomo(OrderInfoModel model)
         {
-            model.OrderId = DateTime.UtcNow.Ticks.ToString();
-            model.OrderInfo = "Thanh toán đơn hàng";
+            var orderId = model.OrderId;
+            var requestId = Guid.NewGuid().ToString();
+            var extraData = "";
+
+            var orderInfo = "Thanh_toan"; // 🔥 không dấu, không space
+
             var rawData =
              $"accessKey={_options.Value.AccessKey}" +
              $"&amount={model.Amount}" +
@@ -37,8 +41,9 @@ namespace FinalProject.Services.Momo
             var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
 
             var client = new RestClient(_options.Value.MomoApiUrl);
-            var request = new RestRequest() { Method = Method.Post };
-            request.AddHeader("Content-Type", "application/json; charset=UTF-8");
+            var request = new RestRequest("", Method.Post);
+
+            request.AddHeader("Content-Type", "application/json");
 
             request.AddHeader("ngrok-skip-browser-warning", "true");
 
@@ -47,26 +52,26 @@ namespace FinalProject.Services.Momo
             {
                 partnerCode = _options.Value.PartnerCode,
                 accessKey = _options.Value.AccessKey,
-                requestId = model.OrderId,
-                amount = model.Amount,
-                orderId = model.OrderId,
-                orderInfo = model.OrderInfo,
+                requestId = requestId,
+                amount = model.Amount.ToString(),
+                orderId = orderId,
+                orderInfo = orderInfo,
                 redirectUrl = _options.Value.ReturnUrl,
                 ipnUrl = _options.Value.NotifyUrl,
                 requestType = _options.Value.RequestType,
-                extraData =  "" ,// 🔥 FIX QUAN TRỌNG
+                extraData = "",
                 signature = signature,
                 lang = "en"
             };
 
-            request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
+            request.AddJsonBody(requestData);
 
             var response = await client.ExecuteAsync(request);
-            var momoResponse = JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
-            return momoResponse;
 
+            Console.WriteLine("MOMO RESPONSE: " + response.Content);
+
+            return JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
         }
-
         public MomoExecuteResponseModel PaymentExecuteAsync(IQueryCollection collection)
         {
             var amount = collection.First(s => s.Key == "amount").Value;
