@@ -36,42 +36,43 @@
 
             });
     </script>
-
     <header class="main-header">
         <nav class="navbar custom-navbar">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="header-container">
+
+                <!-- LEFT -->
                 <div class="nav-left">
-                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">Fashion Web</a>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                        Fashion Web
+                    </a>
                 </div>
                 <div class="nav-center"></div>
                 <div class="nav-right d-flex align-items-center">
-                    @* --- ĐOẠN KHÔI PHỤC NÚT DASHBOARD --- *@
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {
-                        <a class="btn btn-sm btn-outline-danger me-3" asp-controller="Admin" asp-action="Index">Dashboard</a>
-                    }
-                    @* ------------------------------------ *@
-
                     @await Html.PartialAsync("_LoginPartial")
                 </div>
             </div>
         </nav>
 
-        <div class="search-wrapper">
-            <div class="container">
-                <div class="full-width-search-container">
-                    <form method="get" asp-controller="Product" asp-action="Index" class="d-flex w-100">
-                        <div class="input-group search-group-giant">
-                            <span class="input-group-text bg-white border-0 ps-4">🔍</span>
-                            <input type="text" name="keyword" value="@Context.Request.Query["keyword"]"
-                                   class="form-control nav-search-input-giant"
-                                   placeholder="Tìm kiếm sản phẩm, bộ sưu tập..." />
-                            <button type="submit" class="btn btn-search-giant">TÌM KIẾM</button>
+                <!-- CENTER (SEARCH) -->
+                <div class="nav-center">
+                    <form method="get" asp-controller="Product" asp-action="Index" class="search-form">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" name="keyword"
+                                   value="@Context.Request.Query["keyword"]"
+                                   placeholder="Tìm kiếm sản phẩm..." />
+                            <button type="submit">TÌM KIẾM</button>
                         </div>
                     </form>
                 </div>
+
+                <!-- RIGHT -->
+                <div class="nav-right">
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
+
             </div>
-        </div>
+        </nav>
     </header>
     @{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();

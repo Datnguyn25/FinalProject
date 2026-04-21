@@ -1,7 +1,6 @@
 ﻿@model FinalProject.ViewModels.HomeViewModel
 
 <!-- HERO -->
-
 <section class="hero" id="heroSlide">
     <div class="hero-content">
         <h1>NEW COLLECTION 2026</h1>
@@ -12,146 +11,123 @@
     </div>
 </section>
 
-<!-- FEATURED -->
-
-<section class="featured">
-
-    <h2>Featured Products</h2>
-
-    <div class="product-grid">
-
-        <div class="product-card">
-            <img src="/assets/arrival-3.jpg">
-            <h3>Oversize Tee</h3>
-            <p>320.000đ</p>
-        </div>
-
-        <div class="product-card">
-            <img src="/assets/arrival-1.jpg">
-            <h3>Street Hoodie</h3>
-            <p>520.000đ</p>
-        </div>
-
-        <div class="product-card">
-            <img src="/assets/arrival-2.jpg">
-            <h3>Basic Jacket</h3>
-            <p>790.000đ</p>
-        </div>
-
-    </div>
-
-</section>
-
+<hr class="my-5" />
 
 <section class="my-5">
-    <h2 class="text-center mb-4">🔥 Sale </h2>
+    <h2 class="text-center mb-4">🔥Explore the product</h2>
 
-    <!-- Tabs -->
-    <ul class="nav nav-tabs justify-content-center" id="saleTabs" role="tablist">
-        <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#mens">
-                Men's Fashion
-            </button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#womens">
-                Women's Fashion
-            </button>
-        </li>
-        
-    </ul>
+    <!-- TAB HOT / SALE -->
+    <div class="text-center mb-3">
+        <button class="btn btn-dark me-2 active-tab" onclick="switchMainTab('hot', event)">🔥 HOT</button>
+        <button class="btn btn-outline-danger" onclick="switchMainTab('sale', event)">💸 SALE</button>
+    </div>
 
-    <div class="tab-content mt-4">
-        <!-- TAB MEN -->
-        <div class="tab-pane fade show active" id="mens">
-            <div class="row">
-                @foreach (var product in Model.MensProducts)
-                {
-                   
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 text-center shadow-sm">
-                            <img src="~/assets/white-shirt.jpg"
-                                 class="card-img-top"
-                                 alt="@product.ProductName">
-                                <div class="card-body">
-                                    <h5 class="card-title">@product.ProductName</h5>
-                                    @{
-                                        // Lấy % giảm từ bảng Promotion, tính giá sau giảm
-                                        int discount = product.Promotion?.DiscountPercent ?? 0;
-                                        decimal finalPrice = product.Price * (100 - discount) / 100;
-                                    }
-                                <p class="text-muted text-decoration-line-through">
-                                    @product.Price.ToString("N0") đ
-                                </p>
-                                <h6 class="text-danger fw-bold">
-                                    @finalPrice.ToString("N0") đ (-@discount%)
-                                </h6>
+    <!-- SUB TAB -->
+    <div class="text-center mb-4 d-none" id="subTabs">
+        <button class="btn btn-outline-secondary me-2 active-sub" onclick="switchSubTab('men', event)">Men's Fashion</button>
+        <button class="btn btn-outline-secondary" onclick="switchSubTab('women', event)">Women's Fashion</button>
+    </div>
 
-                                <a asp-controller="Product" 
-                                       asp-action="Details" 
-                                       asp-route-id="@product.ProductId " @* Đảm bảo chữ ID viết hoa theo Model *@
-                                       class="btn btn-outline-dark btn-sm">
-                                        View Details
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    }
+    <!-- PRODUCT LIST -->
+    <div class="row" id="productContainer"></div>
+</section>
+
+<script>
+    let currentMain = "hot";
+    let currentSub = "men";
+
+    const hotProducts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.HotProducts ?? new List<FinalProject.Models.Product>()));
+    const saleProducts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SaleProducts ?? new List<FinalProject.Models.Product>()));
+
+    function switchMainTab(type, e) {
+        currentMain = type;
+
+        document.getElementById("subTabs").classList.remove("d-none");
+
+        document.querySelectorAll(".active-tab").forEach(x => x.classList.remove("active-tab"));
+        e.target.classList.add("active-tab");
+
+        renderProducts();
+    }
+
+    function switchSubTab(type, e) {
+        currentSub = type;
+
+        document.querySelectorAll(".active-sub").forEach(x => x.classList.remove("active-sub"));
+        e.target.classList.add("active-sub");
+
+        renderProducts();
+    }
+
+    function renderProducts() {
+
+        let data = currentMain === "hot" ? hotProducts : saleProducts;
+
+        // DEBUG xem có data không
+        console.log("DATA:", data);
+
+        let html = "";
+data.forEach(p => {
+
+    let price = p.Price || 0;
+    let discount = p.Promotion?.DiscountPercent || 0;
+    let finalPrice = price * (100 - discount) / 100;
+
+    html += `
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 text-center shadow-sm position-relative">
+
+                ${discount > 0 ? `<span class="badge bg-danger position-absolute top-0 start-0 m-2">-${discount}%</span>` : ""}
+
+                <img src="/assets/${p.Image}"
+                     class="card-img-top"
+                     style="height:220px;object-fit:cover;"
+                     onerror="this.src='/assets/no-image.png'">
+
+                <div class="card-body">
+                    <h6>${p.ProductName}</h6>
+
+                    ${discount > 0 ? `
+                        <p class="text-muted text-decoration-line-through">
+                            ${price.toLocaleString()} đ
+                        </p>
+                        <p class="text-danger fw-bold">
+                            ${finalPrice.toLocaleString()} đ
+                        </p>
+                    ` : `
+                        <p class="text-danger fw-bold">
+                            ${price.toLocaleString()} đ
+                        </p>
+                    `}
+
+                    <a href="/Product/Details/${p.ProductId}"
+                       class="btn btn-dark btn-sm">
+                        Xem
+                    </a>
                 </div>
             </div>
+        </div>
+    `;
+});
 
-            <!-- TAB WOMEN -->
-            <div class="tab-pane fade" id="womens">
-                <div class="row">
-                    @foreach (var product in Model.WomensProducts)
-                    {
-                        
+        if (html === "") {
+                html = `<p class="text-center text-muted">no products</p>`;
+        }
 
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 text-center shadow-sm">
-                                <img src="~/assets/header.png"
-                                     class="card-img-top"
-                                     alt="@product.ProductName">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@product.ProductName</h5>
-                                        @{
-                                            // Lấy % giảm từ bảng Promotion, tính giá sau giảm
-                                            int discount = product.Promotion?.DiscountPercent ?? 0;
-                                            decimal finalPrice = product.Price * (100 - discount) / 100;
-                                        }
-                                        <p class="text-muted text-decoration-line-through">
-                                            @product.Price.ToString("N0") đ
-                                        </p>
-                                        <h6 class="text-danger fw-bold">
-                                            @finalPrice.ToString("N0") đ (-@discount%)
-                                        </h6>
-                                        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-outline-dark btn-sm">
-                                    View Details
-                                </a>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
+        document.getElementById("productContainer").innerHTML = html;
+    }
 
-               
-            </section>
-            <script>
-                const images = [
-                    '/imagess/anh1.jpg',
-                    '/imagess/anh2.jpg',
-                    '/imagess/anh3.jpg'
-                ];
+    // 🔥 QUAN TRỌNG: render lần đầu
+    renderProducts();
+</script>
 
-                let index = 0;
-                const hero = document.getElementById("heroSlide");
+<style>
+    .active-tab {
+        background: #000 !important;
+        color: #fff !important;
+    }
 
-                function changeSlide() {
-                    hero.style.backgroundImage = `url('${images[index]}')`;
-                    index = (index + 1) % images.length;
-                }
-
-                changeSlide();
-                setInterval(changeSlide, 3000);
-            </script>
+    .active-sub {
+        background: #ddd !important;
+    }
+</style>

@@ -48,7 +48,19 @@ namespace FinalProject.Controllers
                     .Where(p => p.CateId == 2)
                     .Take(6)
                     .ToList(),
+
             };
+            // 🔥 HOT
+            model.HotProducts = _context.tb_Product
+                .Where(p => p.Hot)
+                .Take(8)
+                .ToList();  
+
+            // 🔥 SALE
+            model.SaleProducts = _context.tb_Product
+                .Where(p => p.Promotion != null)
+                .Take(8)
+                .ToList();
 
             return View(model);
         }

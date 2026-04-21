@@ -2006,7 +2006,7 @@ h1, h2, h3 {
         NAVBAR GIỮA
 =========================*/
 
-.custom-navbar .container-fluid {
+     .container-fluid {
     display: flex;
     justify-content: center;
     position: relative;
@@ -2977,28 +2977,4 @@ body.from-home .shop-container {
 /* FIX KHOẢNG CÁCH BANNER */
 .ads-banner {
     margin-top: 30px; /* Đẩy banner xuống 1 chút để thanh search có chỗ "bay" */
-}
-
-/* Chữ Greetings giữ nguyên màu mặc định của web */
-.welcome-text {
-    color: inherit;
-    font-size: 1rem;
-}
-
-/* Chỉ đổi màu cái tên khi hover */
-.user-name-link {
-    text-decoration: none;
-    color: #333; /* Màu mặc định của tên (đen/xám đậm) */
-    transition: color 0.2s ease-in-out;
-    display: inline-block; /* Để nó không chiếm hết dòng */
-}
-
-    .user-name-link:hover {
-        color: #007bff; /* Chỉ cái tên đổi sang màu xanh */
-        text-decoration: underline; /* Thêm gạch chân cho giống link nếu thích */
-    }
-
-/* Dòng nhắc nhỏ bên dưới */
-.profile-hint {
-    margin-top: -2px;
 }
