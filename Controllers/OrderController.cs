@@ -1,6 +1,7 @@
 ﻿using FinalProject.Data;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using FinalProject.Helpers;
 
 public class OrderController : Controller
 {
@@ -31,6 +32,7 @@ public class OrderController : Controller
 
         _context.tb_Order.Add(order);
         _context.SaveChanges();
+        LoggerHelper.WriteLog(_context, User, $"Order {order.OrderId} created successfully.");
 
         HttpContext.Session.Remove("Cart");
 

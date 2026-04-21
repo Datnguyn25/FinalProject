@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinalProject.Controllers
 {
-    public partial class AdminController
+    public partial class AdminController : Controller
     {
         public IActionResult Orders()
         {
@@ -22,6 +22,8 @@ namespace FinalProject.Controllers
                 order.Delivered = true;
                 order.DeliveryDate = DateTime.Now;
             }
+            
+            WriteLog($"updated order: {order.OrderId} to status: {status}");
             _context.SaveChanges();
             return RedirectToAction("Orders");
         }

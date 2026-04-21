@@ -64,7 +64,7 @@
                                 <td>@item.Size</td>
                                 <td>@item.Quantity</td>
                                 <td>@item.Price.ToString("N0") VNĐ</td>
-                                <td>@(item.Quantity* item.Price).ToString("N0") VNĐ</td>
+                                <td>@((item.Quantity * item.Price).ToString("N0")) VNĐ</td>
                             </tr>
                         }
                     }
@@ -78,7 +78,7 @@
             </table>
 
             <h3 style="text-align:right;margin-top:20px;">
-                Total: @total.ToString("N0") VNĐ
+                Total: @(total.ToString("N0")) VNĐ
             </h3>
 
             <br />

@@ -89,8 +89,9 @@
                             }
                             else
                             {
+                                @* SỬA TẠI ĐÂY: Đổi @item.Id thành @user.Id *@
                                 <form asp-action="UnbanSeller" asp-route-id="@user.Id" method="post" style="display:inline;">
-                                    <button type="submit" class="admin-btn" style="background-color: #6c757d;">Unban</button>
+                                    <button type="submit" class="admin-btn" style="background-color: #28a745;">Unban</button>
                                 </form>
                             }
                         </div>

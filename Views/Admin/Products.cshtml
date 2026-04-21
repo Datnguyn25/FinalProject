@@ -76,6 +76,7 @@
                 </td>
                 <td>
                     <div class="status-labels">
+                        @* display Active/Hidden *@
                         @if (p.Status)
                         {
                             <span class="badge bg-success" style="width: 60px;">Active</span>
@@ -84,12 +85,26 @@
                         {
                             <span class="badge bg-secondary" style="width: 60px;">Hidden</span>
                         }
-                        @if (p.Hot)
-                        {
-                            <br />
-                    
-                            <span class="badge bg-warning text-dark mt-1" style="width: 60px;">HOT</span>
-                        }
+
+                        @* PHẦN THAY ĐỔI: Nút bấm thay đổi HOT *@
+                        <div class="mt-2">
+                            <form asp-action="ToggleHotProduct" asp-route-id="@p.ProductId" method="post">
+                                <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;" title="Toggle HOT status">
+                                    @if (p.Hot)
+                                    {
+                                        <span class="badge bg-warning text-dark" style="width: 60px; display: inline-block;">
+                                            🔥 HOT
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge border text-muted" style="width: 60px; display: inline-block; background-color: #f8f9fa;">
+                                            Normal
+                                        </span>
+                                    }
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </td>
                 <td>

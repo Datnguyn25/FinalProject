@@ -24,8 +24,27 @@
                         @log.Timestamp.ToString("MMM dd, yyyy HH:mm")
                     </td>
                     <td style="line-height: 1.5; padding: 12px;">
-                        <i class="fas fa-caret-right text-primary me-2"></i>
-                        <span class="text-dark">@log.Action</span>
+                        <i class="fas fa-user-circle text-secondary me-2"></i>
+
+                        <span class="text-dark">
+                            @* 1. Hiển thị FullName *@
+                            <strong class="text-primary" style="font-weight: 600;">
+                                @(log.User != null ? log.User.FullName : "System Admin")
+                            </strong>
+
+                            @* 2. Hiển thị hành động (Action) *@
+                            <span class="mx-1">has</span>
+                            <span class="text-dark">@log.Action</span>
+                        </span>
+
+                        @* Nút xem chi tiết kỹ thuật nếu có *@
+                        @if (!string.IsNullOrEmpty(log.Details))
+                        {
+                            <a href="javascript:void(0)" class="ms-2 text-decoration-none"
+                               onclick="showLogDetails('@log.Action', '@log.Details', '@log.Timestamp', '@(log.User?.FullName ?? "System")')">
+                                <i class="fas fa-info-circle small text-info"></i>
+                            </a>
+                        }
                     </td>
                 </tr>
             }

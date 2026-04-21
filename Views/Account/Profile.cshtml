@@ -1,0 +1,71 @@
+﻿@model FinalProject.ViewModels.UserProfileVM
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h2 class="mb-0">My Profile</h2>
+            <p class="text-muted small">Update your information for faster checkout</p>
+        </div>
+        <div class="card-body">
+            <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-4 text-center border-end">
+                        <img src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "/images/default-avatar.png" : Model.AvatarUrl)"
+                             class="rounded-circle img-thumbnail mb-3"
+                             style="width: 180px; height: 180px; object-fit: cover;">
+                        <div class="px-4">
+                            <label class="form-label small fw-bold">Change Profile Picture</label>
+                            <input type="file" asp-for="AvatarFile" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="fw-bold">Email (Account)</label>
+                                <input type="text" class="form-control bg-light" value="@Model.Email" readonly>
+                                <input type="hidden" asp-for="Email" /> @* Đảm bảo email vẫn gửi lên để controller nhận *@
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FullName" class="fw-bold">Full Name</label>
+                                <input type="text" asp-for="FullName" class="form-control" placeholder="Enter your full name">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PhoneNumber" class="fw-bold">Phone Number</label>
+                                <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="090x xxx xxx">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="fw-bold">City / Province</label>
+                                <input type="text" asp-for="City" class="form-control" placeholder="e.g. Ho Chi Minh City">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="District" class="fw-bold">District</label>
+                                <input type="text" asp-for="District" class="form-control" placeholder="e.g. District 1">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Ward" class="fw-bold">Ward</label>
+                                <input type="text" asp-for="Ward" class="form-control" placeholder="e.g. Ben Nghe Ward">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Address" class="fw-bold">Street Address</label>
+                            <textarea asp-for="Address" class="form-control" rows="2" placeholder="e.g. 123 Le Loi Street"></textarea>
+                        </div>
+
+                        <hr>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary px-5">Save Profile Info</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

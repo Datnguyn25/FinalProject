@@ -37,9 +37,27 @@
             </p>
 
             <div style="line-height: 1.8;">
-                <p><b>Category:</b> @Model.Category?.CateName</p>
-                <p><b>Brand:</b> @Model.Brand?.BrandName</p>
-                <p><b>Shop:</b> @Model.Shop?.ShopName</p>
+                <p>
+                    <b>Category:</b>
+                    <a asp-controller="Product" asp-action="Index" asp-route-cateId="@Model.CateId"
+                       class="badge-filter">
+                        @Model.Category?.CateName
+                    </a>
+                </p>
+                <p>
+                    <b>Brand:</b>
+                    <a asp-controller="Product" asp-action="Index" asp-route-brandId="@Model.BrandId"
+                       class="badge-filter">
+                        @Model.Brand?.BrandName
+                    </a>
+                </p>
+                <p>
+                    <b>Shop:</b>
+                    <a asp-controller="Product" asp-action="Index" asp-route-shopId="@Model.ShopId"
+                       class="badge-filter">
+                        @Model.Shop?.ShopName
+                    </a>
+                </p>
                 <p>
                     <b>Quantity:</b>
                     @if (Model.Quantity > 0)
@@ -229,3 +247,26 @@
         });
     </script>
 }
+
+<style>
+    .badge-filter {
+        display: inline-block;
+        padding: 2px 10px;
+        background-color: #f0f0f0;
+        color: #333;
+        text-decoration: none;
+        border-radius: 15px;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+        margin-left: 5px;
+    }
+
+        .badge-filter:hover {
+            background-color: #c7a17a; /* Màu đồng bộ với nút Submit Review của bạn */
+            color: white;
+            border-color: #c7a17a;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+</style>

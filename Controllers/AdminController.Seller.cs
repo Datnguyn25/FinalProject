@@ -44,6 +44,8 @@ namespace FinalProject.Controllers
                 user.MyShop.IsActive = true;
             }
 
+            string targetName = user.MyShop?.ShopName ?? user.FullName;
+            WriteLog($" approved seller: {targetName}");
             _context.SaveChanges();
             return RedirectToAction("Sellers");
         }
@@ -51,12 +53,38 @@ namespace FinalProject.Controllers
         [HttpPost]
         public IActionResult BanSeller(int id)
         {
-            var user = _context.Users.Find(id);
+            var user = _context.Users
+            .Include(u => u.MyShop)
+            .FirstOrDefault(u => u.Id == id);
+
             if (user == null) return NotFound();
 
             user.IsBanned = true;
+            user.IsActive = false;
+
+            string targetName = user.MyShop?.ShopName ?? user.FullName;
+            WriteLog($"banned seller: {targetName}");
             _context.SaveChanges();
 
+            return RedirectToAction("Sellers");
+        }
+
+        [HttpPost]
+        public IActionResult UnbanSeller(int id)
+        {
+            var user = _context.Users
+                .Include(u => u.MyShop)
+                .FirstOrDefault(u => u.Id == id);
+
+            if (user == null) return NotFound();
+
+            user.IsBanned = false;
+            user.IsActive = true; // Mở băng thì kích hoạt lại luôn
+
+            string targetName = user.MyShop?.ShopName ?? user.FullName;
+            WriteLog($"unbanned seller: {targetName}");
+
+            _context.SaveChanges();
             return RedirectToAction("Sellers");
         }
     }

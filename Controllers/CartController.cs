@@ -3,7 +3,7 @@ using FinalProject.Hubs;
 using FinalProject.Models;
 using FinalProject.Services.Momo;
 using FinalProject.Services.Zalo;
-using FinalProject.Services.ZaloPay;
+using FinalProject.Helpers;
 using FinalProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +72,7 @@ public class CartController : Controller
         }
 
         SaveCart(cart);
+        LoggerHelper.WriteLog(_context, User, $"Added {quantity} product(s) '{product.ProductName}' (Size: {size}) to the cart");
 
         if (actionType == "buyNow")
         {
@@ -88,6 +89,7 @@ public class CartController : Controller
 
         if (item != null)
         {
+            LoggerHelper.WriteLog(_context, User, $"Removed product '{item.ProductName}' (Size: {item.Size}) from the cart");
             cart.Remove(item);
         }
 
@@ -219,6 +221,7 @@ public class CartController : Controller
         }
 
         await _context.SaveChangesAsync();
+        LoggerHelper.WriteLog(_context, User, $"Created order #{order.OrderId} with {cart.Count} item(s) using {method}");
 
         // 🔥 REALTIME: ĐƠN MỚI
         await _hub.Clients.All.SendAsync("NewOrder", new

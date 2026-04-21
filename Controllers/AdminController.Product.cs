@@ -57,8 +57,10 @@ namespace FinalProject.Controllers
                 }
             }
 
+            string actionDescription = $"has updated product: {model.ProductName}";
             string adminName = _context.tb_Users.Find(int.Parse(_userManager.GetUserId(User)))?.FullName ?? "Admin";
-            string logMsg = $"{adminName} updated {model.ProductName}: " + (changes.Any() ? string.Join(", ", changes) : "no changes");
+            string logMsg = $"has updated product: {model.ProductName}";
+            string technicalDetails = changes.Any() ? string.Join("\n", changes) : "No specific fields changed";
 
             WriteLog(logMsg);
             _context.tb_Product.Update(model);
@@ -78,6 +80,9 @@ namespace FinalProject.Controllers
             {
                 _context.tb_ProductCategory.Add(model);
                 _context.SaveChanges();
+
+                WriteLog($"added a new category: {model.CateName}");
+
                 return RedirectToAction("Categories");
             }
             return View(model);
@@ -88,10 +93,31 @@ namespace FinalProject.Controllers
             var cate = _context.tb_ProductCategory.Find(id);
             if (cate != null)
             {
+                WriteLog($"deleted category: {cate.CateName}", $"Category ID: {id}");
+
                 _context.tb_ProductCategory.Remove(cate);
                 _context.SaveChanges();
             }
             return RedirectToAction("Categories");
+        }
+
+        [HttpPost]
+        public IActionResult ToggleHotProduct(int id)
+        {
+            var product = _context.tb_Product.FirstOrDefault(p => p.ProductId == id);
+            if (product == null) return NotFound();
+
+            // Đảo trạng thái Hot
+            product.Hot = !product.Hot;
+
+            // Ghi log xịn sò
+            string statusText = product.Hot ? "marked as HOT" : "unmarked HOT";
+            WriteLog($"{statusText} product: {product.ProductName}");
+
+            _context.SaveChanges();
+
+            // Trở về trang quản lý sản phẩm
+            return RedirectToAction("Products");
         }
     }
 }

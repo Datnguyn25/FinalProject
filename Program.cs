@@ -1,5 +1,4 @@
 using FinalProject.Data;
-using FinalProject.Filters;
 using FinalProject.Hubs;
 using FinalProject.Models;
 using FinalProject.Models.Momo;
@@ -33,7 +32,7 @@ namespace FinalProject
             // Add services to the container
             builder.Services.AddControllersWithViews(options =>
             {
-                options.Filters.Add<SystemLogFilter>();
+                
             });
 
             // Database
@@ -134,7 +133,7 @@ namespace FinalProject
             
             // zalopay
             builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
-            builder.Services.AddScoped<SystemLogFilter>();
+
 
             builder.Services.AddSignalR();
           

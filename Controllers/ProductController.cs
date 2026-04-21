@@ -2,6 +2,8 @@
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FinalProject.Controllers;
+using FinalProject.Helpers;
 
 public class ProductController : Controller
 {
@@ -135,6 +137,7 @@ public class ProductController : Controller
         {
             _context.tb_Product.Add(model);
             _context.SaveChanges();
+            LoggerHelper.WriteLog(_context, User, $"added a new product: {model.ProductName}");
             return RedirectToAction("Index");
         }
 
@@ -179,6 +182,7 @@ public class ProductController : Controller
         product.MetaDescription = model.MetaDescription;
         product.UpdatedDate = DateTime.Now;
 
+        LoggerHelper.WriteLog(_context, User, $"updated product: {product.ProductName}");
         _context.SaveChanges();
 
         return RedirectToAction("Index");
@@ -193,6 +197,7 @@ public class ProductController : Controller
         {
             _context.tb_Product.Remove(product);
             _context.SaveChanges();
+            LoggerHelper.WriteLog(_context, User, $"deleted product: {product.ProductName}");
         }
 
         return RedirectToAction("Index");

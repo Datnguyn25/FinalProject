@@ -6,21 +6,30 @@ using FinalProject.Services.Momo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FinalProject.Helpers;
+using Microsoft.AspNetCore.Identity;
 public class CheckoutController : Controller
 {
     private readonly IMomoService _momoService;
     private readonly WebDbContext _context;
+    private readonly UserManager<User> _userManager;
 
-    public CheckoutController(IMomoService momoService, WebDbContext context)
+    public CheckoutController(IMomoService momoService, WebDbContext context, UserManager<User> userManager)
     {
         _momoService = momoService;
         _context = context;
+        _userManager = userManager;
     }
 
     // 👉 BẤM THANH TOÁN
     [HttpPost]
     public async Task<IActionResult> Checkout(string paymentMethod, string PromotionCode)
     {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Challenge();
+
+        var cart = HttpContext.Session.Get<List<CartItems>>("Cart");
+        if (cart == null || !cart.Any()) return RedirectToAction("Index", "Home");
 
         decimal originalTotal = 55000; // You should calculate this from Session/DB cart items
         decimal finalTotal = originalTotal;
@@ -42,7 +51,8 @@ public class CheckoutController : Controller
             }
         }
 
-        var cart = HttpContext.Session.Get<List<CartItems>>("Cart");
+
+
         // 1. Tạo đơn hàng
         var order = new Order
         {
@@ -51,8 +61,8 @@ public class CheckoutController : Controller
             PaymentStatus = "Unpaid",
             OrderDate = DateTime.Now,
             TotalPrice = finalTotal, // Store the final price!
-            ShippingAddress = "Fixed Address for test", // You have FullName/Address in VM
-            ReceiverPhone = "0123456789",
+            ShippingAddress = $"{user.Address}, {user.Ward}, {user.District}, {user.City}",
+            ReceiverPhone = user.PhoneNumber,
             OrderDetails = cart.Select(item => new OrderDetails
             {
                 ProductId = item.ProductId,
@@ -64,6 +74,7 @@ public class CheckoutController : Controller
 
         _context.tb_Order.Add(order);
         await _context.SaveChangesAsync();
+        LoggerHelper.WriteLog(_context, User, $"User {User.Identity.Name} initiated checkout for order {order.OrderId} via {paymentMethod}. Total: {finalTotal} (Discount: {discountPercent}%)");
 
         // 2. COD → xong luôn
         if (paymentMethod == "COD")
@@ -72,13 +83,14 @@ public class CheckoutController : Controller
             order.PaymentStatus = "Paid";
             await _context.SaveChangesAsync();
 
+            LoggerHelper.WriteLog(_context, User, $"User {User.Identity.Name} completed COD Order {order.OrderId}. Total: {finalTotal} (Discount: {discountPercent}%)");
             return RedirectToAction("Result", "Checkout", new { id = order.OrderId });
         }
 
         // 3. MOMO
         var momoModel = new OrderInfoModel
         {
-            FullName = "Nguyen Thanh Dat",
+            FullName = user.FullName,
             Amount = (double)finalTotal,
 
             // 🔥 FIX Ở ĐÂY
@@ -122,12 +134,15 @@ public class CheckoutController : Controller
                 {
                     if (resultCode == "0")
                     {
+                        LoggerHelper.WriteLog(_context, User, $"User {User.Identity.Name} completed MoMo Order {order.OrderId}. Total: {order.TotalPrice} (OrderInfo: {orderInfo})");
+
                         order.OrderStatus = "Completed";
                         order.PaymentStatus = "Paid";
                         ViewBag.Message = "Transaction Successful";
                     }
                     else
                     {
+                        LoggerHelper.WriteLog(_context, User, $"User {User.Identity.Name} failed MoMo Order {order.OrderId}. Total: {order.TotalPrice} (OrderInfo: {orderInfo}, ResultCode: {resultCode})");
                         order.OrderStatus = "Cancelled";
                         order.PaymentStatus = "Failed";
                         ViewBag.Message = "Transaction Failed";

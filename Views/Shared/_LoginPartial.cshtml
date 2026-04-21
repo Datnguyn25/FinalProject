@@ -1,19 +1,33 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using FinalProject.Models
 @inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 <div class="auth-group d-inline-flex align-items-center gap-2">
     @if (SignInManager.IsSignedIn(User))
     {
-        <span class="welcome-text">Greetings, <b>@(User.FindFirst("FullName")?.Value ?? User.Identity.Name)</b></span>
+        // Lấy thông tin user hiện tại từ database
+        var currentUser = await UserManager.GetUserAsync(User);
+        var displayName = currentUser?.FullName ?? User.Identity.Name;
+
+        <div class="user-greeting-wrapper text-end me-2">
+            <span class="welcome-text">
+                Greetings,
+                <a asp-controller="Account" asp-action="Profile" class="user-name-link">
+                    <b>@displayName</b>
+                </a>
+            </span>
+            <div class="profile-hint" style="font-size: 0.7rem; color: #888; font-style: italic;">
+                Click here to view your profile
+            </div>
+        </div>
 
         @if (User.IsInRole("Shop"))
         {
-            @* Nếu là chủ shop thì hiện link vào trang quản lý *@
             <a asp-controller="SellerShop" asp-action="Index" class="btn-login-main">Shop Manager</a>
         }
         else if (!User.IsInRole("Admin"))
         {
-            @* Nếu là khách hàng bình thường thì hiện link để họ nâng cấp lên shop *@
             <a asp-controller="Account" asp-action="RegisterBusiness" class="link-reg">Open Shop</a>
         }
 

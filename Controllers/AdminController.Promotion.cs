@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using FinalProject.Models;
+﻿using FinalProject.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using System.Linq;
 
 namespace FinalProject.Controllers
@@ -49,6 +50,7 @@ namespace FinalProject.Controllers
 
                 _context.tb_Promotion.Add(promotion);
                 _context.SaveChanges();
+                WriteLog($"added a new promotion: {promotion.Name}", $"Value: {promotion.DiscountPercent}%");
                 return RedirectToAction(nameof(Promotion));
             }
 
@@ -63,6 +65,7 @@ namespace FinalProject.Controllers
             var promotion = _context.tb_Promotion.Find(id);
             if (promotion != null)
             {
+                WriteLog($"deleted promotion: {promotion.Name}");
                 _context.tb_Promotion.Remove(promotion);
                 _context.SaveChanges();
             }

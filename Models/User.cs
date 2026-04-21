@@ -41,7 +41,10 @@ namespace FinalProject.Models
 
         [StringLength(100)]
         public string? City { get; set; }
-
+        [StringLength(100)]
+        public string? District { get; set; }
+        [StringLength(100)]
+        public string? Ward { get; set; }
         [StringLength(100)]
         public string? Country { get; set; }
 
