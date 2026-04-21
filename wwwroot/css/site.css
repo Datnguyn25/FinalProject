@@ -2978,37 +2978,63 @@ body.from-home .shop-container {
 .ads-banner {
     margin-top: 30px; /* Đẩy banner xuống 1 chút để thanh search có chỗ "bay" */
 }
-/* ===== HEADER SEARCH FIX ===== */
-.custom-navbar {
-    padding: 10px 20px;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-}
-
-.search-group {
+/* HEADER FLEX CHUẨN */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    max-width: 1500px;
-    margin: auto;
+    padding: 10px 30px;
 }
 
-.search-input {
-    border: none;
-    box-shadow: none;
-    padding: 10px;
+/* LEFT */
+.nav-left {
+    flex: 1;
 }
 
-    .search-input:focus {
-        outline: none;
-        box-shadow: none;
+    .nav-left .navbar-brand {
+        font-size: 22px;
+        font-weight: bold;
+        color: #2f5bea;
     }
 
-.btn-search {
-    background: black;
-    color: white;
-    padding: 10px 20px;
-    border: none;
+/* CENTER */
+.nav-center {
+    flex: 2;
+    display: flex;
+    justify-content: center;
 }
 
-.input-group-text {
-    border: none;
+/* SEARCH BOX */
+.search-box {
+    display: flex;
+    align-items: center;
+    width: 600px; /* 👉 chỉnh cho bằng banner */
+    background: #fff;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+    .search-box input {
+        flex: 1;
+        border: none;
+        padding: 10px 15px;
+        outline: none;
+    }
+
+    .search-box button {
+        background: #c49a6c;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-weight: bold;
+    }
+
+/* RIGHT */
+.nav-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }

@@ -51,12 +51,10 @@ namespace FinalProject.Controllers
 
             };
             // 🔥 HOT
-            model.HotProducts = _context.tb_OrderDetails
-                .GroupBy(x => x.ProductId)
-                .Select(g => g.First().Product)
-
+            model.HotProducts = _context.tb_Product
+                .Where(p => p.Hot)
                 .Take(8)
-                .ToList();
+                .ToList();  
 
             // 🔥 SALE
             model.SaleProducts = _context.tb_Product
