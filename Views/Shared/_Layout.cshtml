@@ -36,37 +36,32 @@
 
             });
     </script>
-
     <header class="main-header">
         <nav class="navbar custom-navbar">
-            <div class="container-fluid d-flex align-items-center">
+            <div class="header-container">
 
-                <!-- LOGO -->
-                <a class="navbar-brand me-4" asp-controller="Home" asp-action="Index">
-                    Fashion Web
-                </a>
+                <!-- LEFT -->
+                <div class="nav-left">
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                        Fashion Web
+                    </a>
+                </div>
 
-                <!-- SEARCH -->
-                <form method="get" asp-controller="Product" asp-action="Index"
-                      class="d-flex justify-content-center flex-grow-1">
+                <!-- CENTER (SEARCH) -->
+                <div class="nav-center">
+                    <form method="get" asp-controller="Product" asp-action="Index" class="search-form">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" name="keyword"
+                                   value="@Context.Request.Query["keyword"]"
+                                   placeholder="Tìm kiếm sản phẩm..." />
+                            <button type="submit">TÌM KIẾM</button>
+                        </div>
+                    </form>
+                </div>
 
-                    <div class="input-group search-group">
-                        <span class="input-group-text bg-white border-0">🔍</span>
-
-                        <input type="text"
-                               name="keyword"
-                               value="@Context.Request.Query["keyword"]"
-                               class="form-control search-input"
-                               placeholder="Search for products..." />
-
-                        <button type="submit" class="btn btn-search">
-                            Search
-                        </button>
-                    </div>
-                </form>
-
-                <!-- USER -->
-                <div class="nav-right d-flex align-items-center">
+                <!-- RIGHT -->
+                <div class="nav-right">
                     @await Html.PartialAsync("_LoginPartial")
                 </div>
 
