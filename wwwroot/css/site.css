@@ -2006,7 +2006,7 @@ h1, h2, h3 {
         NAVBAR GIỮA
 =========================*/
 
-.custom-navbar .container-fluid {
+     .container-fluid {
     display: flex;
     justify-content: center;
     position: relative;
@@ -2977,4 +2977,38 @@ body.from-home .shop-container {
 /* FIX KHOẢNG CÁCH BANNER */
 .ads-banner {
     margin-top: 30px; /* Đẩy banner xuống 1 chút để thanh search có chỗ "bay" */
+}
+/* ===== HEADER SEARCH FIX ===== */
+.custom-navbar {
+    padding: 10px 20px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.search-group {
+    width: 100%;
+    max-width: 1500px;
+    margin: auto;
+}
+
+.search-input {
+    border: none;
+    box-shadow: none;
+    padding: 10px;
+}
+
+    .search-input:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+.btn-search {
+    background: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+}
+
+.input-group-text {
+    border: none;
 }

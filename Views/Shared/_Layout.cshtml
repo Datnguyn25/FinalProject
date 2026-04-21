@@ -39,32 +39,39 @@
 
     <header class="main-header">
         <nav class="navbar custom-navbar">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
-                <div class="nav-left">
-                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">Fashion Web</a>
-                </div>
-                <div class="nav-center"></div>
+            <div class="container-fluid d-flex align-items-center">
+
+                <!-- LOGO -->
+                <a class="navbar-brand me-4" asp-controller="Home" asp-action="Index">
+                    Fashion Web
+                </a>
+
+                <!-- SEARCH -->
+                <form method="get" asp-controller="Product" asp-action="Index"
+                      class="d-flex justify-content-center flex-grow-1">
+
+                    <div class="input-group search-group">
+                        <span class="input-group-text bg-white border-0">🔍</span>
+
+                        <input type="text"
+                               name="keyword"
+                               value="@Context.Request.Query["keyword"]"
+                               class="form-control search-input"
+                               placeholder="Search for products..." />
+
+                        <button type="submit" class="btn btn-search">
+                            Search
+                        </button>
+                    </div>
+                </form>
+
+                <!-- USER -->
                 <div class="nav-right d-flex align-items-center">
                     @await Html.PartialAsync("_LoginPartial")
                 </div>
+
             </div>
         </nav>
-
-        <div class="search-wrapper">
-            <div class="container">
-                <div class="full-width-search-container">
-                    <form method="get" asp-controller="Product" asp-action="Index" class="d-flex w-100">
-                        <div class="input-group search-group-giant">
-                            <span class="input-group-text bg-white border-0 ps-4">🔍</span>
-                            <input type="text" name="keyword" value="@Context.Request.Query["keyword"]"
-                                   class="form-control nav-search-input-giant"
-                                   placeholder="Tìm kiếm sản phẩm, bộ sưu tập..." />
-                            <button type="submit" class="btn btn-search-giant">TÌM KIẾM</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </header>
     @{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
