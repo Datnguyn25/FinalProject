@@ -33,6 +33,75 @@ body {
 }
 /* NAVBAR */
 
+/* Tùy chỉnh thanh search trên Nav */
+.nav-search-input {
+    border-color: #e5e5e5;
+    font-size: 0.9rem;
+    padding: 6px 15px;
+}
+
+    .nav-search-input:focus {
+        box-shadow: none;
+        border-color: #111;
+    }
+
+/* Ẩn thanh search trên mobile nếu quá chật (tùy chọn) */
+@media (max-width: 576px) {
+    .nav-center {
+        display: none;
+    }
+}
+
+/* CONTAINER CHỨA SEARCH */
+.nav-search-container {
+    flex: 0 1 600px; /* Độ dài tối đa 600px */
+    margin: 0 40px;
+    transition: all 0.3s ease;
+}
+
+/* KHỐI GROUP BO TRÒN */
+.search-group {
+    border: 1px solid #dcdcdc;
+    border-radius: 30px !important; /* Bo tròn sang trọng */
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* ICON KÍNH LÚP */
+.search-icon-box {
+    background: transparent !important;
+    border: none !important;
+    padding-left: 20px !important;
+    color: #888;
+}
+
+/* Ô INPUT SẠCH SẼ */
+.nav-search-input {
+    border: none !important;
+    padding: 12px 10px !important;
+    font-size: 15px !important;
+    box-shadow: none !important;
+}
+
+/* NÚT TÌM KIẾM ĐEN TỐI GIẢN */
+.btn-search-nav {
+    background: #111 !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 0 25px !important;
+    font-weight: 500;
+    font-size: 13px;
+    height: 100%;
+    transition: 0.3s;
+}
+
+    .btn-search-nav:hover {
+        background: #c8a27a !important; /* Đổi màu beige khi rê chuột */
+    }
+
 .navbar {
     background: #f8f6f2;
     border-bottom: 1px solid #e5e5e5;
@@ -489,21 +558,46 @@ body {
 /* search */
 .shop-search {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 0; /* Gộp input và nút thành một khối */
+    margin-bottom: 30px;
+    max-width: 600px; /* Độ dài vừa phải cho thanh search */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .shop-input {
-    background: white;
-    border: 1px solid #ddd;
-    padding: 8px;
-    border-radius: 6px;
+    flex: 1;
+    padding: 12px 20px !important;
+    border: 2px solid #eadfce !important; /* Màu beige theo theme của bạn */
+    border-radius: 25px 0 0 25px !important; /* Bo tròn bên trái */
+    outline: none;
+    transition: 0.3s;
 }
+
+    .shop-input:focus {
+        border-color: #c8a27a !important;
+        box-shadow: 0 0 8px rgba(200, 162, 122, 0.2);
+    }
 
 /* category */
 .shop-category {
     margin-bottom: 20px;
 }
+
+.shop-btn {
+    background: #c8a27a !important; /* Màu nâu chủ đạo */
+    color: white !important;
+    padding: 0 25px;
+    border: none;
+    border-radius: 0 25px 25px 0; /* Bo tròn bên phải */
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+    .shop-btn:hover {
+        background: #b89168 !important;
+    }
 
 .shop-cate {
     margin-right: 12px;
@@ -2830,4 +2924,57 @@ body.from-home .shop-container {
     height: 38px !important;
     display: flex !important;
     align-items: center;
+}
+
+/* Container chính cho thanh search */
+/* Container thanh search */
+/* Lớp mỏ neo để định vị */
+.search-anchor {
+    position: absolute;
+    top: 100%; /* Sát mép dưới menu */
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%); /* Đè lên vạch phân cách 50/50 */
+    z-index: 9999;
+    pointer-events: none; /* Tránh che khuất các click xung quanh */
+}
+
+/* Container chứa search bên trong */
+.full-width-search-container {
+    pointer-events: auto; /* Cho phép gõ chữ vào ô search */
+    width: 100%;
+    /* Không cần left: 50% hay transform translate X nữa 
+       vì đã được thẻ .container căn giữa rồi */
+}
+
+/* Khối search trắng */
+.search-group-giant {
+    background: #fff;
+    border-radius: 4px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+    border: 1px solid #ddd !important;
+    height: 60px;
+    overflow: hidden;
+    display: flex;
+}
+
+.nav-search-input-giant {
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 16px !important;
+    height: 100% !important;
+}
+
+.btn-search-giant {
+    background: #111 !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 0 40px !important;
+    font-weight: 600 !important;
+    border-radius: 0 !important;
+}
+
+/* FIX KHOẢNG CÁCH BANNER */
+.ads-banner {
+    margin-top: 30px; /* Đẩy banner xuống 1 chút để thanh search có chỗ "bay" */
 }

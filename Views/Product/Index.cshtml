@@ -68,14 +68,15 @@
         <!-- ===== MAIN ===== -->
         <div class="shop-main">
 
-            <form method="get" asp-action="Index" class="shop-search">
-                <select name="searchType" class="shop-input">
-                    <option value="name">Product Name</option>
-                </select>
+            @* <form method="get" asp-action="Index" class="shop-search" style="display: flex; gap: 10px; width: 100%;">
+                <input type="hidden" name="searchType" value="all" />
 
-                <input type="text" name="keyword" value="@ViewBag.Keyword" class="shop-input" />
+                <input type="text" name="keyword" value="@ViewBag.Keyword"
+                       class="shop-input" placeholder="Search products, categories, keywords..."
+                       style="flex-grow: 1; min-width: 0;" />
+
                 <button type="submit" class="shop-btn">Search</button>
-            </form>
+            </form> *@
 
             <hr />
 

@@ -61,36 +61,20 @@ public class ProductController : Controller
         {
             keyword = keyword.ToLower();
 
-            switch (searchType)
-            {
-                case "seo":
-                    products = products.Where(p =>
-                        p.SeoTitle != null &&
-                        p.SeoTitle.ToLower().Contains(keyword));
-                    break;
-
-                case "keyword":
-                    products = products.Where(p =>
-                        p.MetaKeywords != null &&
-                        p.MetaKeywords.ToLower().Contains(keyword));
-                    break;
-
-                case "desc":
-                    products = products.Where(p =>
-                        p.MetaDescription != null &&
-                        p.MetaDescription.ToLower().Contains(keyword));
-                    break;
-
-                default:
-                    products = products.Where(p =>
-                        p.ProductName != null &&
-                        p.ProductName.ToLower().Contains(keyword));
-                    break;
-            }
+            products = products.Where(p =>
+                (p.ProductName != null && p.ProductName.ToLower().Contains(keyword)) ||
+                (p.SeoTitle != null && p.SeoTitle.ToLower().Contains(keyword)) ||
+                (p.MetaKeywords != null && p.MetaKeywords.ToLower().Contains(keyword)) ||
+                (p.Category != null && p.Category.CateName != null && p.Category.CateName.ToLower().Contains(keyword)) ||
+                (p.Category != null && p.Category.MetaKeywords != null && p.Category.MetaKeywords.ToLower().Contains(keyword)) ||
+                (p.Brand != null && p.Brand.BrandName != null && p.Brand.BrandName.ToLower().Contains(keyword)) ||
+                (p.Shop != null && p.Shop.ShopName != null && p.Shop.ShopName.ToLower().Contains(keyword))
+            );
         }
+        
 
         // ===== PRICE FILTER =====
-      
+
         if (minPrice.HasValue)
         {
             products = products.Where(p => p.Price >= minPrice.Value);
