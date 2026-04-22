@@ -56,7 +56,7 @@ public class CheckoutController : Controller
         // 1. Tạo đơn hàng
         var order = new Order
         {
-            UserId = 1, // Should get from User.Identity
+            UserId = user.Id, // Should get from User.Identity
             OrderStatus = "Pending",
             PaymentStatus = "Unpaid",
             OrderDate = DateTime.Now,
@@ -74,16 +74,16 @@ public class CheckoutController : Controller
 
         _context.tb_Order.Add(order);
         await _context.SaveChangesAsync();
-        LoggerHelper.WriteLog(_context, User, $"User {User.Identity.Name} initiated checkout for order {order.OrderId} via {paymentMethod}. Total: {finalTotal} (Discount: {discountPercent}%)");
+        LoggerHelper.WriteLog(_context, User, $"initiated checkout for order {order.OrderId} via {paymentMethod}. Total: {finalTotal} (Discount: {discountPercent}%)");
 
         // 2. COD → xong luôn
         if (paymentMethod == "COD")
         {
-            order.OrderStatus = "Completed";
-            order.PaymentStatus = "Paid";
+            order.OrderStatus = "Pending";
+            order.PaymentStatus = "Unpaid";
             await _context.SaveChangesAsync();
 
-            LoggerHelper.WriteLog(_context, User, $"User {User.Identity.Name} completed COD Order {order.OrderId}. Total: {finalTotal} (Discount: {discountPercent}%)");
+            LoggerHelper.WriteLog(_context, User, $"completed COD Order {order.OrderId}. Total: {finalTotal} (Discount: {discountPercent}%)");
             return RedirectToAction("Result", "Checkout", new { id = order.OrderId });
         }
 
@@ -136,8 +136,8 @@ public class CheckoutController : Controller
                     {
                         LoggerHelper.WriteLog(_context, User, $"User {User.Identity.Name} completed MoMo Order {order.OrderId}. Total: {order.TotalPrice} (OrderInfo: {orderInfo})");
 
-                        order.OrderStatus = "Completed";
-                        order.PaymentStatus = "Paid";
+                        order.OrderStatus = "Paid";
+                        order.PaymentStatus = "Processing";
                         ViewBag.Message = "Transaction Successful";
                     }
                     else

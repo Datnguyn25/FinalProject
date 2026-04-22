@@ -10,7 +10,7 @@
         var displayName = currentUser?.FullName ?? User.Identity.Name;
         // Lấy avatar, nếu null thì dùng ảnh mặc định
         var avatarUrl = string.IsNullOrEmpty(currentUser?.AvatarUrl)
-        ? "/images/default-avatar.png"
+        ? "/assets/default-logo.png"
         : currentUser.AvatarUrl;
 
         <div class="user-greeting-wrapper text-end me-2">

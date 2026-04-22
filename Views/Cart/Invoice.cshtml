@@ -2,42 +2,67 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // Kiểm tra null để tránh lỗi NullReferenceException
     var details = Model?.OrderDetails ?? new List<FinalProject.Models.OrderDetails>();
-    var total = details.Any() ? details.Sum(x => x.Price * x.Quantity) : 0;
+    // Dùng Model.TotalPrice vì giá trị này đã bao gồm giảm giá từ Promotion ở bước Checkout
+    var total = Model?.TotalPrice ?? 0;
 }
 
 <div class="shop-container">
     <div class="shop-main">
 
-        @* --- PHẦN THÔNG BÁO TRẠNG THÁI THANH TOÁN --- *@
+        @* --- THÔNG BÁO TRẠNG THÁI --- *@
         @if (ViewBag.Message != null)
         {
             <div style="padding: 15px; margin-bottom: 20px; border-radius: 5px; text-align: center; font-weight: bold;
                             @(Model?.PaymentStatus == "Paid" ? "background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;"
-                                                                         : "background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;")">
+                                                                          : "background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;")">
             @ViewBag.Message
-        </div>
+            @if (Model?.PaymentStatus == "Paid" && Model?.OrderStatus != "Completed")
+                {
+                    <div style="font-size: 0.9em; font-weight: normal; mt-1">
+                        Your payment is secured. The shop is preparing your order!
+                    </div>
                 }
+            </div>
+        }
 
         <h2 style="margin-bottom:20px;">🧾 INVOICE</h2>
 
         <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 0 10px #ddd;">
-
-            <p><b>Order ID:</b> @Model?.OrderId</p>
-            <p><b>Date:</b> @Model?.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
-            <p>
-                <b>Status:</b>
-                <span class="badge @(Model?.OrderStatus == "Completed" ? "bg-success" : "bg-warning")">
-                    @Model?.OrderStatus
-                </span>
-            </p>
-            <p>
-                <b>Payment:</b>
-                <span style="color: @(Model?.PaymentStatus == "Paid" ? "green" : "red"); font-weight: bold;">
-                    @Model?.PaymentStatus
-                </span>
-            </p>
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                    <p><b>Order ID:</b> #@Model?.OrderId</p>
+                    <p><b>Date:</b> @Model?.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                <div style="text-align: right;">
+                    <p>
+                        <b>Order Status:</b>
+                        @* Cập nhật Badge theo các trạng thái mới *@
+                        @if (Model?.OrderStatus == "Completed")
+                        {
+                            <span class="badge bg-success">Completed</span>
+                        }
+                        else if (Model?.OrderStatus == "Processing")
+                        {
+                            <span class="badge bg-info text-dark">Processing / Shipping</span>
+                        }
+                        else if (Model?.OrderStatus == "Cancelled")
+                        {
+                            <span class="badge bg-danger">Cancelled</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Pending Approval</span>
+                        }
+                    </p>
+                    <p>
+                        <b>Payment Status:</b>
+                        <span style="color: @(Model?.PaymentStatus == "Paid" ? "green" : "red"); font-weight: bold;">
+                            @Model?.PaymentStatus
+                        </span>
+                    </p>
+                </div>
+            </div>
 
             <hr />
 
@@ -51,14 +76,13 @@
                         <th>Total</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @if (details.Any())
                     {
                         @foreach (var item in details)
                         {
                             <tr style="border-bottom:1px solid #ddd;">
-                                <td style="padding:10px;">
+                                <td style="padding:10px; text-align: left;">
                                     @item.Product?.ProductName
                                 </td>
                                 <td>@item.Size</td>
@@ -68,27 +92,31 @@
                             </tr>
                         }
                     }
-                    else
-                    {
-                        <tr>
-                            <td colspan="5" style="padding: 20px;">No items found in this order.</td>
-                        </tr>
-                    }
                 </tbody>
             </table>
 
-            <h3 style="text-align:right;margin-top:20px;">
-                Total: @(total.ToString("N0")) VNĐ
-            </h3>
+            <div style="text-align:right;margin-top:20px;">
+                @* Hiển thị Total Price từ Model để phản ánh đúng số tiền cuối cùng sau giảm giá *@
+                <h3 style="color: #c7a17a;">Total Amount: @(total.ToString("N0")) VNĐ</h3>
+                @if (Model?.PaymentStatus == "Unpaid" && Model?.OrderStatus != "Cancelled")
+                {
+                    <p style="color: #666; font-style: italic;">(Please pay upon delivery - COD)</p>
+                }
+            </div>
 
             <br />
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <a asp-controller="Product" asp-action="Index"
+                   style="color:#007bff; text-decoration: none; font-weight: bold;">
+                    ← Continue Shopping
+                </a>
 
-            <a asp-controller="Product" asp-action="Index"
-               style="color:#007bff; text-decoration: none; font-weight: bold;">
-                ← Continue Shopping
-            </a>
-
+                @* Nút dẫn về Profile để khách tiện theo dõi đơn *@
+                <a asp-controller="Account" asp-action="Profile"
+                   class="btn btn-sm btn-outline-dark">
+                    Track My Order →
+                </a>
+            </div>
         </div>
-
     </div>
 </div>

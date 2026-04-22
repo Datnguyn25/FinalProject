@@ -11,5 +11,6 @@
         public string? District { get; set; }
         public string? Ward { get; set; }
         public IFormFile AvatarFile { get; set; } // Để upload ảnh
+        public List<OrderHistoryVM> MyOrders { get; set; } = new List<OrderHistoryVM>();
     }
 }
