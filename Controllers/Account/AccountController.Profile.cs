@@ -18,6 +18,20 @@ namespace FinalProject.Controllers
 
             var model = new UserProfileVM
             {
+                MyOrders = await _context.tb_Order
+                    .Where(o => o.UserId == user.Id) // Lọc đúng user đang đăng nhập
+                    .Include(o => o.OrderDetails)
+                        .ThenInclude(d => d.Product)
+                .OrderByDescending(o => o.OrderDate) // Đơn mới nhất lên đầu
+                .Select(o => new OrderHistoryVM
+                {
+                    OrderId = o.OrderId,
+                    OrderDate = o.OrderDate,
+                    TotalPrice = o.TotalPrice,
+                    OrderStatus = o.OrderStatus,
+                    ProductName = o.OrderDetails.FirstOrDefault().Product.ProductName +
+                      (o.OrderDetails.Count() > 1 ? "..." : "")
+                }).ToListAsync(),
                 FullName = user.FullName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,

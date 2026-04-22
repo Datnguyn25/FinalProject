@@ -104,7 +104,7 @@ namespace FinalProject.Controllers.SellerController
             if (!order.OrderDetails.Any(od => od.Product.ShopId == shop.ShopId))
                 return Forbid();
 
-            order.OrderStatus = "Confirmed";
+            order.OrderStatus = "Processing";
 
             _context.tb_Order.Update(order);
             await _context.SaveChangesAsync();
