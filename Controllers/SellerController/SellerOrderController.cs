@@ -100,7 +100,6 @@ namespace FinalProject.Controllers.SellerController
 
             if (order == null) return NotFound();
 
-            // 🔥 CHECK ĐÚNG SHOP
             if (!order.OrderDetails.Any(od => od.Product.ShopId == shop.ShopId))
                 return Forbid();
 
@@ -154,6 +153,39 @@ namespace FinalProject.Controllers.SellerController
                 order.OrderId,
                 order.OrderStatus,
                 order.Delivered
+            });
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        // ================= HỦY ĐƠN (THÊM MỚI) =================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            var shop = GetSellerShop();
+            if (shop == null) return Forbid();
+
+            var order = _context.tb_Order
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                .FirstOrDefault(o => o.OrderId == id);
+
+            if (order == null) return NotFound();
+
+            if (!order.OrderDetails.Any(od => od.Product.ShopId == shop.ShopId))
+                return Forbid();
+
+            order.OrderStatus = "Cancelled";
+
+            _context.tb_Order.Update(order);
+            await _context.SaveChangesAsync();
+
+            // 🔥 REALTIME
+            await _hub.Clients.All.SendAsync("OrderUpdated", new
+            {
+                order.OrderId,
+                order.OrderStatus
             });
 
             return RedirectToAction(nameof(Details), new { id });

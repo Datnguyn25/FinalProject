@@ -38,11 +38,38 @@
             <td>@order.OrderStatus</td>
             <td>
                 <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@order.OrderId">Details</a>
-                <form asp-action="ConfirmOrder" method="post" style="display:inline;">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@order.OrderId" />
-                    <button type="submit" class="btn btn-sm btn-success">Confirm</button>
-                </form>
+                    @if (order.OrderStatus == "Pending")
+                    {
+                        <form asp-action="ConfirmOrder" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@order.OrderId" />
+                            <button type="submit" class="btn btn-sm btn-success">Confirm</button>
+                        </form>
+
+                        <form asp-action="CancelOrder" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@order.OrderId" />
+                            <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                        </form>
+                    }
+                    else if (order.OrderStatus == "Confirmed")
+                    {
+                        <form asp-action="UpdateShipping" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@order.OrderId" />
+                            <input type="hidden" name="status" value="Shipping" />
+                            <button class="btn btn-sm btn-info">Ship</button>
+                        </form>
+                    }
+                    else if (order.OrderStatus == "Shipping")
+                    {
+                        <form asp-action="UpdateShipping" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@order.OrderId" />
+                            <input type="hidden" name="status" value="Completed" />
+                            <button class="btn btn-sm btn-success">Complete</button>
+                        </form>
+                    }
             </td>
         </tr>
     }
